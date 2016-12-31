@@ -1,0 +1,133 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context="br.com.trihum.oops.CadastroActivity">
+
+    <!-- The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc. -->
+
+    <!-- This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows. -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <ImageView
+            android:layout_height="match_parent"
+            app:srcCompat="@drawable/bg_home"
+            android:id="@+id/imageView2"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_width="wrap_content" />
+
+        <ImageView
+            app:srcCompat="@drawable/logo_oops"
+            android:id="@+id/imageView3"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="40dp"
+            android:layout_width="100dp" />
+
+        <Button
+            android:text="CADASTRAR!"
+            android:id="@+id/button"
+            android:layout_marginTop="420dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/botao_laranja"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_height="30dp"
+            android:layout_width="220dp"
+            android:onClick="onEfetuarCadastroClick" />
+
+        <EditText
+            android:layout_width="220dp"
+            android:layout_height="30dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            android:id="@+id/editText"
+            android:layout_marginTop="150dp"
+            android:hint="Nome completo"
+            android:layout_gravity="center_horizontal"
+            android:textColorHint="#55000000"
+            android:textColor="#000000"
+            android:textColorLink="#FFFFFFFF"
+            android:paddingLeft="10dp"
+            android:background="@drawable/caixa_entrada_texto"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="220dp"
+            android:layout_height="30dp"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/editText2"
+            android:layout_marginTop="220dp"
+            android:hint="Email"
+            android:layout_gravity="center_horizontal"
+            android:textColorHint="#55000000"
+            android:textColor="#000000"
+            android:textColorLink="#FFFFFFFF"
+            android:paddingLeft="10dp"
+            android:background="@drawable/caixa_entrada_texto"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="220dp"
+            android:layout_height="30dp"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/editText3"
+            android:layout_marginTop="260dp"
+            android:hint="Repita o email"
+            android:layout_gravity="center_horizontal"
+            android:textColorHint="#55000000"
+            android:textColor="#000000"
+            android:textColorLink="#FFFFFFFF"
+            android:paddingLeft="10dp"
+            android:background="@drawable/caixa_entrada_texto"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="220dp"
+            android:layout_height="30dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/editText4"
+            android:layout_marginTop="300dp"
+            android:hint="Senha"
+            android:layout_gravity="center_horizontal"
+            android:textColorHint="#55000000"
+            android:textColor="#000000"
+            android:textColorLink="#FFFFFFFF"
+            android:paddingLeft="10dp"
+            android:background="@drawable/caixa_entrada_texto"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="220dp"
+            android:layout_height="30dp"
+            android:inputType="textPassword"
+            android:ems="10"
+            android:id="@+id/editText5"
+            android:layout_marginTop="340dp"
+            android:hint="Repita a senha"
+            android:layout_gravity="center_horizontal"
+            android:textColorHint="#55000000"
+            android:textColor="#000000"
+            android:textColorLink="#FFFFFFFF"
+            android:paddingLeft="10dp"
+            android:background="@drawable/caixa_entrada_texto"
+            android:textSize="14sp" />
+
+    </FrameLayout>
+
+</FrameLayout>

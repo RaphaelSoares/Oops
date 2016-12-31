@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Oops</string>
+
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="title_activity_cadastro">CadastroActivity</string>
+    <string name="title_activity_principal">Oops</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="tab_title_1">Texto1</string>
+    <string name="tab_title_2">Texto2</string>
+    <string name="tab_title_3">Texto3</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_foto">FotoActivity</string>
+</resources>

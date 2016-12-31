@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_feedback"
+            android:title="Dê o seu Feedback" />
+        <item
+            android:id="@+id/nav_manter_projeto"
+            android:icon="@drawable/ic_contribua"
+            android:title="Ajude a manter o projeto" />
+        <item
+            android:id="@+id/nav_saiba_mais"
+            android:icon="@drawable/ic_saiba_mais"
+            android:title="Saiba mais" />
+    </group>
+
+</menu>
