@@ -1,8 +1,11 @@
 package br.com.trihum.oops;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
+import android.view.Display;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -11,9 +14,11 @@ import java.io.IOException;
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback{
     private SurfaceHolder mHolder;
     private Camera mCamera;
+    private Context context;
 
     public CameraPreview(Context context, Camera camera) {
         super(context);
+        this.context = context;
         mCamera = camera;
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -56,6 +61,24 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // set preview size and make any resize, rotate or
         // reformatting changes here
+        if (!Constantes.isEmulator()) {
+            Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
+
+            if(display.getRotation() == Surface.ROTATION_0) {
+                Log.i("TESTE","0");
+                mCamera.setDisplayOrientation(90);
+            } else if(display.getRotation() == Surface.ROTATION_270) {
+                Log.i("TESTE","270");
+                mCamera.setDisplayOrientation(180);
+            } else if(display.getRotation() == Surface.ROTATION_90) {
+                Log.i("TESTE","90");
+                mCamera.setDisplayOrientation(0);
+            } else if(display.getRotation() == Surface.ROTATION_180) {
+                Log.i("TESTE","180");
+                mCamera.setDisplayOrientation(90);
+            }
+        }
+
 
         // start preview with new settings
         try {

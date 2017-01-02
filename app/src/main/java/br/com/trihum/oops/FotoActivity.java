@@ -2,6 +2,7 @@ package br.com.trihum.oops;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.support.v7.app.ActionBar;

@@ -6,53 +6,56 @@
     android:minHeight="120dp"
     android:layout_height="120dp">
 
-    <TextView
-        android:text="Status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/statusInfracao"
-        android:layout_marginLeft="150dp"
-        android:layout_marginTop="20dp"
-        android:textSize="18sp"
-        android:textColor="#009999"
-        android:textStyle="bold" />
-
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:id="@+id/fotoInfracao"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="10dp"
         android:layout_gravity="center_vertical"
         android:scaleType="centerCrop"
         android:background="@drawable/foto_redonda" />
 
     <TextView
         android:text="tipo"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tipoInfracao"
-        android:layout_marginLeft="150dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="30dp"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginRight="10dp" />
 
     <TextView
         android:text="data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/dataInfracao"
-        android:layout_marginLeft="150dp"
+        android:layout_marginLeft="130dp"
         android:layout_marginTop="90dp"
         android:textSize="12sp"
         android:textStyle="bold" />
 
     <TextView
         android:text="endereco"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/enderecoInfracao"
-        android:layout_marginLeft="150dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="55dp"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginRight="10dp" />
+
+    <TextView
+        android:text="Status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/statusInfracao"
+        android:layout_marginLeft="130dp"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:textColor="#009999"
+        android:textStyle="bold"
+        android:layout_marginRight="10dp" />
 </FrameLayout>

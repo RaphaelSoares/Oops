@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "222913864662",
+    "firebase_url": "https://teste1-a34b9.firebaseio.com",
+    "project_id": "teste1-a34b9",
+    "storage_bucket": "teste1-a34b9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222913864662:android:e7335d5caf8d9b16",
+        "android_client_info": {
+          "package_name": "br.com.trihum.oops"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "222913864662-ds1lep0mmrdnl7olr3kajek1htc3qqp3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBKzF3u-jSTkN-slDL-LqIMgWGz0A0GHbQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

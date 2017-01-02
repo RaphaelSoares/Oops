@@ -14,6 +14,10 @@
             android:id="@+id/nav_saiba_mais"
             android:icon="@drawable/ic_saiba_mais"
             android:title="Saiba mais" />
+        <item
+            android:id="@+id/nav_sair"
+            android:icon="@drawable/ic_logoff"
+            android:title="Sair" />
     </group>
 
 </menu>
