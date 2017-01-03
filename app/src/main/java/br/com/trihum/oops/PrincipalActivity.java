@@ -98,7 +98,8 @@ public class PrincipalActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            mAuth.signOut();
+            finish();
         }
     }
 

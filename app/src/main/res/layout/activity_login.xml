@@ -112,7 +112,8 @@
             android:textStyle="bold"
             android:layout_height="30dp"
             android:layout_width="220dp"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:onClick="onLoginGoogleClick" />
     </FrameLayout>
 
 </FrameLayout>

@@ -18,8 +18,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-public class CadastroActivity extends AppCompatActivity {
+public class CadastroActivity extends BaseActivity {
 
     // componentes da tela
     EditText editTextCadastroNomeCompleto;
@@ -28,7 +30,10 @@ public class CadastroActivity extends AppCompatActivity {
     EditText editTextCadastroSenha;
     EditText editTextCadastroSenhaRepete;
 
+    String nomeCompleto;
+
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,7 @@ public class CadastroActivity extends AppCompatActivity {
         editTextCadastroSenhaRepete = (EditText)findViewById(R.id.editTextCadastroSenhaRepete);
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
@@ -67,8 +73,7 @@ public class CadastroActivity extends AppCompatActivity {
 
     public void onEfetuarCadastroClick (View v)
     {
-        // TODO efetuar o cadastro
-        String nomeCompleto = editTextCadastroNomeCompleto.getText().toString();
+        nomeCompleto = editTextCadastroNomeCompleto.getText().toString();
         String email = editTextCadastroEmail.getText().toString();
         String emailRepete = editTextCadastroEmailRepete.getText().toString();
         String senha = editTextCadastroSenha.getText().toString();
@@ -93,6 +98,8 @@ public class CadastroActivity extends AppCompatActivity {
             return;
         }
 
+        showProgressDialog();
+
         mAuth.createUserWithEmailAndPassword(email, senha)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -110,9 +117,7 @@ public class CadastroActivity extends AppCompatActivity {
                             Toast.makeText(CadastroActivity.this, "Falha na criação do usuário", Toast.LENGTH_SHORT).show();
                         }
 
-                        // [START_EXCLUDE]
-                        //hideProgressDialog();
-                        // [END_EXCLUDE]
+                        hideProgressDialog();
                     }
                 });
 
@@ -121,17 +126,26 @@ public class CadastroActivity extends AppCompatActivity {
     private void onAuthSuccess(FirebaseUser user) {
 
         // Write new user
-        gravarUsuario(user.getUid(), user.getEmail());
+        gravarUsuario(nomeCompleto, user.getUid(), user.getEmail());
 
-        //user.sendEmailVerification();
+        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.i("Success", "Yes");
+                }
+                else{
+                    Log.i("Success", "No");}
+            }
+        });
 
         finish();
     }
 
-    private void gravarUsuario(String userId, String email) {
-        /*UsuarioApp usuarioApp = new UsuarioApp(email);
+    private void gravarUsuario(String nomeCompleto, String userId, String email) {
+        UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email);
 
-        mDatabase.child("usuarios_app").child(userId).setValue(usuarioApp);*/
+        mDatabase.child("usuarios_app").child(userId).setValue(usuarioApp);
     }
 
 

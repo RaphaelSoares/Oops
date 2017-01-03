@@ -6,9 +6,11 @@ package br.com.trihum.oops;
 
 public class UsuarioApp {
 
+    public String nome_completo;
     public String email;
 
-    public UsuarioApp(String email){
+    public UsuarioApp(String nomeCompleto, String email){
+        this.nome_completo = nomeCompleto;
         this.email = email;
     }
 }
