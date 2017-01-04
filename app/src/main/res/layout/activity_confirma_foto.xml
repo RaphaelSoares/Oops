@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    tools:context="br.com.trihum.oops.FotoActivity">
+    android:background="#000000"
+    tools:context="br.com.trihum.oops.ConfirmaFotoActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -12,14 +12,11 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
-    <FrameLayout
+
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:background="#000000"
-        android:id="@+id/camera_preview">
-
-    </FrameLayout>
+        android:id="@+id/snapshot" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -31,10 +28,9 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_confirma"
-            android:id="@+id/floatingActionButton2"
+            app:srcCompat="@drawable/botao_laranja"
+            android:id="@+id/floatingActionButton3"
             android:layout_gravity="center"
-            android:onClick="onTirarFotoClick" />
+            android:onClick="onConfirmarFotoClick" />
     </FrameLayout>
-
 </FrameLayout>

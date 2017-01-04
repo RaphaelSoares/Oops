@@ -1,6 +1,7 @@
 package br.com.trihum.oops;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -122,6 +123,9 @@ public class PrincipalActivity extends AppCompatActivity
         } else if (id == R.id.nav_manter_projeto) {
 
         } else if (id == R.id.nav_saiba_mais) {
+
+            Intent i =  new Intent(PrincipalActivity.this, TutorialActivity.class);
+            startActivity(i);
 
         } else if (id == R.id.nav_sair) {
             mAuth.signOut();

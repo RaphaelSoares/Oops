@@ -2,6 +2,7 @@ package br.com.trihum.oops;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
@@ -17,7 +18,7 @@ import android.widget.FrameLayout;
 
 public class FotoActivity extends AppCompatActivity {
 
-    private Camera mCamera;
+    public Camera mCamera;
     private CameraPreview mPreview;
 
     @Override
@@ -52,6 +53,8 @@ public class FotoActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
+
+
     @Override
     public void onBackPressed()
     {
@@ -84,5 +87,11 @@ public class FotoActivity extends AppCompatActivity {
             // Camera is not available (in use or does not exist)
         }
         return c; // returns null if camera is unavailable
+    }
+
+    public void onTirarFotoClick (View v){
+
+        mCamera.takePicture(null, null, new PhotoHandler(this,getApplicationContext()));
+
     }
 }

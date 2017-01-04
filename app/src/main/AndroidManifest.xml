@@ -3,9 +3,13 @@
     package="br.com.trihum.oops">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -38,6 +42,21 @@
             android:name=".FotoActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="Oops"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".ConfirmaFotoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Oops"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".RegistraInfracaoActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="Oops"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".TutorialActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_tutorial"
             android:theme="@style/FullscreenTheme"></activity>
     </application>
 

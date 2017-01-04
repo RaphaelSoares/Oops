@@ -1,10 +1,11 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    tools:context="br.com.trihum.oops.FotoActivity">
+    android:background="#E6E7E8"
+    tools:context="br.com.trihum.oops.RegistraInfracaoActivity"
+    android:orientation="vertical">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -12,29 +13,33 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:background="#000000"
-        android:id="@+id/camera_preview">
+        android:layout_height="200dp"
+        android:background="#000000">
 
+        <ImageView
+            android:layout_width="match_parent"
+            app:srcCompat="@android:color/black"
+            android:id="@+id/snapshot_capturado"
+            android:layout_height="200dp"
+            android:scaleType="centerInside" />
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_gravity="bottom">
+        android:layout_height="match_parent">
 
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_confirma"
-            android:id="@+id/floatingActionButton2"
+            app:srcCompat="@android:color/holo_green_dark"
+            android:id="@+id/floatingActionButton4"
             android:layout_gravity="center"
-            android:onClick="onTirarFotoClick" />
+            android:onClick="onSalvarInfracaoClick" />
     </FrameLayout>
 
-</FrameLayout>
+</LinearLayout>

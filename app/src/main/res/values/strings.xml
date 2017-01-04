@@ -20,4 +20,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="title_activity_foto">FotoActivity</string>
+
+    <string name="title_activity_confirma_foto">ConfirmaFotoActivity</string>
+
+    <string name="title_activity_registra_infracao">RegistraInfracaoActivity</string>
+
+    <string name="title_activity_tutorial">TutorialActivity</string>
 </resources>
