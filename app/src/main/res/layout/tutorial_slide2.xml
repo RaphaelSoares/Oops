@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="#639">
 
-    <TextView
-        android:text="Slide 2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/textView6" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal|center"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                app:srcCompat="@drawable/slide_tutorial2"
+                android:id="@+id/imagemTutorial2"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:text="Envie o registro da infração para a Central de Trânsito. A infração será analisada e computada pelos profissionais de trânsito responsáveis."
+                android:ems="10"
+                android:id="@+id/textoTutorial2"
+                android:layout_gravity="bottom|center"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:layout_width="265dp" />
+        </FrameLayout>
+    </LinearLayout>
 </RelativeLayout>

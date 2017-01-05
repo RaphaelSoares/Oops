@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     tools:context="br.com.trihum.oops.PrincipalFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <TabHost
         android:layout_width="match_parent"
         android:layout_height="match_parent"

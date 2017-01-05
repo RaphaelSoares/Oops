@@ -13,6 +13,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,14 +27,31 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.net.URL;
 
 public class PrincipalActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.OnConnectionFailedListener {
 
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
+    private GoogleApiClient mGoogleApiClient;
 
     // API do Google para fazer reverse geocoding
     //https://developers.google.com/maps/documentation/geocoding/start
@@ -48,7 +66,10 @@ public class PrincipalActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //****************************************
+        // Objetos Firebase
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -68,11 +89,59 @@ public class PrincipalActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        ImageView imageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.imagemAvatar);
-        if (imageView != null)
-        {
-            imageView.setImageBitmap(Constantes.decodeFrom64toRound(Constantes.base64foto1));
-        }
+        //********************************************************
+        // Pegando componentes do navigator e atribuindo os dados do perfil
+        final ImageView fotoPerfil = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_foto_perfil);
+        final TextView txtNomeCompleto = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_nome_completo);
+        final TextView txtEmail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
+
+        // Foto do perfil
+        mDatabase.child("usuarios_app").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                UsuarioApp usuarioApp = snapshot.getValue(UsuarioApp.class);
+
+                if (fotoPerfil != null) {
+                    if (usuarioApp.foto_perfil.startsWith("http")) {
+                        try {
+                            new DownloadImageTask(fotoPerfil,true).execute(usuarioApp.foto_perfil);
+                        } catch (Exception e) {
+                        }
+
+                    } else if (usuarioApp.foto_perfil.startsWith("data")) {
+                        fotoPerfil.setImageBitmap(Constantes.decodeFrom64toRound(usuarioApp.foto_perfil));
+                    }
+                }
+
+                // Nome completo e email
+                txtNomeCompleto.setText(usuarioApp.nome_completo);
+                txtEmail.setText(usuarioApp.email);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        //********************************************************
+
+
+        //****************************************
+        // Aqui é instanciada a api google para efetuar logout/revoke
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+
+
 
         Fragment fragment = new PrincipalFragment();
 
@@ -129,6 +198,15 @@ public class PrincipalActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_sair) {
             mAuth.signOut();
+
+            Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            //updateUI(null);
+                        }
+                    });
+
             finish();
         }
 
@@ -138,4 +216,8 @@ public class PrincipalActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
 }

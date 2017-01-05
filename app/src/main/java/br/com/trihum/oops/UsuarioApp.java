@@ -8,9 +8,16 @@ public class UsuarioApp {
 
     public String nome_completo;
     public String email;
+    public String foto_perfil;
 
-    public UsuarioApp(String nomeCompleto, String email){
+    public UsuarioApp()
+    {
+        // Default constructor required for calls to DataSnapshot.getValue(UsuarioApp.class)
+    }
+
+    public UsuarioApp(String nomeCompleto, String email, String foto_perfil){
         this.nome_completo = nomeCompleto;
         this.email = email;
+        this.foto_perfil = foto_perfil;
     }
 }

@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     tools:context="br.com.trihum.oops.FeedbackFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <TextView
         android:text="Feedback Fragmet"
         android:layout_width="wrap_content"

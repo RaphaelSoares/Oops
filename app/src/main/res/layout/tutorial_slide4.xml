@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_tutorial">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#639">
 
     <LinearLayout
         android:orientation="vertical"
@@ -17,23 +16,23 @@
             android:layout_height="match_parent">
 
             <ImageView
-                app:srcCompat="@drawable/slide_tutorial1"
-                android:id="@+id/imagemTutorial1"
+                app:srcCompat="@drawable/slide_tutorial4"
+                android:id="@+id/imagemTutorial4"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:layout_gravity="center" />
 
             <TextView
                 android:layout_height="wrap_content"
-                android:text="Fotografe a infração e depois use os filtros e campos de texto para categoriza-lá."
+                android:text="Conheça as ações educativas e continue tornando o trânsito da sua cidade melhor!"
                 android:ems="10"
-                android:id="@+id/textoTutorial1"
+                android:id="@+id/textoTutorial4"
+                android:layout_gravity="bottom|center"
+                android:gravity="center_vertical|center_horizontal"
                 android:textColor="#FFFFFF"
                 android:layout_width="200dp"
-                android:gravity="center"
-                android:layout_gravity="bottom|center"
                 android:textSize="12sp" />
-
         </FrameLayout>
     </LinearLayout>
+
 </RelativeLayout>

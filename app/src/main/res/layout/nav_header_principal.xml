@@ -13,7 +13,7 @@
     android:layout_height="180dp">
 
     <ImageView
-        android:id="@+id/imagemAvatar"
+        android:id="@+id/nav_header_foto_perfil"
         android:layout_height="80dp"
         android:layout_width="80dp"
         android:background="@drawable/foto_redonda"
@@ -26,14 +26,18 @@
         android:text="Fulano de Tal"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:id="@+id/nav_header_nome_completo"
+        android:lines="1"
+        android:ellipsize="end" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/nav_header_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="fulano@gmail.com"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:lines="1" />
 
 </LinearLayout>

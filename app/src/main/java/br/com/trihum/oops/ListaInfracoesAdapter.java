@@ -52,11 +52,11 @@ public class ListaInfracoesAdapter extends BaseAdapter {
         TextView textoDataInfracao = (TextView)convertView.findViewById(R.id.dataInfracao);
         ImageView imageFotoInfracao = (ImageView) convertView.findViewById(R.id.fotoInfracao);
 
-        textoStatusInfracao.setText(infracao.status);
-        textoTipoInfracao.setText(infracao.tipo);
-        textoEnderecoInfracao.setText(infracao.endereco);
-        textoDataInfracao.setText(infracao.data);
-        imageFotoInfracao.setImageBitmap(Constantes.decodeFrom64toRound(infracao.foto));
+        textoStatusInfracao.setText(infracao.getStatus());
+        textoTipoInfracao.setText(infracao.getTipo());
+        //textoEnderecoInfracao.setText(infracao.endereco);
+        textoDataInfracao.setText(infracao.getData());
+        //imageFotoInfracao.setImageBitmap(Constantes.decodeFrom64toRound(infracao.foto));
 
         return convertView;
     }

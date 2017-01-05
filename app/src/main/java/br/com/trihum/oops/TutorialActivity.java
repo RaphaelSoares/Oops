@@ -2,6 +2,7 @@ package br.com.trihum.oops;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -23,6 +25,8 @@ import android.widget.TextView;
  * status bar and navigation/system bar) with user interaction.
  */
 public class TutorialActivity extends AppCompatActivity {
+
+    public Button btnTutorialEntendi;
 
     private ViewPager viewPager;
     private MyViewPagerAdapter myViewPagerAdapter;
@@ -43,10 +47,13 @@ public class TutorialActivity extends AppCompatActivity {
 
         viewPager = (ViewPager) findViewById(R.id.view_pager);
         dotsLayout = (LinearLayout) findViewById(R.id.layoutDots);
+        btnTutorialEntendi = (Button)findViewById(R.id.btnTutorialEntendi);
 
         layouts = new int[]{
                 R.layout.tutorial_slide1,
-                R.layout.tutorial_slide2};
+                R.layout.tutorial_slide2,
+                R.layout.tutorial_slide3,
+                R.layout.tutorial_slide4};
 
         addBottomDots(0);
 
@@ -86,7 +93,16 @@ public class TutorialActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
+
             addBottomDots(position);
+
+            if (position == layouts.length - 1) {
+                // ultima página, exibe o botao
+                btnTutorialEntendi.setVisibility(View.VISIBLE);
+            } else {
+                // se nao é ultima página, retira o botao
+                btnTutorialEntendi.setVisibility(View.INVISIBLE);
+            }
         }
 
         @Override
@@ -98,6 +114,13 @@ public class TutorialActivity extends AppCompatActivity {
         }
     };
 
+    public void onEntendiClick(View v){
+
+        Intent intent =  new Intent(TutorialActivity.this, PrincipalActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
 
     public class MyViewPagerAdapter extends PagerAdapter {
         private LayoutInflater layoutInflater;

@@ -84,9 +84,9 @@ public class RegistraInfracaoActivity extends AppCompatActivity {
     public void onSalvarInfracaoClick (View v)
     {
         InfracaoDetalhe infracaoDetalhe = new InfracaoDetalhe();
-        infracaoDetalhe.foto = "data:image/jpeg;base64,"+encoded;
-        infracaoDetalhe.latitude = -22.347823;
-        infracaoDetalhe.longitude = -43.561298;
+        infracaoDetalhe.setFoto("data:image/jpeg;base64,"+encoded);
+        infracaoDetalhe.setLatitude(-22.347823);
+        infracaoDetalhe.setLongitude(-43.561298);
 
         mDatabase.child("detalhes_infracoes").child("0010").setValue(infracaoDetalhe);
     }

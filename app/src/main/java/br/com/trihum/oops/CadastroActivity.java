@@ -88,13 +88,13 @@ public class CadastroActivity extends BaseActivity {
 
         if (!email.equals(emailRepete))
         {
-            Toast.makeText(CadastroActivity.this, "Email informados estão diferentes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CadastroActivity.this, "Os Emails informados estão diferentes", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (!senha.equals(senhaRepete))
         {
-            Toast.makeText(CadastroActivity.this, "Senhas informadas estão diferentes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(CadastroActivity.this, "As Senhas informadas estão diferentes", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -114,7 +114,7 @@ public class CadastroActivity extends BaseActivity {
                         }
                         else
                         {
-                            Toast.makeText(CadastroActivity.this, "Falha na criação do usuário", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(CadastroActivity.this, "Não foi possível criar o usuário", Toast.LENGTH_LONG).show();
                         }
 
                         hideProgressDialog();
@@ -126,7 +126,7 @@ public class CadastroActivity extends BaseActivity {
     private void onAuthSuccess(FirebaseUser user) {
 
         // Write new user
-        gravarUsuario(nomeCompleto, user.getUid(), user.getEmail());
+        gravarUsuario(user.getUid(), nomeCompleto, user.getEmail());
 
         user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -142,8 +142,8 @@ public class CadastroActivity extends BaseActivity {
         finish();
     }
 
-    private void gravarUsuario(String nomeCompleto, String userId, String email) {
-        UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email);
+    private void gravarUsuario(String userId, String nomeCompleto, String email) {
+        UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, "");
 
         mDatabase.child("usuarios_app").child(userId).setValue(usuarioApp);
     }

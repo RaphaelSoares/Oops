@@ -32,7 +32,8 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="40dp"
-            android:layout_width="100dp" />
+            android:layout_width="100dp"
+            android:onClick="onLogoClick" />
 
         <EditText
             android:layout_width="wrap_content"
@@ -80,7 +81,7 @@
             android:id="@+id/button"
             android:layout_marginTop="370dp"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/botao_laranja"
+            android:background="@drawable/botao_laranja_selector"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:textColor="#FFFFFF"

@@ -16,6 +16,13 @@ import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,10 +37,14 @@ import java.util.List;
  */
 public class PrincipalFragment extends Fragment {
 
+    private TabHost tabHost;
     private FloatingActionButton fabTirarFoto;
     private ListView listaInfracoes;
     public ListaInfracoesAdapter adapter;
     public List<Infracao> arrayInfracoes;
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,7 +95,15 @@ public class PrincipalFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_principal, container, false);
 
+        //*************************************************
+        // Componentes da tela
+        listaInfracoes = (ListView)view.findViewById(R.id.listaInfracoes);
         fabTirarFoto = (FloatingActionButton) view.findViewById(R.id.fabTirarFoto);
+        tabHost = (TabHost)view.findViewById(R.id.tab_host_principal);
+        adapter = new ListaInfracoesAdapter(inflater);
+
+        listaInfracoes.setAdapter(adapter);
+
         fabTirarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,48 +119,22 @@ public class PrincipalFragment extends Fragment {
         View tabView = tw.getChildTabViewAt(0);
         tabView.setBackgroundResource(R.drawable.avatar);*/
 
-        TabHost tabHost = (TabHost)view.findViewById(R.id.tab_host_principal);
         tabHost.setup();
         this.setNewTab(view.getContext(), tabHost, "lista", R.string.tab_title_1, R.drawable.ic_aba_lista, R.id.tab1);
         this.setNewTab(view.getContext(), tabHost, "metricas", R.string.tab_title_2, R.drawable.ic_aba_metricas, R.id.tab2);
         this.setNewTab(view.getContext(), tabHost, "perfil", R.string.tab_title_3, R.drawable.ic_aba_perfil, R.id.tab3);
 
-        listaInfracoes = (ListView)view.findViewById(R.id.listaInfracoes);
-        arrayInfracoes = new ArrayList<Infracao>();
 
-        Infracao i = new Infracao();
-        i.status = "Infração enviada";
-        i.tipo = "Estacionado em local proibido";
-        i.endereco = "Av Brasil, 400, Rio de Janeiro - BR";
-        i.data = "31/08/2016";
-        i.foto = Constantes.base64foto1;
-        arrayInfracoes.add(i);
-        i = new Infracao();
-        i.status = "Infração invalidada";
-        i.tipo = "Estacionado em local proibido";
-        i.endereco = "Av Brasil, 400, Rio de Janeiro - BR";
-        i.data = "31/08/2016";
-        i.foto = Constantes.base64foto1;
-        arrayInfracoes.add(i);
-        i = new Infracao();
-        i.status = "Infração validada";
-        i.tipo = "Estacionado em local proibido";
-        i.endereco = "Av Brasil, 400, Rio de Janeiro - BR";
-        i.data = "31/08/2016";
-        i.foto = Constantes.base64foto1;
-        arrayInfracoes.add(i);
-        i = new Infracao();
-        i.status = "Infração validada";
-        i.tipo = "Estacionado em local proibido";
-        i.endereco = "Av Brasil, 400, Rio de Janeiro - BR";
-        i.data = "31/08/2016";
-        i.foto = Constantes.base64foto1;
-        arrayInfracoes.add(i);
+        //****************************************
+        // Objetos Firebase
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        adapter = new ListaInfracoesAdapter(inflater);
-        adapter.arrayInfracoes = arrayInfracoes;
-        listaInfracoes.setAdapter(adapter);
 
+        //****************************************
+        // Consulta a lista de infracoes
+        atualizaListaInfracoes();
+        //********************************************************
 
         return view;
     }
@@ -201,4 +194,56 @@ public class PrincipalFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    public void atualizaListaInfracoes()
+    {
+        //addValueEventListener
+
+        // Ver o video em para tentar resolver o problema...
+        // https://www.youtube.com/watch?v=30RJYT9tctc
+
+        mDatabase.child("infracoes").orderByChild("uid").
+                equalTo(mAuth.getCurrentUser().getUid()).
+                addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                arrayInfracoes = new ArrayList<Infracao>();
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren())
+                {
+                    String key = postSnapshot.getKey();
+                    final Infracao infracao = postSnapshot.getValue(Infracao.class);
+
+                    mDatabase.child("detalhes_infracoes/"+key+"").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot){
+                            InfracaoDetalhe infracaoDetalhe = snapshot.getValue(InfracaoDetalhe.class);
+
+                            Log.d("OOPS","infracao comentario = "+infracao.getComentario());
+                            Log.d("OOPS","infracao data = "+infracao.getData());
+                            Log.d("OOPS","infracao hora = "+infracao.getHora());
+                            Log.d("OOPS","infracao status = "+infracao.getStatus());
+                            Log.d("OOPS","infracao tipo = "+infracao.getTipo());
+                            Log.d("OOPS","infracao placa = "+infracaoDetalhe.getPlaca());
+
+                            arrayInfracoes.add(infracao);
+                            adapter.arrayInfracoes = arrayInfracoes;
+                            adapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
 }

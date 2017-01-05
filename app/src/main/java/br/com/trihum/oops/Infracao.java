@@ -7,20 +7,63 @@ package br.com.trihum.oops;
 public class Infracao {
 
     // Dados tabela infracao
-    public String status;
-    public String tipo;
-    public String data;
-    public String hora;
-    public String uid;
-    public String comentario;
+    private String status;
+    private String tipo;
+    private String data;
+    private String hora;
+    private String uid;
+    private String comentario;
 
-    // Dados detalhe infracao
-    public String foto;
-    public String foto_mini;
-    public String endereco;
-    public double latitude;
-    public double longitude;
-    public String placa;
-    public String placa_ident;
-    public String identifica_infracao;
+    public Infracao()
+    {
+
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getHora() {
+        return hora;
+    }
+
+    public void setHora(String hora) {
+        this.hora = hora;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getComentario() {
+        return comentario;
+    }
+
+    public void setComentario(String comentario) {
+        this.comentario = comentario;
+    }
 }

@@ -40,6 +40,7 @@ public class LoginActivity extends BaseActivity implements
     private static final String TAG = "Oops";
     private static final int RC_SIGN_IN = 9001;
     private GoogleApiClient mGoogleApiClient;
+    private GoogleSignInAccount googleSignInAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +58,12 @@ public class LoginActivity extends BaseActivity implements
         editTextLoginUsuario = (EditText)findViewById(R.id.editTextLoginUsuario);
         editTextLoginSenha = (EditText)findViewById(R.id.editTextLoginSenha);
 
+
+        //****************************************
+        // Aqui é instanciada a api google para efetuar login
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
+                .requestEmail().requestProfile()
                 .build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -67,6 +71,8 @@ public class LoginActivity extends BaseActivity implements
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
+        //****************************************
+        // Objetos Firebase
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
@@ -85,10 +91,11 @@ public class LoginActivity extends BaseActivity implements
 
     }
 
+    //****************************************************************
+    // Login comum email/senha
+    //****************************************************************
     public void onLoginClick(View v)
     {
-        Log.d("TESTE","Login");
-
         String usuario = editTextLoginUsuario.getText().toString();
         String senha = editTextLoginSenha.getText().toString();
 
@@ -109,8 +116,6 @@ public class LoginActivity extends BaseActivity implements
                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d("LOGIN", "signIn:onComplete:" + task.isSuccessful());
-
 
                         if (task.isSuccessful()) {
                             onAuthSuccess(task.getResult().getUser());
@@ -125,21 +130,7 @@ public class LoginActivity extends BaseActivity implements
 
     }
 
-
-    public void onCadastreClick(View v)
-    {
-        Intent i =  new Intent(LoginActivity.this, CadastroActivity.class);
-        startActivity(i);
-    }
-
-
     private void onAuthSuccess(FirebaseUser user) {
-
-        /*String username = usernameFromEmail(user.getEmail());
-
-        // Go to MainActivity
-        startActivity(new Intent(SignInActivity.this, MainActivity.class));
-        finish();*/
 
         if (user.isEmailVerified())
         {
@@ -149,36 +140,26 @@ public class LoginActivity extends BaseActivity implements
         else
         {
             Toast.makeText(LoginActivity.this, "Verifique o e-mail enviado para "+user.getEmail(),
-                    Toast.LENGTH_SHORT).show();
+                    Toast.LENGTH_LONG).show();
         }
-
-        /*
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // Get Post object and use the values to update the UI
-                Infracao infracao = dataSnapshot.getValue(Infracao.class);
-
-                Log.d("TESTE","UID = "+infracao.uid+", TIPO = "+infracao.tipo);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-
-        mPostReference = FirebaseDatabase.getInstance().getReference().child("infracoes").child("0001");
-        mPostReference.addValueEventListener(postListener);
-        */
-
     }
 
-    private void gravarUsuario(String userId, String email) {
-        /*UsuarioApp usuarioApp = new UsuarioApp(email);
+    //****************************************************************
+    // Cadastro para login comum email/senha
+    //****************************************************************
+    public void onCadastreClick(View v)
+    {
+        Intent i =  new Intent(LoginActivity.this, CadastroActivity.class);
+        startActivity(i);
+    }
 
-        mDatabase.child("usuarios_app").child(userId).setValue(usuarioApp);*/
+    //****************************************************************
+    // Login Google
+    //****************************************************************
+    public void onLoginGoogleClick(View v)
+    {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     @Override
@@ -190,30 +171,25 @@ public class LoginActivity extends BaseActivity implements
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = result.getSignInAccount();
-                firebaseAuthWithGoogle(account);
+                googleSignInAccount = result.getSignInAccount();
+                firebaseAuthWithGoogle(googleSignInAccount);
             } else {
-                // Google Sign In failed, update UI appropriately
-                // [START_EXCLUDE]
-                Log.d(TAG, "Não foi possível efetuar o login via Google");
-                //updateUI(null);
-                // [END_EXCLUDE]
+                Toast.makeText(LoginActivity.this, "Não foi possível autenticar o login no Google",
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
-        Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
-        // [START_EXCLUDE silent]
+
         showProgressDialog();
-        // [END_EXCLUDE]
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                        //Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
 
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
@@ -222,18 +198,26 @@ public class LoginActivity extends BaseActivity implements
                             onAuthGoogleSuccess(task.getResult().getUser());
                         }
                         else {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
+                            //Log.w(TAG, "signInWithCredential", task.getException());
+                            Toast.makeText(LoginActivity.this, "Não foi possível entrar usando as credenciais fornecidas pelo Google",
+                                    Toast.LENGTH_LONG).show();
                         }
-                        // [START_EXCLUDE]
+
                         hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
     }
 
     private void onAuthGoogleSuccess(FirebaseUser user) {
+
+        if (googleSignInAccount != null)
+        {
+            gravarUsuarioRedeSocial(user.getUid(),
+                    googleSignInAccount.getDisplayName(),
+                    googleSignInAccount.getEmail(),
+                    (googleSignInAccount.getPhotoUrl()!=null)?googleSignInAccount.getPhotoUrl().toString():"");
+        }
+
         Intent i =  new Intent(LoginActivity.this, PrincipalActivity.class);
         startActivity(i);
     }
@@ -243,10 +227,21 @@ public class LoginActivity extends BaseActivity implements
 
     }
 
-    public void onLoginGoogleClick(View v)
+    private void gravarUsuarioRedeSocial(String userId, String nomeCompleto, String email, String foto_perfil) {
+
+        UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, foto_perfil);
+
+        //TODO verificar se existe uma opcao de onSuccess para verificar se a gravacao de fato ocorreu
+        mDatabase.child("usuarios_app").child(userId).setValue(usuarioApp);
+    }
+
+
+    //TODO Temporario! Aqui é só para nao ter que ficar digitando email e senha toda hora, deve ser retirado depois!
+    public void onLogoClick (View v)
     {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        editTextLoginUsuario.setText("raphasm@gmail.com");
+        editTextLoginSenha.setText("12345678");
+        onLoginClick(v);
     }
 
 }
