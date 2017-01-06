@@ -10,6 +10,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -17,6 +20,7 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -42,6 +48,11 @@ public class PrincipalFragment extends Fragment {
     private ListView listaInfracoes;
     public ListaInfracoesAdapter adapter;
     public List<Infracao> arrayInfracoes;
+    public HashMap<String, String> mapaTipos;
+    public HashMap<String, String> mapaSituacoes;
+    public FrameLayout frameAlteraSenha;
+    public Button btnAlterarSenha;
+    private FloatingActionButton fabConfirmaEnvioSenha;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -100,9 +111,9 @@ public class PrincipalFragment extends Fragment {
         listaInfracoes = (ListView)view.findViewById(R.id.listaInfracoes);
         fabTirarFoto = (FloatingActionButton) view.findViewById(R.id.fabTirarFoto);
         tabHost = (TabHost)view.findViewById(R.id.tab_host_principal);
-        adapter = new ListaInfracoesAdapter(inflater);
-
-        listaInfracoes.setAdapter(adapter);
+        frameAlteraSenha = (FrameLayout)view.findViewById(R.id.frame_altera_senha);
+        btnAlterarSenha = (Button)view.findViewById(R.id.btnAlterarSenha);
+        fabConfirmaEnvioSenha = (FloatingActionButton) view.findViewById(R.id.fabConfirmaEnvioSenha);
 
         fabTirarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,9 +126,22 @@ public class PrincipalFragment extends Fragment {
             }
         });
 
-        /*TabWidget tw = (TabWidget)tabHost.findViewById(android.R.id.tabs);
-        View tabView = tw.getChildTabViewAt(0);
-        tabView.setBackgroundResource(R.drawable.avatar);*/
+        btnAlterarSenha.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnAlterarSenha.setVisibility(View.INVISIBLE);
+                frameAlteraSenha.setVisibility(View.VISIBLE);
+            }
+        });
+
+        fabConfirmaEnvioSenha.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnAlterarSenha.setVisibility(View.VISIBLE);
+                frameAlteraSenha.setVisibility(View.INVISIBLE);
+            }
+        });
+
 
         tabHost.setup();
         this.setNewTab(view.getContext(), tabHost, "lista", R.string.tab_title_1, R.drawable.ic_aba_lista, R.id.tab1);
@@ -130,6 +154,32 @@ public class PrincipalFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+
+        //****************************************
+        // Consulta a lista de tipos e situacoes
+        consultaListaTipos();
+        consultaListaSituacoes();
+        //****************************************
+
+        adapter = new ListaInfracoesAdapter(inflater, mapaTipos, mapaSituacoes);
+        listaInfracoes.setAdapter(adapter);
+
+        listaInfracoes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int posicao,
+                                    long id) {
+
+                Infracao infracaoSelecionada = (Infracao) adapter.getItemAtPosition(posicao);
+
+                /*Intent intent = new Intent(ListaOfertasActivity.this, OfertaDetalheActivity.class);
+                intent.putExtra(Constantes.INTENT_PARAM_OFERTA_SELECIONADA, ofertaSelecionada);
+                intent.putExtra(Constantes.INTENT_PARAM_ID_USUARIO, idUsuario);
+                startActivity(intent);*/
+
+                Log.d("OOPS","selecionei = "+infracaoSelecionada.getId());
+
+            }
+        });
 
         //****************************************
         // Consulta a lista de infracoes
@@ -194,56 +244,103 @@ public class PrincipalFragment extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 
+    public void consultaListaTipos()
+    {
+        mapaTipos=new HashMap<String, String>();
+
+        mDatabase.child("tipos_infracao").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
+                {
+                    mapaTipos.put(postSnapshot.getKey(),postSnapshot.child("tipo").getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void consultaListaSituacoes()
+    {
+        mapaSituacoes=new HashMap<String, String>();
+
+        mDatabase.child("situacoes_app").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
+                {
+                    mapaSituacoes.put(postSnapshot.getKey(),postSnapshot.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void atualizaListaInfracoes()
     {
         //addValueEventListener
 
+        arrayInfracoes = new ArrayList<Infracao>();
+
         // Ver o video em para tentar resolver o problema...
         // https://www.youtube.com/watch?v=30RJYT9tctc
-
         mDatabase.child("infracoes").orderByChild("uid").
-                equalTo(mAuth.getCurrentUser().getUid()).
-                addListenerForSingleValueEvent(new ValueEventListener() {
+                equalTo(mAuth.getCurrentUser().getUid()).addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Infracao infracao = dataSnapshot.getValue(Infracao.class);
+                infracao.setId(dataSnapshot.getKey());
+                arrayInfracoes.add(infracao);
+                adapter.arrayInfracoes = arrayInfracoes;
+                adapter.notifyDataSetChanged();
+            }
 
-                arrayInfracoes = new ArrayList<Infracao>();
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Infracao infracao = dataSnapshot.getValue(Infracao.class);
 
-                for (DataSnapshot postSnapshot : snapshot.getChildren())
-                {
-                    String key = postSnapshot.getKey();
-                    final Infracao infracao = postSnapshot.getValue(Infracao.class);
+                Iterator<Infracao> iterator = arrayInfracoes.iterator();
 
-                    mDatabase.child("detalhes_infracoes/"+key+"").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot){
-                            InfracaoDetalhe infracaoDetalhe = snapshot.getValue(InfracaoDetalhe.class);
-
-                            Log.d("OOPS","infracao comentario = "+infracao.getComentario());
-                            Log.d("OOPS","infracao data = "+infracao.getData());
-                            Log.d("OOPS","infracao hora = "+infracao.getHora());
-                            Log.d("OOPS","infracao status = "+infracao.getStatus());
-                            Log.d("OOPS","infracao tipo = "+infracao.getTipo());
-                            Log.d("OOPS","infracao placa = "+infracaoDetalhe.getPlaca());
-
-                            arrayInfracoes.add(infracao);
-                            adapter.arrayInfracoes = arrayInfracoes;
-                            adapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
-
+                while (iterator.hasNext()) {
+                    Infracao infracao1 = iterator.next();
+                    if (infracao1.getId().equals(dataSnapshot.getKey()))
+                    {
+                        infracao1.copia(infracao);
+                        adapter.arrayInfracoes = arrayInfracoes;
+                        adapter.notifyDataSetChanged();
+                        break;
+                    }
                 }
 
             }
 
             @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
             public void onCancelled(DatabaseError databaseError) {
+
             }
         });
 
+
     }
+
 }

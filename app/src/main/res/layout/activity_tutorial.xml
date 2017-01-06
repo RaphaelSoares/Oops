@@ -21,11 +21,11 @@
             android:layout_width="220dp"
             android:layout_height="30dp"
             android:id="@+id/btnTutorialEntendi"
-            android:background="@drawable/botao_verde"
             android:textColor="#FFFFFF"
             android:layout_gravity="top|center_horizontal"
             android:onClick="onEntendiClick"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:background="@drawable/botao_verde_selector" />
 
         <LinearLayout
             android:orientation="horizontal"

@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -17,29 +17,102 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="#000000">
+        android:background="#000000"
+        android:id="@+id/registroFrameFoto">
 
         <ImageView
             android:layout_width="match_parent"
+            android:layout_height="200dp"
             app:srcCompat="@android:color/black"
             android:id="@+id/snapshot_capturado"
-            android:layout_height="200dp"
             android:scaleType="centerInside" />
     </FrameLayout>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:layout_marginTop="200dp">
 
-        <android.support.design.widget.FloatingActionButton
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:clickable="true"
-            app:fabSize="normal"
-            app:srcCompat="@android:color/holo_green_dark"
-            android:id="@+id/floatingActionButton4"
-            android:layout_gravity="center"
-            android:onClick="onSalvarInfracaoClick" />
-    </FrameLayout>
+            app:srcCompat="@android:drawable/btn_star"
+            android:id="@+id/registroIcoMapa"
+            android:clickable="false"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="50dp" />
 
-</LinearLayout>
+        <TextView
+            android:text="Endereço"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtRegistroEndereco"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:padding="10dp"
+            android:layout_marginTop="50dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:layout_marginTop="230dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/btn_star"
+            android:id="@+id/registroIcoMapa1"
+            android:clickable="false"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="50dp" />
+
+        <TextView
+            android:text="Endereço"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtRegistroEndereco1"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:padding="10dp"
+            android:layout_marginTop="50dp" />
+    </LinearLayout>
+
+    <!-- http://www.journaldev.com/9942/android-expandablelistview-example-tutorial
+    http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
+
+    -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:background="#f4f4f4"
+        android:layout_marginTop="100dp">
+
+        <ExpandableListView
+            android:id="@+id/lvExp"
+            android:layout_height="227dp"
+            android:layout_width="wrap_content"/>
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:srcCompat="@android:color/holo_green_dark"
+        android:id="@+id/floatingActionButton4"
+        android:layout_gravity="center"
+        android:onClick="onSalvarInfracaoClick"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="false"
+        android:layout_alignParentBottom="true" />
+</RelativeLayout>

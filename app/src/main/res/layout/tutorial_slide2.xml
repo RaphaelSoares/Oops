@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#639">
+    android:background="@drawable/background_tutorial">
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_gravity="center_horizontal|center"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="280dp"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -20,18 +22,19 @@
                 android:id="@+id/imagemTutorial2"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_gravity="center" />
+                android:layout_gravity="top|center" />
 
             <TextView
                 android:layout_height="wrap_content"
+                android:layout_width="200dp"
                 android:text="Envie o registro da infração para a Central de Trânsito. A infração será analisada e computada pelos profissionais de trânsito responsáveis."
-                android:ems="10"
                 android:id="@+id/textoTutorial2"
-                android:layout_gravity="bottom|center"
-                android:gravity="center_vertical|center_horizontal"
+                android:ems="10"
                 android:textColor="#FFFFFF"
+                android:gravity="center"
                 android:textSize="12sp"
-                android:layout_width="265dp" />
+                android:layout_gravity="top|center"
+                android:layout_marginTop="170dp" />
         </FrameLayout>
     </LinearLayout>
 </RelativeLayout>

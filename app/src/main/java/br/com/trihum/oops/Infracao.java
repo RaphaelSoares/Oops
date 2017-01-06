@@ -7,6 +7,7 @@ package br.com.trihum.oops;
 public class Infracao {
 
     // Dados tabela infracao
+    private String id;
     private String status;
     private String tipo;
     private String data;
@@ -17,6 +18,14 @@ public class Infracao {
     public Infracao()
     {
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getStatus() {
@@ -65,5 +74,15 @@ public class Infracao {
 
     public void setComentario(String comentario) {
         this.comentario = comentario;
+    }
+
+    public void copia(Infracao infracaoOrigem)
+    {
+        status = infracaoOrigem.getStatus();
+        tipo = infracaoOrigem.getTipo();
+        data = infracaoOrigem.getData();
+        hora = infracaoOrigem.getHora();
+        uid = infracaoOrigem.getUid();
+        comentario = infracaoOrigem.getComentario();
     }
 }

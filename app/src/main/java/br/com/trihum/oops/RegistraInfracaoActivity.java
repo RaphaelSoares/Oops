@@ -13,10 +13,16 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -25,7 +31,14 @@ import com.google.firebase.database.FirebaseDatabase;
 public class RegistraInfracaoActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
+    private FirebaseAuth mAuth;
+
     String encoded;
+
+    ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +52,19 @@ public class RegistraInfracaoActivity extends AppCompatActivity {
 
         ImageView foto = (ImageView) findViewById(R.id.snapshot_capturado);
 
+        // combo
+        // get the listview
+        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+
+        // preparing list data
+        prepareListData();
+
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+        //fim
+
 
         if(getIntent().hasExtra("byteArray")) {
             byte[] arrayBytesFoto = getIntent().getByteArrayExtra("byteArray");
@@ -49,6 +75,9 @@ public class RegistraInfracaoActivity extends AppCompatActivity {
             encoded = Base64.encodeToString(arrayBytesFoto, Base64.DEFAULT);
         }
 
+        //****************************************
+        // Objetos Firebase
+        mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
     }
@@ -83,12 +112,74 @@ public class RegistraInfracaoActivity extends AppCompatActivity {
 
     public void onSalvarInfracaoClick (View v)
     {
+        // Salvar dados de infracao
+        Infracao infracao = new Infracao();
+        infracao.setTipo("01");
+        infracao.setStatus("01");
+        infracao.setData("2017-01-06");
+        infracao.setHora("02:00:00");
+        infracao.setComentario("Infracao de teste");
+        infracao.setUid(mAuth.getCurrentUser().getUid());
+
+        String key = retornaContadorInfracao();
+        mDatabase.child("infracoes").child(key).setValue(infracao);
+
+        //Salvar dados de detalhe_infracao
         InfracaoDetalhe infracaoDetalhe = new InfracaoDetalhe();
         infracaoDetalhe.setFoto("data:image/jpeg;base64,"+encoded);
+        infracaoDetalhe.setFoto_mini("data:image/jpeg;base64,"+encoded);
         infracaoDetalhe.setLatitude(-22.347823);
         infracaoDetalhe.setLongitude(-43.561298);
 
-        mDatabase.child("detalhes_infracoes").child("0010").setValue(infracaoDetalhe);
+        mDatabase.child("detalhes_infracoes").child(key).setValue(infracaoDetalhe);
+    }
+
+    public String retornaContadorInfracao()
+    {
+        String key = mDatabase.child("infracoes").push().getKey();
+        return key;
+    }
+
+    /*
+     * Preparing the list data
+     */
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Top 250");
+        //listDataHeader.add("Now Showing");
+        //listDataHeader.add("Coming Soon..");
+
+        // Adding child data
+        List<String> top250 = new ArrayList<String>();
+        top250.add("The Shawshank Redemption");
+        top250.add("The Godfather");
+        top250.add("The Godfather: Part II");
+        top250.add("Pulp Fiction");
+        top250.add("The Good, the Bad and the Ugly");
+        top250.add("The Dark Knight");
+        top250.add("12 Angry Men");
+
+        /*List<String> nowShowing = new ArrayList<String>();
+        nowShowing.add("The Conjuring");
+        nowShowing.add("Despicable Me 2");
+        nowShowing.add("Turbo");
+        nowShowing.add("Grown Ups 2");
+        nowShowing.add("Red 2");
+        nowShowing.add("The Wolverine");
+
+        List<String> comingSoon = new ArrayList<String>();
+        comingSoon.add("2 Guns");
+        comingSoon.add("The Smurfs 2");
+        comingSoon.add("The Spectacular Now");
+        comingSoon.add("The Canyons");
+        comingSoon.add("Europa Report"); */
+
+        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
+        //listDataChild.put(listDataHeader.get(1), nowShowing);
+        //listDataChild.put(listDataHeader.get(2), comingSoon);
     }
 
 }

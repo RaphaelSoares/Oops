@@ -1,12 +1,266 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.trihum.oops.FeedbackFragment">
+    android:background="#E6E7E8">
 
-    <TextView
-        android:text="Feedback Fragmet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView3" />
+    <LinearLayout
+        android:id="@+id/layout_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_marginTop="10dp">
+
+        <!-- ##########  Grupo da Pergunta 1 ###########  -->
+        <TextView
+            android:id="@+id/txPergunta1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qual a sua cor favorita?"
+            android:textColor="#000000"
+            android:textStyle="normal|bold" />
+
+        <RadioGroup
+            android:id="@+id/rgGrupo1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <RadioButton
+                android:id="@+id/rb1Gr1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="muito ruim"
+                android:paddingRight="10dp"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb2Gr1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb3Gr1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb4Gr1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb5Gr1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ótimo"
+                android:paddingRight="15dp"
+                android:checked="true"
+                android:layout_marginLeft="13dp"
+                app:buttonTint="@color/btRadioColor"
+                android:elevation="24dp" />
+        </RadioGroup>
+
+        <ImageView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:src="@android:drawable/divider_horizontal_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:background="@color/black_overlay"
+            android:id="@+id/imgSeparador1"
+            android:layout_marginTop="12dp" />
+
+        <!-- ##########  Grupo da Pergunta 2 ###########  -->
+
+        <TextView
+            android:id="@+id/txPergunta2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qual a sua cor favorita?"
+            android:textColor="#000000"
+            android:textStyle="normal|bold"
+            android:layout_marginTop="20dp" />
+
+        <RadioGroup
+            android:id="@+id/rgGrupo2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <RadioButton
+                android:id="@+id/rb1Gr2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="muito ruim"
+                android:paddingRight="10dp"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb2Gr2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb3Gr2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb4Gr2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb5Gr2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ótimo"
+                android:paddingRight="15dp"
+                android:checked="true"
+                android:layout_marginLeft="13dp"
+                app:buttonTint="@color/btRadioColor"
+                android:elevation="24dp" />
+        </RadioGroup>
+
+        <ImageView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:src="@android:drawable/divider_horizontal_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:background="@color/black_overlay"
+            android:id="@+id/imgSeparador2"
+            android:layout_marginTop="12dp" />
+
+        <!-- ##########  Grupo da Pergunta 3 ###########  -->
+        <TextView
+            android:id="@+id/txPergunta3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Qual a sua cor favorita?"
+            android:textColor="#000000"
+            android:textStyle="normal|bold"
+            android:layout_marginTop="20dp" />
+
+        <RadioGroup
+            android:id="@+id/rgGrupo3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <RadioButton
+                android:id="@+id/rb1Gr3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="muito ruim"
+                android:paddingRight="10dp"
+                android:textAlignment="textStart"
+                android:layout_gravity="start"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb2Gr3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb3Gr3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb4Gr3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:paddingRight="10dp"
+                android:layoutDirection="rtl"
+                app:buttonTint="@color/btRadioColor" />
+            <RadioButton
+                android:id="@+id/rb5Gr3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ótimo"
+                android:paddingRight="15dp"
+                android:checked="true"
+                android:layout_marginLeft="13dp"
+                app:buttonTint="@color/btRadioColor"
+                android:elevation="24dp" />
+        </RadioGroup>
+
+        <ImageView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:src="@android:drawable/divider_horizontal_dark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="1dp"
+            android:paddingTop="1dp"
+            android:background="@color/black_overlay"
+            android:id="@+id/imgSeparador3"
+            android:layout_marginTop="12dp" />
+
+        <EditText
+            android:id="@+id/txtArea"
+            android:layout_width="match_parent"
+            android:layout_height="200px"
+            android:textColor="#000"
+            android:textSize="12sp"
+            android:hint="Escreva que gostaria de nos dizer..."
+            android:inputType="text|textMultiLine"
+            android:gravity="top|start"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/caixa_entrada_area_feedbak"
+            android:padding="5dp"
+            android:paddingTop="5dp"/>
+
+        <Button
+            android:text="ENVIAR"
+            android:layout_width="match_parent"
+            android:id="@+id/btnFeedbackEnviar"
+            android:textColor="#FFFFFF"
+            android:layout_gravity="top|center_horizontal"
+            android:background="@drawable/botao_verde_selector"
+            android:layout_marginTop="30dp"
+            android:layout_height="30dp" />
+
+    </LinearLayout>
 </FrameLayout>

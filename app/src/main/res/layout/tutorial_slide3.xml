@@ -7,9 +7,11 @@
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_gravity="center_horizontal|center"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="280dp"
+        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -20,18 +22,19 @@
                 android:id="@+id/imagemTutorial3"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:layout_gravity="center" />
+                android:layout_gravity="top|center" />
 
             <TextView
                 android:layout_height="wrap_content"
-                android:text="Acompanhe o status dos seus registros de infrações, obtenha métricas de trânsito."
-                android:ems="10"
-                android:id="@+id/textoTutorial3"
-                android:layout_gravity="bottom|center"
-                android:gravity="center_vertical|center_horizontal"
-                android:textColor="#FFFFFF"
                 android:layout_width="200dp"
-                android:textSize="12sp" />
+                android:text="Acompanhe o status dos seus registros de infrações, obtenha métricas de trânsito."
+                android:id="@+id/textoTutorial3"
+                android:ems="10"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:textSize="12sp"
+                android:layout_gravity="top|center"
+                android:layout_marginTop="170dp" />
         </FrameLayout>
     </LinearLayout>
 
