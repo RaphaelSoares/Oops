@@ -1,11 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E6E7E8"
-    tools:context="br.com.trihum.oops.RegistraInfracaoActivity"
-    android:orientation="vertical">
+    tools:context="br.com.trihum.oops.RegistraInfracaoActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,
@@ -16,9 +15,9 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
         android:background="#000000"
-        android:id="@+id/registroFrameFoto">
+        android:id="@+id/registroFrameFoto"
+        android:layout_height="252dp">
 
         <ImageView
             android:layout_width="match_parent"
@@ -26,93 +25,192 @@
             app:srcCompat="@android:color/black"
             android:id="@+id/snapshot_capturado"
             android:scaleType="centerInside" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@color/corLaranjaTitulo"
+            android:id="@+id/superiorBarraRegistroInfracao"
+            android:text="Categorize e confira os dados da infração"
+            android:gravity="center_vertical|fill_vertical"
+            android:textStyle="normal|bold"
+            android:paddingLeft="30dp"
+            android:textSize="18sp"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="200dp" />
+
     </FrameLayout>
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:clickable="true"
-        android:layout_marginTop="200dp">
+        android:layout_marginTop="252dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/btn_star"
-            android:id="@+id/registroIcoMapa"
-            android:clickable="false"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="50dp" />
-
-        <TextView
-            android:text="Endereço"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/txtRegistroEndereco"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginLeft="20dp"
-            android:padding="10dp"
-            android:layout_marginTop="50dp" />
+            android:orientation="vertical"
+            android:layout_alignBottom="@+id/registroFrameFoto"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true">
 
-    </LinearLayout>
+            <TextView
+                android:text="endereço"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/registroEnderecoInfracao"
+                android:layout_marginLeft="40dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:lines="1"
+                android:ellipsize="end"
+                android:paddingLeft="25dp"
+                android:background="@drawable/titulo_lista_data"
+                android:layout_marginTop="30dp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:clickable="true"
-        android:layout_marginTop="230dp">
+            <TextView
+                android:text="data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/registroDataInfracao"
+                android:layout_marginLeft="40dp"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:lines="1"
+                android:paddingLeft="25dp"
+                android:background="@drawable/titulo_lista_data"
+                android:gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="12dp" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@android:drawable/btn_star"
-            android:id="@+id/registroIcoMapa1"
-            android:clickable="false"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="50dp" />
+            <Button
+                android:text="Tipo de Infração"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:id="@+id/btnTipoInfracao"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@drawable/botao_tipo_infracao_selector"
+                android:layout_marginTop="22dp"
+                android:textAllCaps="false"
+                android:onClick="onTipoInfracaoClick"
+                android:textAlignment="textStart"
+                android:paddingLeft="10dp"
+                android:textSize="14sp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp" />
 
-        <TextView
-            android:text="Endereço"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/txtRegistroEndereco1"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:layout_marginLeft="20dp"
-            android:padding="10dp"
-            android:layout_marginTop="50dp" />
-    </LinearLayout>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/frame_radio_tipo_infracao"
+                android:layout_marginTop="-20dp">
 
-    <!-- http://www.journaldev.com/9942/android-expandablelistview-example-tutorial
-    http://www.androidhive.info/2013/07/android-expandable-list-view-tutorial/
+                <RadioGroup
+                    android:id="@+id/rgGrupoRegistro1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:background="#FFFFFF"
+                    android:visibility="visible"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="30dp"
+                    android:paddingTop="30dp">
+                    <RadioButton
+                        android:id="@+id/rb1Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Passou no sinal vermelho"
+                        android:paddingRight="10dp"
+                        android:textAlignment="textStart"
+                        android:layout_gravity="start"
+                        android:layoutDirection="ltr"
+                        app:buttonTint="@color/btRadioColor" />
+                    <RadioButton
+                        android:id="@+id/rb2Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Estacionado em local proibido"
+                        android:paddingRight="10dp"
+                        android:layoutDirection="ltr"
+                        app:buttonTint="@color/btRadioColor" />
+                    <RadioButton
+                        android:id="@+id/rb3Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ultrapassagem em local proibido"
+                        android:paddingRight="10dp"
+                        android:layoutDirection="ltr"
+                        app:buttonTint="@color/btRadioColor" />
+                    <RadioButton
+                        android:id="@+id/rb4Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dirigindo sem capacete"
+                        android:paddingRight="10dp"
+                        android:layoutDirection="ltr"
+                        app:buttonTint="@color/btRadioColor" />
+                    <RadioButton
+                        android:id="@+id/rb5Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dirigindo falando ao celular"
+                        android:paddingRight="10dp"
+                        app:buttonTint="@color/btRadioColor"
+                        android:elevation="24dp"
+                        android:layoutDirection="ltr" />
+                    <RadioButton
+                        android:id="@+id/rb6Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Usuários sem cinto de segurança"
+                        android:paddingRight="10dp"
+                        app:buttonTint="@color/btRadioColor"
+                        android:elevation="24dp"
+                        android:layoutDirection="ltr" />
+                </RadioGroup>
+            </FrameLayout>
 
-    -->
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:background="#f4f4f4"
-        android:layout_marginTop="100dp">
+            <EditText
+                android:id="@+id/txtArea"
+                android:layout_width="match_parent"
+                android:textColor="#000"
+                android:textSize="14sp"
+                android:hint="Escreva o seu comentário"
+                android:inputType="text|textMultiLine"
+                android:gravity="top"
+                android:background="@drawable/caixa_entrada_area_comum"
+                android:padding="5dp"
+                android:paddingTop="5dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:layout_height="80dp" />
 
-        <ExpandableListView
-            android:id="@+id/lvExp"
-            android:layout_height="227dp"
-            android:layout_width="wrap_content"/>
+            <android.support.design.widget.FloatingActionButton
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clickable="true"
+                app:fabSize="normal"
+                android:id="@+id/fabConfirmaRegistroInfracao"
+                android:layout_gravity="center"
+                android:onClick="onSalvarInfracaoClick"
+                android:layout_centerVertical="false"
+                app:backgroundTint="#009999"
+                android:src="@drawable/ic_confirma"
+                app:srcCompat="@drawable/ic_confirma"
+                android:layout_marginTop="10dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp" />
 
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        app:fabSize="normal"
-        app:srcCompat="@android:color/holo_green_dark"
-        android:id="@+id/floatingActionButton4"
-        android:layout_gravity="center"
-        android:onClick="onSalvarInfracaoClick"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="false"
-        android:layout_alignParentBottom="true" />
-</RelativeLayout>
+
+</FrameLayout>

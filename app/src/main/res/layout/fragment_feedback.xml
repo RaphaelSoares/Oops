@@ -243,12 +243,12 @@
             android:layout_width="match_parent"
             android:layout_height="200px"
             android:textColor="#000"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:hint="Escreva que gostaria de nos dizer..."
             android:inputType="text|textMultiLine"
             android:gravity="top|start"
             android:layout_marginTop="30dp"
-            android:background="@drawable/caixa_entrada_area_feedbak"
+            android:background="@drawable/caixa_entrada_area_comum"
             android:padding="5dp"
             android:paddingTop="5dp"/>
 

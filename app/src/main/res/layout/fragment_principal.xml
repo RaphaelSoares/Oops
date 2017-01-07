@@ -99,7 +99,7 @@
                                 android:textColor="#000000"
                                 android:textColorLink="#FFFFFFFF"
                                 android:paddingLeft="10dp"
-                                android:background="@drawable/caixa_entrada_area_feedbak"
+                                android:background="@drawable/caixa_entrada_area_comum"
                                 android:textSize="14sp"
                                 android:layout_width="220dp" />
 
@@ -116,7 +116,7 @@
                                 android:textColor="#000000"
                                 android:textColorLink="#FFFFFFFF"
                                 android:paddingLeft="10dp"
-                                android:background="@drawable/caixa_entrada_area_feedbak"
+                                android:background="@drawable/caixa_entrada_area_comum"
                                 android:textSize="14sp" />
 
                             <EditText
@@ -132,7 +132,7 @@
                                 android:textColor="#000000"
                                 android:textColorLink="#FFFFFFFF"
                                 android:paddingLeft="10dp"
-                                android:background="@drawable/caixa_entrada_area_feedbak"
+                                android:background="@drawable/caixa_entrada_area_comum"
                                 android:textSize="14sp" />
 
                             <android.support.design.widget.FloatingActionButton

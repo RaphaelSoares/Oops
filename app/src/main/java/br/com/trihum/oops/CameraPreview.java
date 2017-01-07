@@ -14,11 +14,11 @@ import java.io.IOException;
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback{
     private SurfaceHolder mHolder;
     private Camera mCamera;
-    private Context context;
+    private FotoActivity fotoActivity;
 
-    public CameraPreview(Context context, Camera camera) {
-        super(context);
-        this.context = context;
+    public CameraPreview(FotoActivity fotoActivity, Camera camera) {
+        super(fotoActivity);
+        this.fotoActivity = fotoActivity;
         mCamera = camera;
 
         // Install a SurfaceHolder.Callback so we get notified when the
@@ -47,6 +47,9 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // If your preview can change or rotate, take care of those events here.
         // Make sure to stop the preview before resizing or reformatting it.
 
+        if (fotoActivity.fotoTirada) return;
+
+
         if (mHolder.getSurface() == null){
             // preview surface does not exist
             return;
@@ -62,7 +65,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         // set preview size and make any resize, rotate or
         // reformatting changes here
         if (!Constantes.isEmulator()) {
-            Display display = ((Activity)context).getWindowManager().getDefaultDisplay();
+            Display display = (fotoActivity).getWindowManager().getDefaultDisplay();
 
             /*if(display.getRotation() == Surface.ROTATION_0) {
                 Log.i("TESTE","0");
@@ -78,7 +81,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 mCamera.setDisplayOrientation(90);
             }*/
 
-            setCameraDisplayOrientation((Activity)context, Camera.CameraInfo.CAMERA_FACING_BACK, mCamera);
+            setCameraDisplayOrientation(fotoActivity, Camera.CameraInfo.CAMERA_FACING_BACK, mCamera);
         }
 
 

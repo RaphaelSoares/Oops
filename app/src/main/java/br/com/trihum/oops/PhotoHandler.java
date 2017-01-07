@@ -22,22 +22,22 @@ import java.io.ByteArrayOutputStream;
 public class PhotoHandler implements PictureCallback {
 
     private final Context context;
-    private final AppCompatActivity activity;
+    private final FotoActivity fotoActivity;
 
-    public PhotoHandler(AppCompatActivity activity, Context context) {
+    public PhotoHandler(FotoActivity fotoActivity, Context context) {
         this.context = context;
-        this.activity = activity;
+        this.fotoActivity = fotoActivity;
     }
 
     @Override
     public void onPictureTaken(byte[] data, Camera camera) {
 
         if (data != null) {
-            int screenWidth = activity.getResources().getDisplayMetrics().widthPixels;
-            int screenHeight = activity.getResources().getDisplayMetrics().heightPixels;
+            int screenWidth = fotoActivity.getResources().getDisplayMetrics().widthPixels;
+            int screenHeight = fotoActivity.getResources().getDisplayMetrics().heightPixels;
             Bitmap bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0);
 
-            if (activity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (fotoActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
                 // Notice that width and height are reversed
                 Bitmap scaled = Bitmap.createScaledBitmap(bm, screenHeight, screenWidth, true);
                 int w = scaled.getWidth();
@@ -52,7 +52,7 @@ public class PhotoHandler implements PictureCallback {
                 //Log.i("OOPS","rotation = "+activity.getWindowManager().getDefaultDisplay().getRotation());
 
                 Bitmap scaled = Bitmap.createScaledBitmap(bm, screenWidth,screenHeight , true);
-                int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+                int rotation = fotoActivity.getWindowManager().getDefaultDisplay().getRotation();
                 if (rotation == Surface.ROTATION_270)
                 {
                     int w = scaled.getWidth();
@@ -70,9 +70,17 @@ public class PhotoHandler implements PictureCallback {
             ByteArrayOutputStream bs = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
 
+            fotoActivity.arrayBytesFoto = bs.toByteArray();
+            fotoActivity.fotoTirada = true;
+            fotoActivity.mCamera.stopPreview();
+            // TODO aqui vou mudar o botao da tela de FotoActivity
+
+            /*mPreview.ligado = false;
+            camera.stopPreview();
+
             Intent i = new Intent(context, ConfirmaFotoActivity.class);
             i.putExtra("byteArray", bs.toByteArray());
-            activity.startActivity(i);
+            activity.startActivity(i);*/
         }
 
     }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,11 @@ public class FotoActivity extends AppCompatActivity {
 
     public Camera mCamera;
     private CameraPreview mPreview;
+    public byte[] arrayBytesFoto = null;
+    boolean fotoTirada;
+
+    FloatingActionButton fabTirarFoto;
+    FloatingActionButton fabConfirmarFoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,10 @@ public class FotoActivity extends AppCompatActivity {
             actionBar.hide();
         }
 
+        fabTirarFoto = (FloatingActionButton) findViewById(R.id.fabTirarFoto);
+        fabConfirmarFoto = (FloatingActionButton) findViewById(R.id.fabConfirmarFoto);
+
+        fotoTirada = false;
         // Create an instance of Camera
         mCamera = getCameraInstance();
 
@@ -59,12 +69,23 @@ public class FotoActivity extends AppCompatActivity {
     public void onBackPressed()
     {
         try {
-            mCamera.stopPreview();
+            if (fotoTirada)
+            {
+                fabTirarFoto.setVisibility(View.VISIBLE);
+                fabConfirmarFoto.setVisibility(View.INVISIBLE);
+
+                fotoTirada = false;
+                mCamera.startPreview();
+            }
+            else
+            {
+                mCamera.stopPreview();
+                mCamera.release();
+                finish();
+            }
         } catch (Exception e){
             // ignore: tried to stop a non-existent preview
         }
-
-        super.onBackPressed();  // optional depending on your needs
     }
 
 
@@ -91,7 +112,26 @@ public class FotoActivity extends AppCompatActivity {
 
     public void onTirarFotoClick (View v){
 
+        fabTirarFoto.setVisibility(View.INVISIBLE);
+        fabConfirmarFoto.setVisibility(View.VISIBLE);
         mCamera.takePicture(null, null, new PhotoHandler(this,getApplicationContext()));
 
     }
+
+    public void onConfirmarFotoClick (View v){
+
+        //fabTirarFoto.setVisibility(View.VISIBLE);
+        //fabConfirmarFoto.setVisibility(View.INVISIBLE);
+
+        mCamera.stopPreview();
+        mCamera.release();
+
+        Intent i = new Intent(FotoActivity.this, RegistraInfracaoActivity.class);
+        if (arrayBytesFoto != null)
+            i.putExtra("byteArray", arrayBytesFoto);
+        startActivity(i);
+        finish();
+
+    }
+
 }

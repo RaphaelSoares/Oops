@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,12 +14,20 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,17 +37,16 @@ import java.util.List;
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
-public class RegistraInfracaoActivity extends AppCompatActivity {
+public class RegistraInfracaoActivity extends BaseActivity {
 
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
-    String encoded;
+    FrameLayout frameTipoInfracao;
+    Button btnTipoInfracao;
+    FloatingActionButton fabConfirmaRegistroInfracao;
 
-    ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
+    String encoded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,19 +60,11 @@ public class RegistraInfracaoActivity extends AppCompatActivity {
 
         ImageView foto = (ImageView) findViewById(R.id.snapshot_capturado);
 
-        // combo
-        // get the listview
-        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+        frameTipoInfracao = (FrameLayout) findViewById(R.id.frame_radio_tipo_infracao);
+        btnTipoInfracao = (Button) findViewById(R.id.btnTipoInfracao);
+        fabConfirmaRegistroInfracao = (FloatingActionButton) findViewById(R.id.fabConfirmaRegistroInfracao);
 
-        // preparing list data
-        prepareListData();
-
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
-
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
-        //fim
-
+        frameTipoInfracao.setVisibility(View.GONE);
 
         if(getIntent().hasExtra("byteArray")) {
             byte[] arrayBytesFoto = getIntent().getByteArrayExtra("byteArray");
@@ -112,6 +112,50 @@ public class RegistraInfracaoActivity extends AppCompatActivity {
 
     public void onSalvarInfracaoClick (View v)
     {
+        showProgressDialog();
+        obtemChaveESalvaDadosInfracao();
+    }
+
+    public void obtemChaveESalvaDadosInfracao() {
+
+        DatabaseReference countRef = mDatabase.child("controles").child("contador_infracao");
+
+        countRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                String valorS = mutableData.getValue(String.class);
+
+                if (valorS == null) {
+                    return Transaction.success(mutableData);
+                }
+
+                String result = String.format("%04d", (Integer.parseInt(valorS) + 1) );
+
+                // Set value and report transaction success
+                mutableData.setValue(result);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                Log.d("OOPS", "postTransaction:onComplete:" + dataSnapshot.getValue(String.class));
+                if (databaseError != null)
+                {
+                    hideProgressDialog();
+                    Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível salvar os dados da infração",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+                salvarDadosInfracao(dataSnapshot.getValue(String.class));
+            }
+        });
+    }
+
+    public void salvarDadosInfracao(String key)
+    {
         // Salvar dados de infracao
         Infracao infracao = new Infracao();
         infracao.setTipo("01");
@@ -121,7 +165,6 @@ public class RegistraInfracaoActivity extends AppCompatActivity {
         infracao.setComentario("Infracao de teste");
         infracao.setUid(mAuth.getCurrentUser().getUid());
 
-        String key = retornaContadorInfracao();
         mDatabase.child("infracoes").child(key).setValue(infracao);
 
         //Salvar dados de detalhe_infracao
@@ -132,54 +175,24 @@ public class RegistraInfracaoActivity extends AppCompatActivity {
         infracaoDetalhe.setLongitude(-43.561298);
 
         mDatabase.child("detalhes_infracoes").child(key).setValue(infracaoDetalhe);
+
+        Intent intent = new Intent(RegistraInfracaoActivity.this, PrincipalActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+        //hideProgressDialog();
+        finish();
     }
 
-    public String retornaContadorInfracao()
+    public void onTipoInfracaoClick(View v) // public void onLoginClick(View v)
     {
-        String key = mDatabase.child("infracoes").push().getKey();
-        return key;
+        if (frameTipoInfracao.getVisibility() == View.VISIBLE) frameTipoInfracao.setVisibility(View.GONE);
+        else frameTipoInfracao.setVisibility(View.VISIBLE);
     }
 
-    /*
-     * Preparing the list data
-     */
-    private void prepareListData() {
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
-
-        // Adding child data
-        listDataHeader.add("Top 250");
-        //listDataHeader.add("Now Showing");
-        //listDataHeader.add("Coming Soon..");
-
-        // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
-
-        /*List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
-
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report"); */
-
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        //listDataChild.put(listDataHeader.get(1), nowShowing);
-        //listDataChild.put(listDataHeader.get(2), comingSoon);
+    public void onEscolhaTipoInfracaoClick(View v)
+    {
+        frameTipoInfracao.setVisibility(View.INVISIBLE);
     }
 
 }
