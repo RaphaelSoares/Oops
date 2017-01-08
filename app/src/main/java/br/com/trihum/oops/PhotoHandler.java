@@ -38,6 +38,8 @@ public class PhotoHandler implements PictureCallback {
             Bitmap bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0);
 
             if (fotoActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+                /*
                 // Notice that width and height are reversed
                 Bitmap scaled = Bitmap.createScaledBitmap(bm, screenHeight, screenWidth, true);
                 int w = scaled.getWidth();
@@ -46,41 +48,48 @@ public class PhotoHandler implements PictureCallback {
                 Matrix mtx = new Matrix();
                 mtx.postRotate(90);
                 // Rotating Bitmap
-                bm = Bitmap.createBitmap(scaled, 0, 0, w, h, mtx, true);
+                bm = Bitmap.createBitmap(scaled, 0, 0, w, h, mtx, true);*/
+
+                Matrix mtx = new Matrix();
+                mtx.postRotate(90);
+                // Rotating Bitmap
+                bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mtx, true);
+
             }else{// LANDSCAPE MODE
                 //No need to reverse width and height
                 //Log.i("OOPS","rotation = "+activity.getWindowManager().getDefaultDisplay().getRotation());
 
-                Bitmap scaled = Bitmap.createScaledBitmap(bm, screenWidth,screenHeight , true);
+                //Bitmap scaled = Bitmap.createScaledBitmap(bm, screenWidth,screenHeight , true);
                 int rotation = fotoActivity.getWindowManager().getDefaultDisplay().getRotation();
                 if (rotation == Surface.ROTATION_270)
                 {
-                    int w = scaled.getWidth();
-                    int h = scaled.getHeight();
+                    //int w = scaled.getWidth();
+                    //int h = scaled.getHeight();
                     Matrix mtx = new Matrix();
                     mtx.postRotate(180);
-                    bm = Bitmap.createBitmap(scaled, 0, 0, w, h, mtx, true);
+                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mtx, true);
                 }
-                else
+                /*else
                 {
                     bm=scaled;
-                }
+                }*/
             }
 
+            // Salva a foto original full
             ByteArrayOutputStream bs = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
-
             fotoActivity.arrayBytesFoto = bs.toByteArray();
+            Log.d("OOPS","arrayBytesFoto = "+fotoActivity.arrayBytesFoto.length);
+
+            // Salva a foto versao mini
+            bm = Constantes.getSquareReduced(Constantes.cropToSquare(bm),125,125);
+            bs = new ByteArrayOutputStream();
+            bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
+            fotoActivity.arrayBytesFotoMini = bs.toByteArray();
+            Log.d("OOPS","arrayBytesFotoMini = "+fotoActivity.arrayBytesFotoMini.length);
+
             fotoActivity.fotoTirada = true;
             fotoActivity.mCamera.stopPreview();
-            // TODO aqui vou mudar o botao da tela de FotoActivity
-
-            /*mPreview.ligado = false;
-            camera.stopPreview();
-
-            Intent i = new Intent(context, ConfirmaFotoActivity.class);
-            i.putExtra("byteArray", bs.toByteArray());
-            activity.startActivity(i);*/
         }
 
     }

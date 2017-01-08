@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -72,6 +73,9 @@ public class ListaInfracoesAdapter extends BaseAdapter {
         TextView textoDataInfracao = (TextView)convertView.findViewById(R.id.dataInfracao);
         final TextView textoEnderecoInfracao = (TextView)convertView.findViewById(R.id.enderecoInfracao);
         final ImageView imageFotoInfracao = (ImageView) convertView.findViewById(R.id.fotoInfracao);
+        final ProgressBar progressBarFoto = (ProgressBar) convertView.findViewById(R.id.progressBarFoto);
+
+        progressBarFoto.setVisibility(View.VISIBLE);
 
         textoStatusInfracao.setText(mapaSituacoes.get(infracao.getStatus()));
         if (infracao.getStatus().equals("01") || infracao.getStatus().equals("02"))
@@ -103,8 +107,9 @@ public class ListaInfracoesAdapter extends BaseAdapter {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 InfracaoDetalhe infracaoDetalhe = dataSnapshot.getValue(InfracaoDetalhe.class);
 
-                textoEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
+                progressBarFoto.setVisibility(View.INVISIBLE);
 
+                textoEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
                 if (infracaoDetalhe.getFoto_mini()!=null && infracaoDetalhe.getFoto_mini().length()>0)
                 {
                     imageFotoInfracao.setImageBitmap(Constantes.decodeFrom64toRound(infracaoDetalhe.getFoto_mini()));

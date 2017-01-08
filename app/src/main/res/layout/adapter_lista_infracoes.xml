@@ -22,7 +22,7 @@
         android:id="@+id/tipoInfracao"
         android:layout_marginLeft="130dp"
         android:layout_marginTop="50dp"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="bold"
         android:layout_marginRight="10dp"
         android:lines="1"
@@ -37,7 +37,7 @@
         android:id="@+id/dataInfracao"
         android:layout_marginLeft="130dp"
         android:layout_marginTop="90dp"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="bold"
         android:lines="1"
         android:paddingLeft="25dp"
@@ -51,10 +51,12 @@
         android:id="@+id/enderecoInfracao"
         android:layout_marginLeft="130dp"
         android:layout_marginTop="70dp"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textStyle="bold"
         android:layout_marginRight="10dp"
         android:lines="1"
+        android:paddingLeft="25dp"
+        android:background="@drawable/titulo_lista_endereco"
         android:ellipsize="end" />
 
     <TextView
@@ -72,4 +74,13 @@
         android:gravity="center_vertical"
         android:background="@drawable/titulo_lista_situacao_1"
         android:paddingLeft="25dp" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyle"
+        android:layout_width="40dp"
+        android:id="@+id/progressBarFoto"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="50dp" />
+
 </FrameLayout>

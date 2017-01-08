@@ -65,6 +65,21 @@ public class Constantes {
         return targetBitmap;
     }
 
+    public static Bitmap getSquareReduced(Bitmap scaleBitmapImage, int targetWidth, int targetHeight) {
+        Bitmap targetBitmap = Bitmap.createBitmap(targetWidth, targetHeight,
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(targetBitmap);
+
+        Bitmap sourceBitmap = scaleBitmapImage;
+
+        canvas.drawBitmap(sourceBitmap, new Rect(0, 0, sourceBitmap.getWidth(),
+                sourceBitmap.getHeight()), new Rect(0, 0, targetWidth,
+                targetHeight), null);
+
+        return targetBitmap;
+    }
+
     public static String dataDiaMesAno(String dataAnoMesDia)
     {
         if (dataAnoMesDia.length()==10)

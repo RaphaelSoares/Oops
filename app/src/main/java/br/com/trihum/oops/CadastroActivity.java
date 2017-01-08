@@ -139,6 +139,8 @@ public class CadastroActivity extends BaseActivity {
             }
         });
 
+        Toast.makeText(CadastroActivity.this, "Verifique o e-mail enviado para "+user.getEmail(),
+                Toast.LENGTH_LONG).show();
         finish();
     }
 

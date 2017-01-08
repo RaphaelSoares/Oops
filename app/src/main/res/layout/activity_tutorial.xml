@@ -16,6 +16,13 @@
         android:layout_height="100dp"
         android:layout_gravity="bottom">
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_height="30dp"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_width="wrap_content"
+            android:id="@+id/layoutDots"></LinearLayout>
+
         <Button
             android:text="OK, ENTENDI!"
             android:layout_width="220dp"
@@ -26,13 +33,6 @@
             android:onClick="onEntendiClick"
             android:visibility="invisible"
             android:background="@drawable/botao_verde_selector" />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_height="30dp"
-            android:layout_gravity="top|center_horizontal"
-            android:layout_width="wrap_content"
-            android:id="@+id/layoutDots"></LinearLayout>
 
     </FrameLayout>
 

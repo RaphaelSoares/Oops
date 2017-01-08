@@ -17,14 +17,14 @@
         android:layout_width="match_parent"
         android:background="#000000"
         android:id="@+id/registroFrameFoto"
-        android:layout_height="252dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
             app:srcCompat="@android:color/black"
             android:id="@+id/snapshot_capturado"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:layout_height="190dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -35,16 +35,17 @@
             android:gravity="center_vertical|fill_vertical"
             android:textStyle="normal|bold"
             android:paddingLeft="30dp"
-            android:textSize="18sp"
+            android:textSize="12sp"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="200dp" />
+            android:layout_marginTop="190dp"
+            android:lines="1" />
 
     </FrameLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="252dp">
+        android:layout_marginTop="242dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -62,14 +63,14 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/registroEnderecoInfracao"
                 android:layout_marginLeft="40dp"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 android:gravity="center_vertical"
                 android:layout_marginRight="10dp"
-                android:lines="1"
+                android:lines="2"
                 android:ellipsize="end"
                 android:paddingLeft="25dp"
-                android:background="@drawable/titulo_lista_data"
+                android:background="@drawable/titulo_lista_endereco"
                 android:layout_marginTop="30dp" />
 
             <TextView
@@ -78,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/registroDataInfracao"
                 android:layout_marginLeft="40dp"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 android:lines="1"
                 android:paddingLeft="25dp"
@@ -100,15 +101,15 @@
                 android:onClick="onTipoInfracaoClick"
                 android:textAlignment="textStart"
                 android:paddingLeft="10dp"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp" />
+                android:layout_marginRight="30dp"
+                android:elevation="0dp" />
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/frame_radio_tipo_infracao"
-                android:layout_marginTop="-20dp">
+                android:id="@+id/frame_radio_tipo_infracao">
 
                 <RadioGroup
                     android:id="@+id/rgGrupoRegistro1"
@@ -118,61 +119,82 @@
                     android:layout_gravity="center"
                     android:background="#FFFFFF"
                     android:visibility="visible"
-                    android:layout_marginLeft="30dp"
-                    android:layout_marginRight="30dp"
-                    android:paddingTop="30dp">
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
                     <RadioButton
                         android:id="@+id/rb1Gr1Registro"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Passou no sinal vermelho"
-                        android:paddingRight="10dp"
-                        android:textAlignment="textStart"
-                        android:layout_gravity="start"
-                        android:layoutDirection="ltr"
-                        app:buttonTint="@color/btRadioColor" />
-                    <RadioButton
-                        android:id="@+id/rb2Gr1Registro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Estacionado em local proibido"
                         android:paddingRight="10dp"
                         android:layoutDirection="ltr"
-                        app:buttonTint="@color/btRadioColor" />
+                        app:buttonTint="@color/btRadioColor"
+                        android:textSize="12sp" />
                     <RadioButton
-                        android:id="@+id/rb3Gr1Registro"
+                        android:id="@+id/rb2Gr1Registro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Ultrapassagem em local proibido"
                         android:paddingRight="10dp"
                         android:layoutDirection="ltr"
-                        app:buttonTint="@color/btRadioColor" />
+                        app:buttonTint="@color/btRadioColor"
+                        android:textSize="12sp" />
                     <RadioButton
-                        android:id="@+id/rb4Gr1Registro"
+                        android:id="@+id/rb3Gr1Registro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Dirigindo sem capacete"
                         android:paddingRight="10dp"
                         android:layoutDirection="ltr"
-                        app:buttonTint="@color/btRadioColor" />
+                        app:buttonTint="@color/btRadioColor"
+                        android:textSize="12sp" />
                     <RadioButton
-                        android:id="@+id/rb5Gr1Registro"
+                        android:id="@+id/rb4Gr1Registro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Dirigindo falando ao celular"
                         android:paddingRight="10dp"
                         app:buttonTint="@color/btRadioColor"
-                        android:elevation="24dp"
-                        android:layoutDirection="ltr" />
+                        android:layoutDirection="ltr"
+                        android:textSize="12sp" />
                     <RadioButton
-                        android:id="@+id/rb6Gr1Registro"
+                        android:id="@+id/rb5Gr1Registro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Usuários sem cinto de segurança"
                         android:paddingRight="10dp"
                         app:buttonTint="@color/btRadioColor"
-                        android:elevation="24dp"
-                        android:layoutDirection="ltr" />
+                        android:layoutDirection="ltr"
+                        android:textSize="12sp" />
+                    <RadioButton
+                        android:id="@+id/rb6Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Dirigindo na contra-mão"
+                        android:paddingRight="10dp"
+                        app:buttonTint="@color/btRadioColor"
+                        android:layoutDirection="ltr"
+                        android:textSize="12sp" />
+                    <RadioButton
+                        android:id="@+id/rb7Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Comportamento inadequado"
+                        android:paddingRight="10dp"
+                        app:buttonTint="@color/btRadioColor"
+                        android:layoutDirection="ltr"
+                        android:textSize="12sp" />
+                    <RadioButton
+                        android:id="@+id/rb8Gr1Registro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Transitar pelo acostamento"
+                        android:paddingRight="10dp"
+                        app:buttonTint="@color/btRadioColor"
+                        android:layoutDirection="ltr"
+                        android:textSize="12sp" />
                 </RadioGroup>
             </FrameLayout>
 

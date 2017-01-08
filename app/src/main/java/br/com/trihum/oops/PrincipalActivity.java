@@ -46,7 +46,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.net.URL;
 
-public class PrincipalActivity extends AppCompatActivity
+public class PrincipalActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.OnConnectionFailedListener {
 
     private FirebaseAuth mAuth;
