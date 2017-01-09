@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "222913864662",
-    "firebase_url": "https://teste1-a34b9.firebaseio.com",
-    "project_id": "teste1-a34b9",
-    "storage_bucket": "teste1-a34b9.appspot.com"
+    "project_number": "86508372790",
+    "firebase_url": "https://oops-d5894.firebaseio.com",
+    "project_id": "oops-d5894",
+    "storage_bucket": "oops-d5894.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:222913864662:android:e7335d5caf8d9b16",
+        "mobilesdk_app_id": "1:86508372790:android:e7335d5caf8d9b16",
         "android_client_info": {
           "package_name": "br.com.trihum.oops"
         }
       },
       "oauth_client": [
         {
-          "client_id": "222913864662-ds1lep0mmrdnl7olr3kajek1htc3qqp3.apps.googleusercontent.com",
+          "client_id": "86508372790-s8gihiqij5o1v3eq03p3g4soo2f1hk32.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBKzF3u-jSTkN-slDL-LqIMgWGz0A0GHbQ"
+          "current_key": "AIzaSyCu6z-WriDCeNNG_HxYstL39TO_4gI_MBk"
         }
       ],
       "services": {

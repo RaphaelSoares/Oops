@@ -172,16 +172,22 @@ public class GPSTracker extends Service implements LocationListener {
      * On pressing the Settings button it will launch Settings Options.
      * */
     public void showSettingsAlert(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
+
+        AlertDialog.Builder alertDialog;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            alertDialog = new AlertDialog.Builder(mContext, android.R.style.Theme_Material_Light_Dialog_Alert);
+        } else {
+            alertDialog = new AlertDialog.Builder(mContext);
+        }
 
         // Setting Dialog Title
-        alertDialog.setTitle("GPS is settings");
+        alertDialog.setTitle("Configurações de GPS");
 
         // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        alertDialog.setMessage("O GPS não está habilitado. Deseja ir para os ajustes para habilitar o seu uso pelo Oops?");
 
         // On pressing the Settings button.
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton("Ajustes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog,int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 mContext.startActivity(intent);
@@ -189,7 +195,7 @@ public class GPSTracker extends Service implements LocationListener {
         });
 
         // On pressing the cancel button
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }

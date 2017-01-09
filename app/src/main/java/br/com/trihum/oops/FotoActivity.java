@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import java.util.List;
 public class FotoActivity extends AppCompatActivity {
 
     public Camera mCamera;
+    GPSTracker gps;
     private CameraPreview mPreview;
     public byte[] arrayBytesFoto = null;
     public byte[] arrayBytesFotoMini = null;
@@ -80,6 +83,10 @@ public class FotoActivity extends AppCompatActivity {
         mCamera.setParameters(params);
 
 
+        gps = new GPSTracker(FotoActivity.this);
+        if(!gps.canGetLocation()) {
+            gps.showSettingsAlert();
+        }
     }
 
     @Override
@@ -138,6 +145,7 @@ public class FotoActivity extends AppCompatActivity {
         }
         catch (Exception e){
             // Camera is not available (in use or does not exist)
+            Log.d("OOPS","Câmera não disponível");
         }
         return c; // returns null if camera is unavailable
     }
