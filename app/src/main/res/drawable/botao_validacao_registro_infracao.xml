@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+            <solid android:color="#D2D3D5"/>
+            <corners android:radius="15dp"/>
+        </shape>
+    </item>
+
+    <item android:left="0dp" >
+        <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+            android:src="@drawable/ic_confirma_validacao"
+            android:tileMode="disabled" android:gravity="left" />
+    </item>
+
+    <item android:right="10dp" >
+        <bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+            android:src="@drawable/ic_down_arrow_validacao"
+            android:tileMode="disabled" android:gravity="right" />
+    </item>
+
+</layer-list>

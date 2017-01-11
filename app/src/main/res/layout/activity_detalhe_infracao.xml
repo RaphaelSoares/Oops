@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_detalhe_infracao"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6E7E8"
+    tools:context="br.com.trihum.oops.DetalheInfracaoActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:background="#000000"
+        android:id="@+id/registroFrameFoto2"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            app:srcCompat="@android:color/black"
+            android:id="@+id/imageFotoInfracao"
+            android:scaleType="centerInside"
+            android:layout_height="190dp" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/progressBarFoto"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="75dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:background="@color/corLaranjaTitulo"
+            android:id="@+id/barraRegistroDetalheInfracao"
+            android:text="Tipo da infração"
+            android:gravity="center_vertical|fill_vertical"
+            android:textStyle="normal|bold"
+            android:paddingLeft="30dp"
+            android:textSize="12sp"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="190dp"
+            android:lines="1" />
+
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="242dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_alignBottom="@+id/registroFrameFoto2"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true">
+
+
+            <Button
+                android:text="Registro Enviado"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:id="@+id/btnSituacaoRegistro"
+                android:textColor="#009999"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="30dp"
+                android:textAllCaps="false"
+                android:paddingLeft="40dp"
+                android:textSize="12sp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:elevation="0dp"
+                android:onClick="onDetalheRegistroEnviadoClick"
+                android:background="@drawable/botao_validacao_registro_infracao_selector"
+                android:gravity="left|center_vertical|center_horizontal"
+                android:layout_marginBottom="5dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/frame_registro_enviado"
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
+
+                <EditText
+                android:id="@+id/txtAreaSituacaoRegistro"
+                android:layout_width="match_parent"
+                android:textColor="#000"
+                android:textSize="14sp"
+                    android:inputType="text|textMultiLine"
+                android:gravity="top"
+                android:background="@drawable/caixa_entrada_area_detalhe"
+                android:padding="10dp"
+                android:paddingTop="5dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="2dp"
+                android:layout_height="80dp"
+                    android:visibility="visible"
+                    android:editable="false"
+                    android:enabled="false" />
+
+            </FrameLayout>
+
+            <Button
+                android:text="Infração Validada"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:id="@+id/btnSituacaoInfracao"
+                android:textColor="#009999"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"
+                android:paddingLeft="40dp"
+                android:textSize="12sp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:elevation="0dp"
+                android:onClick="onDetalheInfracaoValidadaClick"
+                android:background="@drawable/botao_validacao_registro_infracao_selector"
+                android:gravity="left|center_vertical|center_horizontal"
+                android:layout_marginBottom="5dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/frame_infracao_validada"
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/txtAreaSituacaoInfracao"
+                    android:layout_width="match_parent"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    android:inputType="text|textMultiLine"
+                    android:gravity="top"
+                    android:background="@drawable/caixa_entrada_area_detalhe"
+                    android:padding="10dp"
+                    android:paddingTop="5dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_height="80dp"
+                    android:visibility="visible"
+                    android:editable="false"
+                    android:enabled="false" />
+
+            </FrameLayout>
+
+            <Button
+                android:text="Ação Educativa Realizada"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:id="@+id/btnSituacaoAcaoEducativa"
+                android:textColor="#009999"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginTop="10dp"
+                android:textAllCaps="false"
+                android:paddingLeft="40dp"
+                android:textSize="12sp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:elevation="0dp"
+                android:onClick="onDetalheInfracaoAcaoEducativaClick"
+                android:background="@drawable/botao_naovalidacao_registro_infracao_selector"
+                android:gravity="left|center_vertical|center_horizontal"
+                android:layout_marginBottom="5dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/frame_acao_educativa"
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/txtAreaSituacaoAcaoEducativa"
+                    android:layout_width="match_parent"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    android:inputType="text|textMultiLine"
+                    android:gravity="top"
+                    android:background="@drawable/caixa_entrada_area_detalhe"
+                    android:padding="10dp"
+                    android:paddingTop="5dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_height="80dp"
+                    android:visibility="visible"
+                    android:editable="false"
+                    android:enabled="false" />
+
+            </FrameLayout>
+
+            <ImageView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:src="@android:drawable/divider_horizontal_dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="1dp"
+                android:paddingTop="1dp"
+                android:background="@color/black_overlay"
+                android:id="@+id/imgSeparador1"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginLeft="25dp"
+                android:alpha="0.5" />
+
+            <TextView
+                android:text="Informações sobre o registro:"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:alpha="0.5" />
+
+            <TextView
+                android:text="endereço"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/registroEnderecoInfracao"
+                android:layout_marginLeft="60dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:lines="2"
+                android:ellipsize="end"
+                android:paddingLeft="25dp"
+                android:background="@drawable/titulo_lista_endereco"
+                android:layout_marginTop="10dp" />
+
+            <TextView
+                android:text="data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/registroDataInfracao"
+                android:layout_marginLeft="60dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:lines="1"
+                android:paddingLeft="25dp"
+                android:background="@drawable/titulo_lista_data"
+                android:gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:text="comentario"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/registroComentarioInfracao"
+                android:layout_marginLeft="60dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingLeft="25dp"
+                android:background="@drawable/titulo_lista_comentario"
+                android:gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="20dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

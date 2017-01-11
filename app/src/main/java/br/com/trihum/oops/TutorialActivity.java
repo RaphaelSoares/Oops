@@ -3,6 +3,7 @@ package br.com.trihum.oops;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.support.v4.view.PagerAdapter;
@@ -60,8 +61,13 @@ public class TutorialActivity extends AppCompatActivity {
         myViewPagerAdapter = new MyViewPagerAdapter();
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+    }
 
-
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
@@ -116,10 +122,12 @@ public class TutorialActivity extends AppCompatActivity {
 
     public void onEntendiClick(View v){
 
-        Intent intent =  new Intent(TutorialActivity.this, PrincipalActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        SharedPreferences preferences = this.getSharedPreferences(Constantes.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(Constantes.SHARED_PREFERENCES_KEY_EXIBE_TUTORIAL, false);
+        editor.commit();
 
+        finish();
     }
 
     public class MyViewPagerAdapter extends PagerAdapter {

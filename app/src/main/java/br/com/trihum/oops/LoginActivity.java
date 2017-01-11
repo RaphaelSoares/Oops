@@ -118,6 +118,7 @@ public class LoginActivity extends BaseActivity implements
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
+                            Constantes.tipoLogin = Constantes.TIPO_LOGIN_COMUM;
                             onAuthSuccess(task.getResult().getUser());
                         } else {
                             Toast.makeText(LoginActivity.this, "Não foi possível efetuar o login",
@@ -195,6 +196,7 @@ public class LoginActivity extends BaseActivity implements
                         // the auth state listener will be notified and logic to handle the
                         // signed in user can be handled in the listener.
                         if (task.isSuccessful()) {
+                            Constantes.tipoLogin = Constantes.TIPO_LOGIN_REDE_SOCIAL;
                             onAuthGoogleSuccess(task.getResult().getUser());
                         }
                         else {

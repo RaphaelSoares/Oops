@@ -15,6 +15,7 @@ public class InfracaoDetalhe {
     private String placa;
     private String placa_ident;
     private String identifica_infracao;
+    private String comentario_orgao;
 
     public InfracaoDetalhe()
     {
@@ -83,5 +84,13 @@ public class InfracaoDetalhe {
 
     public void setIdentifica_infracao(String identifica_infracao) {
         this.identifica_infracao = identifica_infracao;
+    }
+
+    public String getComentario_orgao() {
+        return comentario_orgao;
+    }
+
+    public void setComentario_orgao(String comentario_orgao) {
+        this.comentario_orgao = comentario_orgao;
     }
 }

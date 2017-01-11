@@ -107,6 +107,8 @@ public class ListaInfracoesAdapter extends BaseAdapter {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 InfracaoDetalhe infracaoDetalhe = dataSnapshot.getValue(InfracaoDetalhe.class);
 
+                if (infracaoDetalhe == null) return;
+
                 progressBarFoto.setVisibility(View.INVISIBLE);
 
                 textoEnderecoInfracao.setText(infracaoDetalhe.getEndereco());

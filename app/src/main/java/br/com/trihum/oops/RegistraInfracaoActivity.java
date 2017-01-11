@@ -135,6 +135,10 @@ public class RegistraInfracaoActivity extends BaseActivity {
 
             Geocoder geoCoder = new Geocoder(this);
             try {
+                // TODO possivel timeout no getFromLocation
+                // Esta linha aqui pode dar throw exception por timeout
+                // ver alternativa em:
+                // http://stackoverflow.com/questions/23638067/geocoder-getfromlocation-function-throws-timed-out-waiting-for-server-response
                 List<Address> matches = geoCoder.getFromLocation(latitude, longitude, 1);
                 Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
                 endereco = bestMatch.getAddressLine(0)+" "+bestMatch.getLocality()+" "+bestMatch.getAdminArea();

@@ -33,6 +33,7 @@ public class FotoActivity extends AppCompatActivity {
 
     FloatingActionButton fabTirarFoto;
     FloatingActionButton fabConfirmarFoto;
+    FrameLayout frameMolduraBotao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class FotoActivity extends AppCompatActivity {
 
         fabTirarFoto = (FloatingActionButton) findViewById(R.id.fabTirarFoto);
         fabConfirmarFoto = (FloatingActionButton) findViewById(R.id.fabConfirmarFoto);
+        frameMolduraBotao = (FrameLayout) findViewById(R.id.frame_moldura_botao);
 
         fotoTirada = false;
         // Create an instance of Camera
@@ -63,6 +65,8 @@ public class FotoActivity extends AppCompatActivity {
         for(int i = 1; i < supportedSizes.size(); i++){
             Log.d("OOPS","camera supported size = "+supportedSizes.get(i).width+" X "+supportedSizes.get(i).height);
 
+            //TODO fazer um algoritmo para pegar a melhor resolução a partir de um valor pra baixo
+            // Fica melhor porque pode-se pegar um aparelho que não tenha nenhuma das resoluções preferenciais listadas aqui
             if (supportedSizes.get(i).width == 1280 && supportedSizes.get(i).height == 960)
             {
                 preferredSize = supportedSizes.get(i);
@@ -73,7 +77,17 @@ public class FotoActivity extends AppCompatActivity {
                 preferredSize = supportedSizes.get(i);
                 break;
             }
+            if (supportedSizes.get(i).width == 960 && supportedSizes.get(i).height == 720)
+            {
+                preferredSize = supportedSizes.get(i);
+                break;
+            }
             if (supportedSizes.get(i).width == 800 && supportedSizes.get(i).height == 600)
+            {
+                preferredSize = supportedSizes.get(i);
+                break;
+            }
+            if (supportedSizes.get(i).width == 640 && supportedSizes.get(i).height == 480)
             {
                 preferredSize = supportedSizes.get(i);
                 break;
@@ -111,6 +125,7 @@ public class FotoActivity extends AppCompatActivity {
             if (fotoTirada)
             {
                 fabTirarFoto.setVisibility(View.VISIBLE);
+                frameMolduraBotao.setVisibility(View.VISIBLE);
                 fabConfirmarFoto.setVisibility(View.INVISIBLE);
 
                 fotoTirada = false;
@@ -153,6 +168,7 @@ public class FotoActivity extends AppCompatActivity {
     public void onTirarFotoClick (View v){
 
         fabTirarFoto.setVisibility(View.INVISIBLE);
+        frameMolduraBotao.setVisibility(View.INVISIBLE);
         fabConfirmarFoto.setVisibility(View.VISIBLE);
         mCamera.takePicture(null, null, new PhotoHandler(this,getApplicationContext()));
 

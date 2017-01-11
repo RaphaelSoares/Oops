@@ -1,25 +1,40 @@
 package br.com.trihum.oops;
 
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +43,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -54,6 +73,15 @@ public class PrincipalFragment extends Fragment {
     public FrameLayout frameAlteraSenha;
     public Button btnAlterarSenha;
     private FloatingActionButton fabConfirmaEnvioSenha;
+    public ImageButton btnEditarFoto;
+    public ImageButton btnEditarNome;
+    public TextView perfilNomeCompleto;
+    public TextView perfilEmail;
+    public ImageView perfilFoto;
+    public EditText perfilSenhaAtual;
+    public EditText perfilNovaSenha;
+    public EditText perfilSenhaRepete;
+
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -115,21 +143,48 @@ public class PrincipalFragment extends Fragment {
         frameAlteraSenha = (FrameLayout)view.findViewById(R.id.frame_altera_senha);
         btnAlterarSenha = (Button)view.findViewById(R.id.btnAlterarSenha);
         fabConfirmaEnvioSenha = (FloatingActionButton) view.findViewById(R.id.fabConfirmaEnvioSenha);
+        btnEditarFoto = (ImageButton)view.findViewById(R.id.btnEditarFoto);
+        btnEditarNome = (ImageButton)view.findViewById(R.id.btnEditarNome);
+        perfilSenhaAtual = (EditText)view.findViewById(R.id.perfilSenhaAtual);
+        perfilNovaSenha = (EditText)view.findViewById(R.id.perfilNovaSenha);
+        perfilSenhaRepete = (EditText)view.findViewById(R.id.perfilSenhaRepete);
 
+        //*************************************************
+        // Assegura que os campos de editar senha começam ocultos
+        frameAlteraSenha.setVisibility(View.INVISIBLE);
+
+        //*************************************************
+        // Exibe ou nao os botões para edição do perfil de acordo com o tipo de login
+        if (Constantes.tipoLogin == Constantes.TIPO_LOGIN_COMUM)
+        {
+            btnEditarFoto.setVisibility(View.VISIBLE);
+            btnEditarNome.setVisibility(View.VISIBLE);
+            btnAlterarSenha.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            btnEditarFoto.setVisibility(View.INVISIBLE);
+            btnEditarNome.setVisibility(View.INVISIBLE);
+            btnAlterarSenha.setVisibility(View.INVISIBLE);
+        }
+
+        //*************************************************
+        // Listener para os botoes
         fabTirarFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Intent i = new Intent(getContext(), FotoActivity.class);
                 startActivity(i);
-                //Log.d("TESTE","(Fragment) Tira foto!");
-
             }
         });
 
         btnAlterarSenha.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                perfilSenhaAtual.setText("");
+                perfilNovaSenha.setText("");
+                perfilSenhaRepete.setText("");
+
                 btnAlterarSenha.setVisibility(View.INVISIBLE);
                 frameAlteraSenha.setVisibility(View.VISIBLE);
             }
@@ -138,12 +193,73 @@ public class PrincipalFragment extends Fragment {
         fabConfirmaEnvioSenha.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btnAlterarSenha.setVisibility(View.VISIBLE);
-                frameAlteraSenha.setVisibility(View.INVISIBLE);
+
+                String senhaAtual = perfilSenhaAtual.getText().toString();
+                String senhaNova = perfilNovaSenha.getText().toString();
+                String senhaRepete = perfilSenhaRepete.getText().toString();
+
+                if (senhaAtual.equals("") && senhaNova.equals("") && senhaRepete.equals(""))
+                {
+                    btnAlterarSenha.setVisibility(View.VISIBLE);
+                    frameAlteraSenha.setVisibility(View.INVISIBLE);
+                    return;
+                }
+
+                if (senhaAtual.equals("") || senhaNova.equals("") || senhaRepete.equals(""))
+                {
+                    Toast.makeText(getContext(), "Preencha todos os campos", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!senhaNova.equals(senhaRepete))
+                {
+                    Toast.makeText(getContext(), "As Senhas informadas estão diferentes", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (senhaNova.length()<6)
+                {
+                    Toast.makeText(getContext(), "A Senha informada precisa ter no mínimo 6 caracteres", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                mAuth.getCurrentUser().updatePassword(senhaNova)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(getContext(), "Senha atualizada com sucesso", Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Toast.makeText(getContext(), "Não foi possível atualizar a senha", Toast.LENGTH_SHORT).show();
+                                }
+
+                                btnAlterarSenha.setVisibility(View.VISIBLE);
+                                frameAlteraSenha.setVisibility(View.INVISIBLE);
+                            }
+                        });
+
             }
         });
 
+        btnEditarFoto.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage();
+            }
+        });
 
+        btnEditarNome.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                abreCaixaEdicao();
+            }
+        });
+
+        //*************************************************
+        // Configura o tabhost
         tabHost.setup();
         this.setNewTab(view.getContext(), tabHost, "lista", R.string.tab_title_1, R.drawable.ic_aba_lista, R.id.tab1);
         this.setNewTab(view.getContext(), tabHost, "metricas", R.string.tab_title_2, R.drawable.ic_aba_metricas, R.id.tab2);
@@ -172,12 +288,19 @@ public class PrincipalFragment extends Fragment {
 
                 Infracao infracaoSelecionada = (Infracao) adapter.getItemAtPosition(posicao);
 
-                /*Intent intent = new Intent(ListaOfertasActivity.this, OfertaDetalheActivity.class);
-                intent.putExtra(Constantes.INTENT_PARAM_OFERTA_SELECIONADA, ofertaSelecionada);
-                intent.putExtra(Constantes.INTENT_PARAM_ID_USUARIO, idUsuario);
-                startActivity(intent);*/
-
                 Log.d("OOPS","selecionei = "+infracaoSelecionada.getId());
+
+                Intent intent =  new Intent(getContext(), DetalheInfracaoActivity.class);
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_ID, infracaoSelecionada.getId());
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS, infracaoSelecionada.getStatus());
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO, mapaSituacoes.get(infracaoSelecionada.getStatus()));
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO, infracaoSelecionada.getTipo());
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO, mapaTipos.get(infracaoSelecionada.getTipo()));
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA, infracaoSelecionada.getData());
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA, infracaoSelecionada.getHora());
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID, infracaoSelecionada.getUid());
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO, infracaoSelecionada.getComentario());
+                startActivity(intent);
 
             }
         });
@@ -185,6 +308,27 @@ public class PrincipalFragment extends Fragment {
         //****************************************
         // Consulta a lista de infracoes
         atualizaListaInfracoes();
+        //********************************************************
+
+        //********************************************************
+        // Pegando componentes do navigator e atribuindo os dados do perfil
+        perfilFoto = (ImageView) view.findViewById(R.id.perfilFoto);
+        perfilNomeCompleto = (TextView) view.findViewById(R.id.perfilNomeCompleto);
+        perfilEmail = (TextView) view.findViewById(R.id.perfilEmail);
+
+
+        perfilNomeCompleto.setText(Constantes.nomeCompleto);
+        perfilEmail.setText(Constantes.email);
+        if (Constantes.fotoPerfil.startsWith("http")) {
+            try {
+                new DownloadImageTask(perfilFoto,true).execute(Constantes.fotoPerfil);
+            } catch (Exception e) {
+            }
+
+        } else if (Constantes.fotoPerfil.startsWith("data")) {
+            perfilFoto.setImageBitmap(Constantes.decodeFrom64toRound(Constantes.fotoPerfil));
+        }
+
         //********************************************************
 
         return view;
@@ -212,17 +356,6 @@ public class PrincipalFragment extends Fragment {
             mListener.onFragmentInteraction(uri);
         }
     }
-
-    /*@Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }*/
 
     @Override
     public void onDetach() {
@@ -302,6 +435,17 @@ public class PrincipalFragment extends Fragment {
                 Infracao infracao = dataSnapshot.getValue(Infracao.class);
                 infracao.setId(dataSnapshot.getKey());
                 arrayInfracoes.add(infracao);
+
+                // Ordena pelos mais recentes pra cima
+                Collections.sort(arrayInfracoes, new Comparator<Infracao>(){
+                    public int compare(Infracao infracao1, Infracao infracao2) {
+                        // ## Descending order
+                        String dataHora1 = infracao1.getData()+" "+infracao1.getHora();
+                        String dataHora2 = infracao2.getData()+" "+infracao2.getHora();
+                        return dataHora2.compareToIgnoreCase(dataHora1); // To compare string values
+                    }
+                });
+
                 adapter.arrayInfracoes = arrayInfracoes;
                 adapter.notifyDataSetChanged();
             }
@@ -327,7 +471,20 @@ public class PrincipalFragment extends Fragment {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Infracao infracao = dataSnapshot.getValue(Infracao.class);
 
+                Iterator<Infracao> iterator = arrayInfracoes.iterator();
+
+                while (iterator.hasNext()) {
+                    Infracao infracao1 = iterator.next();
+                    if (infracao1.getId().equals(dataSnapshot.getKey()))
+                    {
+                        iterator.remove();
+                        adapter.arrayInfracoes = arrayInfracoes;
+                        adapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
             }
 
             @Override
@@ -340,8 +497,172 @@ public class PrincipalFragment extends Fragment {
 
             }
         });
-
-
     }
 
+    private void selectImage() {
+        final CharSequence[] items = { "Tirar Foto", "Escolher da galeria",
+                "Cancelar" };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Foto do perfil");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                boolean result=Utility.checkPermission(getContext());
+
+                if (items[item].equals("Tirar Foto")) {
+                    //userChoosenTask="Take Photo";
+                    if(result)
+                        cameraIntent();
+
+                } else if (items[item].equals("Escolher da galeria")) {
+                    //userChoosenTask="Choose from Library";
+                    if(result)
+                        galleryIntent();
+
+                } else if (items[item].equals("Cancelar")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    private void cameraIntent()
+    {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, Constantes.REQUEST_CAMERA);
+    }
+
+    private void galleryIntent()
+    {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);//
+        startActivityForResult(Intent.createChooser(intent, "Select File"), Constantes.SELECT_FILE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == Constantes.SELECT_FILE)
+                onSelectFromGalleryResult(data);
+            else if (requestCode == Constantes.REQUEST_CAMERA)
+                onCaptureImageResult(data);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void onSelectFromGalleryResult(Intent data) {
+
+        Bitmap bm=null;
+        if (data != null) {
+            try {
+                bm = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), data.getData());
+
+                bm = Constantes.getRoundedShape(Constantes.cropToSquare(bm));
+                perfilFoto.setImageBitmap(bm);
+
+                // Salva a nova foto do perfil no Firebase
+                // Automaticamente a foto do drawer vai se modificar
+                ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
+                String encoded_mini = Base64.encodeToString(bs.toByteArray(), Base64.DEFAULT);
+                mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/foto_perfil").setValue("data:image/jpeg;base64,"+encoded_mini);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+    private void onCaptureImageResult(Intent data) {
+
+        if (data != null)
+        {
+            //**************************************************
+            // Faz os ajustes necessários de rotação da imagem capturada
+            Uri selectedImage = data.getData();
+            String[] orientationColumn = {MediaStore.Images.Media.ORIENTATION};
+            ContentResolver content = getContext().getContentResolver();
+            Cursor cur = content.query(selectedImage, orientationColumn, null, null, null);
+            int orientation = -1;
+            if (cur != null && cur.moveToFirst()) {
+                orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0]));
+            }
+            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+            switch(orientation) {
+                case 90:
+                    thumbnail = Constantes.rotateImage(thumbnail, 90);
+                    break;
+                case 180:
+                    thumbnail = Constantes.rotateImage(thumbnail, 180);
+                    break;
+                case 270:
+                    thumbnail = Constantes.rotateImage(thumbnail, 270);
+                    break;
+                default:
+                    break;
+            }
+
+            thumbnail = Constantes.getRoundedShape(Constantes.cropToSquare(thumbnail));
+            perfilFoto.setImageBitmap(thumbnail);
+
+            // Salva a nova foto do perfil no Firebase
+            // Automaticamente a foto do drawer vai se modificar
+            ByteArrayOutputStream bs = new ByteArrayOutputStream();
+            thumbnail.compress(Bitmap.CompressFormat.JPEG, 50, bs);
+            String encoded_mini = Base64.encodeToString(bs.toByteArray(), Base64.DEFAULT);
+
+            Log.d("OOPS","trocando a foto em "+"usuarios_app/"+mAuth.getCurrentUser().getUid()+"/foto_perfil");
+            mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/foto_perfil").setValue("data:image/jpeg;base64,"+encoded_mini);
+        }
+    }
+
+    public void abreCaixaEdicao()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Nome completo");
+        // I'm using fragment here so I'm using getView() to provide ViewGroup
+        // but you can provide here any other instance of ViewGroup from your Fragment / Activity
+        View viewInflated = LayoutInflater.from(getContext()).inflate(R.layout.text_input_dialog, (ViewGroup) getView(), false);
+        // Set up the input
+        final EditText input = (EditText) viewInflated.findViewById(R.id.input);
+        // Specify the type of input expected; this, for example, sets the input as a password, and will mask the text
+        builder.setView(viewInflated);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                String nomeCompleto = input.getText().toString();
+
+                perfilNomeCompleto.setText(nomeCompleto);
+
+                mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/nome_completo").setValue(nomeCompleto);
+            }
+        });
+        builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // TODO: Dica Cris - Fonte: http://stackoverflow.com/questions/4095758/change-color-of-button-in-alert-dialog-android
+        AlertDialog a=builder.create();
+
+        a.show();
+
+        Button btp = a.getButton(DialogInterface.BUTTON_POSITIVE);
+        //btp.setBackgroundColor(Color.BLUE);
+        btp.setTextColor(Color.BLACK);
+
+        Button btn = a.getButton(DialogInterface.BUTTON_NEGATIVE);
+        //btn.setBackgroundColor(Color.BLUE);
+        btn.setTextColor(Color.BLACK);
+    }
 }

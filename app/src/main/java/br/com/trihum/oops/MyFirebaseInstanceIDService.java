@@ -2,6 +2,9 @@ package br.com.trihum.oops;
 
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -12,6 +15,8 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = "OOPS";
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     /**
      * Called if InstanceID token is updated. This may occur if the security of
@@ -22,8 +27,22 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
         // Get updated InstanceID token.
+
+        //****************************************
+        // Objetos Firebase
+        mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        //*************************************************************
+        // Gravo no Firebase o novo token
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "============================ Refreshed token: " + refreshedToken);
+        Log.d("OOPS","refreshed token = "+ refreshedToken);
+
+        /*if (refreshedToken!=null && !refreshedToken.equals(""))
+        {
+            mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/token").setValue(refreshedToken);
+        }*/
+        //*************************************************************
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the

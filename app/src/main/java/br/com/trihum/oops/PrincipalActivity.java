@@ -4,6 +4,7 @@ import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -59,6 +60,8 @@ public class PrincipalActivity extends BaseActivity
     private DatabaseReference mDatabase;
     private GoogleApiClient mGoogleApiClient;
 
+    private boolean criouFragment;
+
     // API do Google para fazer reverse geocoding
     //https://developers.google.com/maps/documentation/geocoding/start
     //https://maps.googleapis.com/maps/api/geocode/json?latlng=-22.8851519,-43.0878057&key=AIzaSyBVBvxNP36i8jGrtLxGskNn9-EKHGC6kkM
@@ -71,6 +74,8 @@ public class PrincipalActivity extends BaseActivity
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        criouFragment = false;
 
         //****************************************
         // Objetos Firebase
@@ -94,15 +99,17 @@ public class PrincipalActivity extends BaseActivity
             }
         }
 
-        Log.d("OOPS","token = "+ FirebaseInstanceId.getInstance().getToken());
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
+        //*************************************************************
+        // Se o app já recebeu um token, gravo no Firebase
+        String token = FirebaseInstanceId.getInstance().getToken();
+        //Log.d("OOPS","token = "+ token);
+
+        if (token!=null && !token.equals(""))
+        {
+            mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/token").setValue(token);
+        }
+        //*************************************************************
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -142,6 +149,24 @@ public class PrincipalActivity extends BaseActivity
                 txtNomeCompleto.setText(usuarioApp.nome_completo);
                 txtEmail.setText(usuarioApp.email);
 
+                // Carrega em variaveis static para que possam ser lidas pelo fragment
+                Constantes.nomeCompleto = usuarioApp.nome_completo;
+                Constantes.fotoPerfil = usuarioApp.foto_perfil;
+                Constantes.email = usuarioApp.email;
+
+                // coloca o fragment principal se ainda nao foi feito
+                if (!criouFragment)
+                {
+                    criouFragment = true;
+                    Fragment fragment = new PrincipalFragment();
+                    if (fragment != null)
+                    {
+                        FragmentManager fragmentManager = getSupportFragmentManager();
+                        fragmentManager.beginTransaction().replace(R.id.content_principal, fragment).commit();
+                        //this.setTitle("Principal");
+                    }
+                }
+
             }
 
             @Override
@@ -165,15 +190,15 @@ public class PrincipalActivity extends BaseActivity
                 .build();
 
 
+        //*************************************
+        // Aqui vou verificar se é primeira execução. Se sim, vou chamar o tutorial
+        SharedPreferences preferences = this.getSharedPreferences(Constantes.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+		boolean exibeTutorial = preferences.getBoolean(Constantes.SHARED_PREFERENCES_KEY_EXIBE_TUTORIAL, true);
 
-
-        Fragment fragment = new PrincipalFragment();
-
-        if (fragment != null)
+        if (exibeTutorial)
         {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.content_principal, fragment).commit();
-            //this.setTitle("Principal");
+            Intent i =  new Intent(PrincipalActivity.this, TutorialActivity.class);
+            startActivity(i);
         }
 
     }

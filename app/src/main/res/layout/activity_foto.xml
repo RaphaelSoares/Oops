@@ -23,8 +23,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:layout_height="90dp">
 
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"
@@ -47,6 +47,17 @@
             android:visibility="invisible"
             android:onClick="onConfirmarFotoClick"
             app:backgroundTint="#009999" />
+
+        <FrameLayout
+            android:background="@drawable/circulo_branco"
+            android:alpha="0.5"
+            android:layout_gravity="center"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/frame_moldura_botao">
+
+        </FrameLayout>
+
     </FrameLayout>
 
 </FrameLayout>

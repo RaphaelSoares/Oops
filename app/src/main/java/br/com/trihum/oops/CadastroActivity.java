@@ -98,6 +98,12 @@ public class CadastroActivity extends BaseActivity {
             return;
         }
 
+        if (senha.length()<6)
+        {
+            Toast.makeText(CadastroActivity.this, "A Senha informada precisa ter no mínimo 6 caracteres", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         showProgressDialog();
 
         mAuth.createUserWithEmailAndPassword(email, senha)
@@ -150,5 +156,19 @@ public class CadastroActivity extends BaseActivity {
         mDatabase.child("usuarios_app").child(userId).setValue(usuarioApp);
     }
 
+
+    /* Caso seja preciso implementar um botão de redefinir senha...
+    String emailAddress = "user@example.com";
+
+auth.sendPasswordResetEmail(emailAddress)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Email sent.");
+                }
+            }
+        });
+    * */
 
 }

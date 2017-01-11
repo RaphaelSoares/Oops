@@ -79,14 +79,14 @@ public class PhotoHandler implements PictureCallback {
             ByteArrayOutputStream bs = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
             fotoActivity.arrayBytesFoto = bs.toByteArray();
-            Log.d("OOPS","arrayBytesFoto = "+fotoActivity.arrayBytesFoto.length);
+            //Log.d("OOPS","arrayBytesFoto = "+fotoActivity.arrayBytesFoto.length);
 
             // Salva a foto versao mini
             bm = Constantes.getSquareReduced(Constantes.cropToSquare(bm),125,125);
             bs = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
             fotoActivity.arrayBytesFotoMini = bs.toByteArray();
-            Log.d("OOPS","arrayBytesFotoMini = "+fotoActivity.arrayBytesFotoMini.length);
+            //Log.d("OOPS","arrayBytesFotoMini = "+fotoActivity.arrayBytesFotoMini.length);
 
             fotoActivity.fotoTirada = true;
             fotoActivity.mCamera.stopPreview();
