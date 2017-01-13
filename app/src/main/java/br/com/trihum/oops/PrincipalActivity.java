@@ -2,6 +2,7 @@ package br.com.trihum.oops;
 
 import android.*;
 import android.Manifest;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -61,6 +62,8 @@ public class PrincipalActivity extends BaseActivity
     private GoogleApiClient mGoogleApiClient;
 
     private boolean criouFragment;
+    Fragment principalFragment;
+    private boolean exibindoFragmentPrincipal;
 
     // API do Google para fazer reverse geocoding
     //https://developers.google.com/maps/documentation/geocoding/start
@@ -158,13 +161,16 @@ public class PrincipalActivity extends BaseActivity
                 if (!criouFragment)
                 {
                     criouFragment = true;
-                    Fragment fragment = new PrincipalFragment();
+
+                    exibeFragmentPrincipal();
+
+                    /*Fragment fragment = new PrincipalFragment();
                     if (fragment != null)
                     {
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         fragmentManager.beginTransaction().replace(R.id.content_principal, fragment).commit();
                         //this.setTitle("Principal");
-                    }
+                    }*/
                 }
 
             }
@@ -217,8 +223,16 @@ public class PrincipalActivity extends BaseActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            mAuth.signOut();
-            finish();
+
+            if (exibindoFragmentPrincipal)
+            {
+                mAuth.signOut();
+                finish();
+            }
+            else
+            {
+                exibeFragmentPrincipal();
+            }
         }
     }
 
@@ -229,13 +243,15 @@ public class PrincipalActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_feedback) {
+
             Fragment fragment = new FeedbackFragment();
 
             if (fragment != null)
             {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.content_principal, fragment).commit();
-                //this.setTitle("Feedback");
+
+                exibindoFragmentPrincipal = false;
             }
 
         } else if (id == R.id.nav_manter_projeto) {
@@ -263,6 +279,16 @@ public class PrincipalActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void exibeFragmentPrincipal()
+    {
+        if (principalFragment == null) principalFragment = new PrincipalFragment();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.content_principal, principalFragment).commit();
+
+        exibindoFragmentPrincipal = true;
     }
 
     @Override

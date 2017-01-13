@@ -17,30 +17,42 @@
             android:padding="20dp">
 
             <!-- ##########  Grupo da Pergunta 1 ###########  -->
+
             <TextView
-                android:id="@+id/txPergunta1"
+                android:id="@+id/txtPergunta1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Qual a sua cor favorita?"
+                android:text="O que gostaria de ver implementado no Oops?"
                 android:textColor="#000000"
                 android:textStyle="normal|bold" />
 
+            <EditText
+                android:layout_width="match_parent"
+                android:id="@+id/editPergunta1"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="left"
+                android:background="@drawable/caixa_entrada_area_detalhe"
+                android:layout_height="45dp"
+                android:minLines="1"
+                android:maxWidth="3dp" />
+
             <RadioGroup
                 android:id="@+id/rgGrupo1"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="10dp"
+                android:layout_gravity="left">
+
                 <RadioButton
                     android:id="@+id/rb1Gr1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="muito ruim"
-                    android:textAlignment="textStart"
-                    android:layout_gravity="start"
                     android:layoutDirection="rtl"
                     app:buttonTint="@color/btRadioColor"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:elevation="24dp" />
                 <RadioButton
                     android:id="@+id/rb2Gr1"
                     android:layout_width="wrap_content"
@@ -92,17 +104,27 @@
             <!-- ##########  Grupo da Pergunta 2 ###########  -->
 
             <TextView
-                android:id="@+id/txPergunta2"
+                android:id="@+id/txtPergunta2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Qual a sua cor favorita?"
+                android:text="O que poderia ser melhorado no Oops?"
                 android:textColor="#000000"
                 android:textStyle="normal|bold"
                 android:layout_marginTop="20dp" />
 
+            <EditText
+                android:layout_width="match_parent"
+                android:id="@+id/editPergunta2"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="left"
+                android:background="@drawable/caixa_entrada_area_detalhe"
+                android:layout_height="45dp"
+                android:minLines="1"
+                android:maxLines="3" />
+
             <RadioGroup
                 android:id="@+id/rgGrupo2"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp">
@@ -166,17 +188,27 @@
 
             <!-- ##########  Grupo da Pergunta 3 ###########  -->
             <TextView
-                android:id="@+id/txPergunta3"
+                android:id="@+id/txtPergunta3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Qual a sua cor favorita?"
+                android:text="Qual é sua avaliação geral?"
                 android:textColor="#000000"
                 android:textStyle="normal|bold"
                 android:layout_marginTop="20dp" />
 
+            <EditText
+                android:layout_width="match_parent"
+                android:id="@+id/editPergunta3"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="left"
+                android:background="@drawable/caixa_entrada_area_detalhe"
+                android:layout_height="45dp"
+                android:minLines="1"
+                android:maxLines="3" />
+
             <RadioGroup
                 android:id="@+id/rgGrupo3"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginTop="10dp">

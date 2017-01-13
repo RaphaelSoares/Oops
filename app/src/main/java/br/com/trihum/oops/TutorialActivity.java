@@ -127,6 +127,9 @@ public class TutorialActivity extends AppCompatActivity {
         editor.putBoolean(Constantes.SHARED_PREFERENCES_KEY_EXIBE_TUTORIAL, false);
         editor.commit();
 
+        /*Intent i = new Intent(TutorialActivity.this, PrincipalActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);*/
         finish();
     }
 

@@ -9,6 +9,7 @@ public class UsuarioApp {
     public String nome_completo;
     public String email;
     public String foto_perfil;
+    public String grupo;
 
     public UsuarioApp()
     {
@@ -19,5 +20,6 @@ public class UsuarioApp {
         this.nome_completo = nomeCompleto;
         this.email = email;
         this.foto_perfil = foto_perfil;
+        this.grupo = "1";
     }
 }

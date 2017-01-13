@@ -17,9 +17,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class CadastroActivity extends BaseActivity {
 
@@ -31,6 +36,7 @@ public class CadastroActivity extends BaseActivity {
     EditText editTextCadastroSenhaRepete;
 
     String nomeCompleto;
+    String email;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -74,7 +80,7 @@ public class CadastroActivity extends BaseActivity {
     public void onEfetuarCadastroClick (View v)
     {
         nomeCompleto = editTextCadastroNomeCompleto.getText().toString();
-        String email = editTextCadastroEmail.getText().toString();
+        email = editTextCadastroEmail.getText().toString();
         String emailRepete = editTextCadastroEmailRepete.getText().toString();
         String senha = editTextCadastroSenha.getText().toString();
         String senhaRepete = editTextCadastroSenhaRepete.getText().toString();
@@ -120,7 +126,22 @@ public class CadastroActivity extends BaseActivity {
                         }
                         else
                         {
-                            Toast.makeText(CadastroActivity.this, "Não foi possível criar o usuário", Toast.LENGTH_LONG).show();
+                            if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+
+                                if (((FirebaseAuthUserCollisionException) task.getException()).getErrorCode().equals("ERROR_EMAIL_ALREADY_IN_USE"))
+                                {
+                                    Toast.makeText(CadastroActivity.this, "Usuário já existe na base de dados", Toast.LENGTH_LONG).show();
+                                }
+                                else
+                                {
+                                    Toast.makeText(CadastroActivity.this, "Não foi possível criar o usuário", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            else
+                            {
+                                Toast.makeText(CadastroActivity.this, "Não foi possível criar o usuário", Toast.LENGTH_LONG).show();
+                            }
+
                         }
 
                         hideProgressDialog();
@@ -149,6 +170,7 @@ public class CadastroActivity extends BaseActivity {
                 Toast.LENGTH_LONG).show();
         finish();
     }
+
 
     private void gravarUsuario(String userId, String nomeCompleto, String email) {
         UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, "");
