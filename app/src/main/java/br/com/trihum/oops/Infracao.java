@@ -12,8 +12,9 @@ public class Infracao {
     private String tipo;
     private String data;
     private String hora;
-    private String uid;
+    //private String uid;
     private String comentario;
+    private String email;
 
     public Infracao()
     {
@@ -60,13 +61,13 @@ public class Infracao {
         this.hora = hora;
     }
 
-    public String getUid() {
+    /*public String getUid() {
         return uid;
-    }
+    }*/
 
-    public void setUid(String uid) {
+    /*public void setUid(String uid) {
         this.uid = uid;
-    }
+    }*/
 
     public String getComentario() {
         return comentario;
@@ -76,13 +77,18 @@ public class Infracao {
         this.comentario = comentario;
     }
 
+    public String getEmail() { return email; }
+
+    public void setEmail(String email) { this.email = email; }
+
     public void copia(Infracao infracaoOrigem)
     {
         status = infracaoOrigem.getStatus();
         tipo = infracaoOrigem.getTipo();
         data = infracaoOrigem.getData();
         hora = infracaoOrigem.getHora();
-        uid = infracaoOrigem.getUid();
+        //uid = infracaoOrigem.getUid();
         comentario = infracaoOrigem.getComentario();
+        email = infracaoOrigem.getEmail();
     }
 }

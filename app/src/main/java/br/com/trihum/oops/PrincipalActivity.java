@@ -38,13 +38,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -226,8 +233,7 @@ public class PrincipalActivity extends BaseActivity
 
             if (exibindoFragmentPrincipal)
             {
-                mAuth.signOut();
-                finish();
+                sair();
             }
             else
             {
@@ -262,17 +268,9 @@ public class PrincipalActivity extends BaseActivity
             startActivity(i);
 
         } else if (id == R.id.nav_sair) {
-            mAuth.signOut();
 
-            Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
-                    new ResultCallback<Status>() {
-                        @Override
-                        public void onResult(@NonNull Status status) {
-                            //updateUI(null);
-                        }
-                    });
+            sair();
 
-            finish();
         }
 
 
@@ -294,5 +292,49 @@ public class PrincipalActivity extends BaseActivity
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    public void sair()
+    {
+        if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_COMUM)
+        {
+            mAuth.signOut();
+
+            finish();
+        }
+        else if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_GOOGLE)
+        {
+                /*FirebaseAuth.getInstance().getCurrentUser().unlink(GoogleAuthProvider.PROVIDER_ID)
+                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("OOPS","unlink Google");
+                                }
+                            }
+                        });*/
+
+            Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(@NonNull Status status) {
+                            //updateUI(null);
+
+                            mAuth.signOut();
+
+                            finish();
+
+                        }
+                    });
+        }
+        else if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_FACEBOOK)
+        {
+            LoginManager.getInstance().logOut();
+
+            mAuth.signOut();
+
+            finish();
+
+        }
     }
 }

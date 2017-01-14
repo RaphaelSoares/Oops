@@ -78,7 +78,7 @@
 
         <Button
             android:text="CADASTRE-SE"
-            android:id="@+id/button"
+            android:id="@+id/btCadastro"
             android:layout_marginTop="370dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/botao_laranja_selector"
@@ -92,7 +92,7 @@
 
         <Button
             android:text="Sign in with Facebook"
-            android:id="@+id/button2"
+            android:id="@+id/btFacebook"
             android:layout_marginTop="410dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/botao_facebook_selector"
@@ -101,11 +101,12 @@
             android:layout_height="30dp"
             android:textAllCaps="false"
             android:layout_width="wrap_content"
-            android:minWidth="220dp" />
+            android:minWidth="220dp"
+            android:onClick="onLoginFacebookClick" />
 
         <Button
             android:text="Sign in with Google"
-            android:id="@+id/button3"
+            android:id="@+id/btGoogle"
             android:layout_marginTop="450dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/botao_google_selector"

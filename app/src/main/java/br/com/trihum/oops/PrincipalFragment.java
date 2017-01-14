@@ -298,7 +298,8 @@ public class PrincipalFragment extends Fragment {
                 intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO, mapaTipos.get(infracaoSelecionada.getTipo()));
                 intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA, infracaoSelecionada.getData());
                 intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA, infracaoSelecionada.getHora());
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID, infracaoSelecionada.getUid());
+                //intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID, infracaoSelecionada.getUid());
+                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL, infracaoSelecionada.getEmail());
                 intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO, infracaoSelecionada.getComentario());
                 startActivity(intent);
 
