@@ -72,7 +72,7 @@
             android:onClick="onLoginClick"
             app:elevation="24dp"
             app:useCompatPadding="false"
-            app:backgroundTint="#009999"
+            app:backgroundTint="@color/corVerdeTitulo"
             android:src="@drawable/ic_confirma"
             app:srcCompat="@drawable/ic_confirma" />
 

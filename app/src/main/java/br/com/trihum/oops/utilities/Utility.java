@@ -1,4 +1,4 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.utilities;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

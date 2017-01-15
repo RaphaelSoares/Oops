@@ -46,7 +46,7 @@
             android:layout_gravity="center"
             android:visibility="invisible"
             android:onClick="onConfirmarFotoClick"
-            app:backgroundTint="#009999" />
+            app:backgroundTint="@color/corVerdeTitulo" />
 
         <FrameLayout
             android:background="@drawable/circulo_branco"

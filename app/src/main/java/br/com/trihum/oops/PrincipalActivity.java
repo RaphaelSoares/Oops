@@ -1,22 +1,11 @@
 package br.com.trihum.oops;
 
-import android.*;
 import android.Manifest;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -27,14 +16,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Base64;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,13 +29,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,7 +37,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import java.net.URL;
+import br.com.trihum.oops.fragment.FeedbackFragment;
+import br.com.trihum.oops.fragment.PrincipalFragment;
+import br.com.trihum.oops.model.UsuarioApp;
+import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.utilities.DownloadImageTask;
+import br.com.trihum.oops.utilities.Funcoes;
+import br.com.trihum.oops.utilities.Globais;
 
 public class PrincipalActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.OnConnectionFailedListener {
@@ -92,6 +76,29 @@ public class PrincipalActivity extends BaseActivity
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        //****************************************
+        // Monitora a conexão
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Globais.conectado = true;
+                    Log.d("OOPS","connected");
+                } else {
+                    Globais.conectado = false;
+                    Log.d("OOPS","not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                //System.err.println("Listener was cancelled");
+            }
+        });
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
@@ -116,7 +123,7 @@ public class PrincipalActivity extends BaseActivity
 
         if (token!=null && !token.equals(""))
         {
-            mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/token").setValue(token);
+            mDatabase.child("usuarios_app/"+ Funcoes.convertEmailInKey(Globais.emailLogado)+"/token").setValue(token);
         }
         //*************************************************************
 
@@ -137,13 +144,13 @@ public class PrincipalActivity extends BaseActivity
         final TextView txtEmail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
 
         // Foto do perfil
-        mDatabase.child("usuarios_app").child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(Globais.emailLogado)).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
                 UsuarioApp usuarioApp = snapshot.getValue(UsuarioApp.class);
 
-                if (fotoPerfil != null) {
+                if (fotoPerfil != null && usuarioApp.foto_perfil!=null) {
                     if (usuarioApp.foto_perfil.startsWith("http")) {
                         try {
                             new DownloadImageTask(fotoPerfil,true).execute(usuarioApp.foto_perfil);
@@ -151,7 +158,7 @@ public class PrincipalActivity extends BaseActivity
                         }
 
                     } else if (usuarioApp.foto_perfil.startsWith("data")) {
-                        fotoPerfil.setImageBitmap(Constantes.decodeFrom64toRound(usuarioApp.foto_perfil));
+                        fotoPerfil.setImageBitmap(Funcoes.decodeFrom64toRound(usuarioApp.foto_perfil));
                     }
                 }
 
@@ -160,9 +167,9 @@ public class PrincipalActivity extends BaseActivity
                 txtEmail.setText(usuarioApp.email);
 
                 // Carrega em variaveis static para que possam ser lidas pelo fragment
-                Constantes.nomeCompleto = usuarioApp.nome_completo;
-                Constantes.fotoPerfil = usuarioApp.foto_perfil;
-                Constantes.email = usuarioApp.email;
+                Globais.nomeCompleto = usuarioApp.nome_completo;
+                Globais.fotoPerfil = usuarioApp.foto_perfil;
+                Globais.email = usuarioApp.email;
 
                 // coloca o fragment principal se ainda nao foi feito
                 if (!criouFragment)
@@ -296,23 +303,15 @@ public class PrincipalActivity extends BaseActivity
 
     public void sair()
     {
-        if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_COMUM)
+        if (Globais.provedorLogin == Constantes.PROVEDOR_LOGIN_COMUM)
         {
             mAuth.signOut();
+            Globais.emailLogado = "";
 
             finish();
         }
-        else if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_GOOGLE)
+        else if (Globais.provedorLogin == Constantes.PROVEDOR_LOGIN_GOOGLE)
         {
-                /*FirebaseAuth.getInstance().getCurrentUser().unlink(GoogleAuthProvider.PROVIDER_ID)
-                        .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d("OOPS","unlink Google");
-                                }
-                            }
-                        });*/
 
             Auth.GoogleSignInApi.revokeAccess(mGoogleApiClient).setResultCallback(
                     new ResultCallback<Status>() {
@@ -321,17 +320,19 @@ public class PrincipalActivity extends BaseActivity
                             //updateUI(null);
 
                             mAuth.signOut();
+                            Globais.emailLogado = "";
 
                             finish();
 
                         }
                     });
         }
-        else if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_FACEBOOK)
+        else if (Globais.provedorLogin == Constantes.PROVEDOR_LOGIN_FACEBOOK)
         {
             LoginManager.getInstance().logOut();
 
             mAuth.signOut();
+            Globais.emailLogado = "";
 
             finish();
 

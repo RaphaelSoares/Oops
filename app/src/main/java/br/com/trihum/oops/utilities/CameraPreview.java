@@ -1,7 +1,6 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.utilities;
 
 import android.app.Activity;
-import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.Display;
@@ -10,6 +9,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.io.IOException;
+
+import br.com.trihum.oops.FotoActivity;
+import br.com.trihum.oops.utilities.Constantes;
 
 public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback{
     private SurfaceHolder mHolder;
@@ -64,7 +66,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
         // set preview size and make any resize, rotate or
         // reformatting changes here
-        if (!Constantes.isEmulator()) {
+        if (!Funcoes.isEmulator()) {
             Display display = (fotoActivity).getWindowManager().getDefaultDisplay();
 
             /*if(display.getRotation() == Surface.ROTATION_0) {

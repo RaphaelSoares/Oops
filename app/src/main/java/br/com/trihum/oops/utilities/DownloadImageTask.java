@@ -1,4 +1,4 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.utilities;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -48,7 +48,7 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
         if (roundAndCrop)
         {
-            bmImage.setImageBitmap(Constantes.getRoundedShape(Constantes.cropToSquare(result)));
+            bmImage.setImageBitmap(Funcoes.getRoundedShape(Funcoes.cropToSquare(result)));
         }
         else
         {

@@ -1,4 +1,4 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.model;
 
 /**
  * Created by raphaelmoraes on 01/01/17.

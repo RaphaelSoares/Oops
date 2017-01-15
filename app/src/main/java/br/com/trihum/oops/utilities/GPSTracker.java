@@ -1,4 +1,4 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.utilities;
 
 import android.app.AlertDialog;
 import android.app.Service;

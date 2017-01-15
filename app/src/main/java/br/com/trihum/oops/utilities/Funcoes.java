@@ -1,4 +1,4 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.utilities;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,40 +13,10 @@ import android.support.v4.content.ContextCompat;
 import android.util.Base64;
 
 /**
- * Created by raphaelmoraes on 19/12/16.
+ * Created by raphaelmoraes on 14/01/17.
  */
 
-public class Constantes {
-
-    public static String nomeCompleto;
-    public static String fotoPerfil;
-    public static String email;
-    public static int tipoLogin; // 0 - comun, 1 - rede social
-    public static int provedorLogin;
-
-    public static final int TIPO_LOGIN_COMUM = 0;
-    public static final int TIPO_LOGIN_REDE_SOCIAL = 1;
-
-    public static final int PROVEDOR_LOGIN_COMUM = 0;
-    public static final int PROVEDOR_LOGIN_GOOGLE = 1;
-    public static final int PROVEDOR_LOGIN_FACEBOOK = 2;
-
-    public static final int REQUEST_CAMERA = 0;
-    public static final int SELECT_FILE = 1;
-
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_ID = "infracaoSelecionada_id";
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_STATUS = "infracaoSelecionada_status";
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO = "infracaoSelecionada_status_texto";
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_TIPO = "infracaoSelecionada_tipo";
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO = "infracaoSelecionada_tipo_texto";
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_DATA = "infracaoSelecionada_data";
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_HORA = "infracaoSelecionada_hora";
-    //public static final String INTENT_PARAM_INFRACAO_SELECIONADA_UID = "infracaoSelecionada_uid";
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL = "infracaoSelecionada_email";
-    public static final String INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO = "infracaoSelecionada_comentario";
-
-    public static final String SHARED_PREFERENCES_NAME 					= "MinhasConfiguracoes";
-    public static final String SHARED_PREFERENCES_KEY_EXIBE_TUTORIAL    = "exibeTutorial";
+public class Funcoes {
 
     public static Bitmap decodeFrom64(String encodedString) {
 
@@ -162,4 +132,10 @@ public class Constantes {
             return context.getResources().getDrawable(id);
         }
     }
+
+    public static final String convertEmailInKey(String input)
+    {
+        return input.replaceAll("\\.", "\\:").replaceAll("\\#", "\\:").replaceAll("\\$", "\\:");
+    }
+
 }

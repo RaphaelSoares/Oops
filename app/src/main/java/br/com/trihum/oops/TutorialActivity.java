@@ -1,25 +1,24 @@
 package br.com.trihum.oops;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import br.com.trihum.oops.utilities.Constantes;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -83,12 +82,12 @@ public class TutorialActivity extends AppCompatActivity {
             dots[i] = new TextView(this);
             dots[i].setText(Html.fromHtml("&#8226;"));
             dots[i].setTextSize(35);
-            dots[i].setTextColor(Color.parseColor("#888888"));
+            dots[i].setTextColor(ContextCompat.getColor(this, R.color.corTutorialDotsCinza));
             dotsLayout.addView(dots[i]);
         }
 
         if (dots.length > 0)
-            dots[currentPage].setTextColor(Color.parseColor("#FFFFFF"));
+            dots[currentPage].setTextColor(ContextCompat.getColor(this, R.color.corTutorialDotsAtivo));
     }
 
     private int getItem(int i) {

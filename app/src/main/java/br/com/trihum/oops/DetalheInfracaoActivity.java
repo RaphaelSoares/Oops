@@ -3,7 +3,6 @@ package br.com.trihum.oops;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +17,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import br.com.trihum.oops.model.Infracao;
+import br.com.trihum.oops.model.InfracaoDetalhe;
+import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.utilities.Funcoes;
 
 public class DetalheInfracaoActivity extends BaseActivity {
 
@@ -84,7 +88,8 @@ public class DetalheInfracaoActivity extends BaseActivity {
         infracaoSelecionada.setTipo(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO));
         infracaoSelecionada.setData(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA));
         infracaoSelecionada.setHora(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA));
-        infracaoSelecionada.setUid(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID));
+        //infracaoSelecionada.setUid(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID));
+        infracaoSelecionada.setEmail(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL));
         infracaoSelecionada.setComentario(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO));
 
         barraRegistroDetalheInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO));
@@ -92,39 +97,39 @@ public class DetalheInfracaoActivity extends BaseActivity {
         if (infracaoSelecionada.getStatus().equals("01"))
         {
             btnSituacaoRegistro.setText("Registro Enviado");
-            btnSituacaoInfracao.setBackground(Constantes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
-            btnSituacaoAcaoEducativa.setBackground(Constantes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
         }
         else if (infracaoSelecionada.getStatus().equals("02"))
         {
             btnSituacaoRegistro.setText("Registro em análise");
-            btnSituacaoInfracao.setBackground(Constantes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
-            btnSituacaoAcaoEducativa.setBackground(Constantes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
         }
         else if (infracaoSelecionada.getStatus().equals("03"))
         {
             btnSituacaoRegistro.setText("Registro Enviado");
-            btnSituacaoInfracao.setBackground(Constantes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
+            btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
             btnSituacaoInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
-            btnSituacaoAcaoEducativa.setBackground(Constantes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
         }
         else if (infracaoSelecionada.getStatus().equals("04"))
         {
             btnSituacaoRegistro.setText("Registro Enviado");
-            btnSituacaoInfracao.setBackground(Constantes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
+            btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
             btnSituacaoInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
-            btnSituacaoAcaoEducativa.setBackground(Constantes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
         }
         else if (infracaoSelecionada.getStatus().equals("05"))
         {
             btnSituacaoRegistro.setText("Registro Enviado");
-            btnSituacaoInfracao.setBackground(Constantes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
+            btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
             btnSituacaoInfracao.setText("Infração Validada");
-            btnSituacaoAcaoEducativa.setBackground(Constantes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
+            btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
             btnSituacaoAcaoEducativa.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
         }
 
-        registroDataInfracao.setText(Constantes.dataDiaMesAno(infracaoSelecionada.getData()));
+        registroDataInfracao.setText(Funcoes.dataDiaMesAno(infracaoSelecionada.getData()));
         registroComentarioInfracao.setText(infracaoSelecionada.getComentario());
 
         txtAreaSituacaoRegistro.setText("");
@@ -157,7 +162,7 @@ public class DetalheInfracaoActivity extends BaseActivity {
 
                 if (infracaoDetalhe.getFoto()!=null && infracaoDetalhe.getFoto().length()>0)
                 {
-                    imageFotoInfracao.setImageBitmap(Constantes.decodeFrom64(infracaoDetalhe.getFoto()));
+                    imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64(infracaoDetalhe.getFoto()));
                 }
             }
 

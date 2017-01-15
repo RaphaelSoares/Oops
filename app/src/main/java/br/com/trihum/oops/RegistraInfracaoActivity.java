@@ -1,31 +1,21 @@
 package br.com.trihum.oops;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
@@ -42,10 +32,14 @@ import com.google.firebase.database.Transaction;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+
+import br.com.trihum.oops.model.Infracao;
+import br.com.trihum.oops.model.InfracaoDetalhe;
+import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.utilities.GPSTracker;
+import br.com.trihum.oops.utilities.Globais;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -276,7 +270,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         infracao.setData(dataRegistro);
         infracao.setHora(horaRegistro);
         infracao.setComentario(txtArea.getText().toString());
-        infracao.setUid(mAuth.getCurrentUser().getUid());
+        infracao.setEmail(Globais.emailLogado);
 
         mDatabase.child("infracoes").child(key).setValue(infracao);
 
@@ -304,6 +298,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         else {
             frameTipoInfracao.setVisibility(View.VISIBLE);
         }
+        recolheTeclado();
     }
 
     public void onEscolhaTipoInfracaoClick(View v)
@@ -311,4 +306,13 @@ public class RegistraInfracaoActivity extends BaseActivity {
         frameTipoInfracao.setVisibility(View.GONE);
     }
 
+    public void recolheTeclado()
+    {
+        // Check if no view has focus:
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 }

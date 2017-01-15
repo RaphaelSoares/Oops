@@ -5,7 +5,6 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +16,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.LoggingBehavior;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -28,20 +29,25 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.auth.ProviderQueryResult;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
+
+import br.com.trihum.oops.model.UsuarioApp;
+import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.utilities.Funcoes;
+import br.com.trihum.oops.utilities.Globais;
 
 public class LoginActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener{
@@ -104,7 +110,10 @@ public class LoginActivity extends BaseActivity implements
         }
 
         //****************************************
+        // ativa a persistência offline
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
+        //****************************************
         // Objetos Firebase
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -129,11 +138,13 @@ public class LoginActivity extends BaseActivity implements
     //****************************************************************
     private void onAuthSuccess(FirebaseUser user) {
 
-        if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_COMUM)
+        if (Globais.provedorLogin == Constantes.PROVEDOR_LOGIN_COMUM)
         {
             //linkWithCredential(emailPasswordCredential);
             if (user.isEmailVerified())
             {
+                Globais.emailLogado = user.getEmail();
+
                 Intent i =  new Intent(LoginActivity.this, PrincipalActivity.class);
                 startActivity(i);
             }
@@ -143,11 +154,13 @@ public class LoginActivity extends BaseActivity implements
                         Toast.LENGTH_LONG).show();
             }
         }
-        else if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_GOOGLE)
+        else if (Globais.provedorLogin == Constantes.PROVEDOR_LOGIN_GOOGLE)
         {
             //linkWithCredential(googleCredential);
             if (googleSignInAccount != null)
             {
+                Globais.emailLogado = googleSignInAccount.getEmail();
+
                 gravarUsuarioRedeSocial(user.getUid(),
                         googleSignInAccount.getDisplayName(),
                         googleSignInAccount.getEmail(),
@@ -158,31 +171,33 @@ public class LoginActivity extends BaseActivity implements
             startActivity(i);
 
         }
-        else if (Constantes.provedorLogin == Constantes.PROVEDOR_LOGIN_FACEBOOK)
+        else if (Globais.provedorLogin == Constantes.PROVEDOR_LOGIN_FACEBOOK)
         {
+
             //linkWithCredential(facebookCredencial);
             for (UserInfo profile : user.getProviderData()) {
                 // Id of the provider (ex: google.com)
                 String providerId = profile.getProviderId();
-                Log.d("OOPS","providerID = "+providerId);
 
                 if (providerId.equals("facebook.com"))
                 {
                     // UID specific to the provider
                     String uid = profile.getUid();
-                    Log.d("OOPS","user.uid = "+user.getUid());
-                    Log.d("OOPS","uid = "+uid);
 
                     // Name, email address, and profile photo Url
                     String name = profile.getDisplayName();
-                    Log.d("OOPS","name = "+name);
                     String email = profile.getEmail();
-                    Log.d("OOPS","user.email = "+user.getEmail());
-                    Log.d("OOPS","email = "+email);
                     Uri photoUrl = profile.getPhotoUrl();
-                    Log.d("OOPS","photoUrl = "+photoUrl);
 
-                    gravarUsuarioRedeSocial(user.getUid(),name,user.getEmail(),(photoUrl!=null)?photoUrl.toString():"");
+                    //Constantes.emailLogado = user.getEmail();
+
+                    if (Globais.emailLogado==null || Globais.emailLogado.equals(""))
+                    {
+                        Toast.makeText(LoginActivity.this, "Não foi possível obter os dados de email a partir do Facebook", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    gravarUsuarioRedeSocial(user.getUid(),name,Globais.emailLogado,(photoUrl!=null)?photoUrl.toString():"");
                     break;
                 }
             };
@@ -235,8 +250,8 @@ public class LoginActivity extends BaseActivity implements
 
         showProgressDialog();
 
-        Constantes.provedorLogin = Constantes.PROVEDOR_LOGIN_COMUM;
-        Constantes.tipoLogin = Constantes.TIPO_LOGIN_COMUM;
+        Globais.provedorLogin = Constantes.PROVEDOR_LOGIN_COMUM;
+        Globais.tipoLogin = Constantes.TIPO_LOGIN_COMUM;
         //emailPasswordCredential = EmailAuthProvider.getCredential(usuario, senha);
 
         mAuth.signInWithEmailAndPassword(usuario, senha)
@@ -263,8 +278,8 @@ public class LoginActivity extends BaseActivity implements
     //****************************************************************
     public void onLoginGoogleClick(View v)
     {
-        Constantes.provedorLogin = Constantes.PROVEDOR_LOGIN_GOOGLE;
-        Constantes.tipoLogin = Constantes.TIPO_LOGIN_REDE_SOCIAL;
+        Globais.provedorLogin = Constantes.PROVEDOR_LOGIN_GOOGLE;
+        Globais.tipoLogin = Constantes.TIPO_LOGIN_REDE_SOCIAL;
         showProgressDialog();
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -283,6 +298,7 @@ public class LoginActivity extends BaseActivity implements
                 googleSignInAccount = result.getSignInAccount();
                 firebaseAuthWithGoogle(googleSignInAccount);
             } else {
+                hideProgressDialog();
                 Toast.makeText(LoginActivity.this, "Não foi possível autenticar o login no Google",
                         Toast.LENGTH_LONG).show();
             }
@@ -308,6 +324,7 @@ public class LoginActivity extends BaseActivity implements
                             onAuthSuccess(task.getResult().getUser());
                         }
                         else {
+                            hideProgressDialog();
                             Log.d(TAG, "firebaseAuthWithGoogle signInWithCredential = "+task.getException());
                             Toast.makeText(LoginActivity.this, "Não foi possível entrar usando as credenciais fornecidas pelo Google",
                                     Toast.LENGTH_LONG).show();
@@ -324,8 +341,10 @@ public class LoginActivity extends BaseActivity implements
     public void onLoginFacebookClick(View v)
     {
         //showProgressDialog();
-        Constantes.provedorLogin = Constantes.PROVEDOR_LOGIN_FACEBOOK;
-        Constantes.tipoLogin = Constantes.TIPO_LOGIN_REDE_SOCIAL;
+        Globais.provedorLogin = Constantes.PROVEDOR_LOGIN_FACEBOOK;
+        Globais.tipoLogin = Constantes.TIPO_LOGIN_REDE_SOCIAL;
+
+        showProgressDialog();
 
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -334,16 +353,18 @@ public class LoginActivity extends BaseActivity implements
                     public void onSuccess(LoginResult loginResult) {
                         //Log.d("OOPS", "Login success");
 
-                        handleFacebookAccessToken(loginResult.getAccessToken());
+                        obterDadosFacebookToken(loginResult.getAccessToken());
+
                     }
 
                     @Override
                     public void onCancel() {
-                        Toast.makeText(LoginActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                        hideProgressDialog();
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
+                        hideProgressDialog();
                         Toast.makeText(LoginActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -351,8 +372,46 @@ public class LoginActivity extends BaseActivity implements
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("email", "public_profile", "user_friends"));
     }
 
+    private void obterDadosFacebookToken(final AccessToken token)
+    {
+        GraphRequest request = GraphRequest.newMeRequest(
+                token,
+                new GraphRequest.GraphJSONObjectCallback() {@Override
+                public void onCompleted(JSONObject object,
+                                        GraphResponse response) {
+                    try {
+                        /*id = object.getString("id");
+                        try {
+                            URL profile_pic = new URL(
+                                    "http://graph.facebook.com/" + id + "/picture?type=large");
+                            Log.i("profile_pic",
+                                    profile_pic + "");
+
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                        name = object.getString("name");
+                        email = object.getString("email");
+                        gender = object.getString("gender");
+                        birthday = object.getString("birthday");*/
+
+                        Globais.emailLogado = object.getString("email");
+
+                        handleFacebookAccessToken(token);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,email,gender,birthday,picture");
+        request.setParameters(parameters);
+        request.executeAsync();
+
+    }
     private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
+        //Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential facebookCredencial = FacebookAuthProvider.getCredential(token.getToken());
 
@@ -372,7 +431,7 @@ public class LoginActivity extends BaseActivity implements
                             Log.d(TAG, "task exception : " + task.getException());
                         }
 
-                        // ...
+                        hideProgressDialog();
                     }
                 });
     }
@@ -386,7 +445,7 @@ public class LoginActivity extends BaseActivity implements
         UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, foto_perfil);
 
         //TODO verificar se existe uma opcao de onSuccess para verificar se a gravacao de fato ocorreu
-        mDatabase.child("usuarios_app").child(userId).setValue(usuarioApp);
+        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp);
     }
 
     //****************************************************************

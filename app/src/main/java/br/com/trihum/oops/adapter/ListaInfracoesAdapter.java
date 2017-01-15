@@ -1,8 +1,7 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +18,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
+
+import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.model.Infracao;
+import br.com.trihum.oops.model.InfracaoDetalhe;
+import br.com.trihum.oops.R;
+import br.com.trihum.oops.utilities.Funcoes;
 
 /**
  * Created by raphaelmoraes on 19/12/16.
@@ -100,7 +104,7 @@ public class ListaInfracoesAdapter extends BaseAdapter {
         }
 
         textoTipoInfracao.setText(mapaTipos.get(infracao.getTipo()));
-        textoDataInfracao.setText(Constantes.dataDiaMesAno(infracao.getData()));
+        textoDataInfracao.setText(Funcoes.dataDiaMesAno(infracao.getData()));
 
         mDatabase.child("detalhes_infracoes/"+infracao.getId()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -114,7 +118,7 @@ public class ListaInfracoesAdapter extends BaseAdapter {
                 textoEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
                 if (infracaoDetalhe.getFoto_mini()!=null && infracaoDetalhe.getFoto_mini().length()>0)
                 {
-                    imageFotoInfracao.setImageBitmap(Constantes.decodeFrom64toRound(infracaoDetalhe.getFoto_mini()));
+                    imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64toRound(infracaoDetalhe.getFoto_mini()));
                 }
             }
 

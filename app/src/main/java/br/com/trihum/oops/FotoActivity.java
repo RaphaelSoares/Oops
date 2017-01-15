@@ -1,24 +1,22 @@
 package br.com.trihum.oops;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import java.util.List;
+
+import br.com.trihum.oops.utilities.CameraPreview;
+import br.com.trihum.oops.utilities.GPSTracker;
+import br.com.trihum.oops.utilities.PhotoHandler;
 
 //https://developer.android.com/guide/topics/media/camera.html
 
@@ -29,7 +27,7 @@ public class FotoActivity extends AppCompatActivity {
     private CameraPreview mPreview;
     public byte[] arrayBytesFoto = null;
     public byte[] arrayBytesFotoMini = null;
-    boolean fotoTirada;
+    public boolean fotoTirada;
 
     FloatingActionButton fabTirarFoto;
     FloatingActionButton fabConfirmarFoto;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#f1562c</color>
+    <color name="colorPrimary">#F1562C</color>
     <color name="colorPrimaryDark">#303f9f</color>
     <color name="colorAccent">#FFFFFF</color>
 
@@ -9,5 +9,10 @@
     <color name="btRadioColor">#009999</color>
 
     <color name="corVerdeTitulo">#009999</color>
-    <color name="corLaranjaTitulo">#f1562c</color>
+    <color name="corLaranjaTitulo">#F1562C</color>
+
+    <color name="corTutorialDotsCinza">#888888</color>
+    <color name="corTutorialDotsAtivo">#FFFFFF</color>
+    <color name="corCinzaClaro">#E6E7E8</color>
+
 </resources>

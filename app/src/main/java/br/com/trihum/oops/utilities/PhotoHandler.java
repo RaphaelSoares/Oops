@@ -1,19 +1,19 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.utilities;
 
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Surface;
 
 import java.io.ByteArrayOutputStream;
+
+import br.com.trihum.oops.FotoActivity;
+import br.com.trihum.oops.utilities.Constantes;
 
 /**
  * Created by raphaelmoraes on 03/01/17.
@@ -82,7 +82,7 @@ public class PhotoHandler implements PictureCallback {
             //Log.d("OOPS","arrayBytesFoto = "+fotoActivity.arrayBytesFoto.length);
 
             // Salva a foto versao mini
-            bm = Constantes.getSquareReduced(Constantes.cropToSquare(bm),125,125);
+            bm = Funcoes.getSquareReduced(Funcoes.cropToSquare(bm),125,125);
             bs = new ByteArrayOutputStream();
             bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
             fotoActivity.arrayBytesFotoMini = bs.toByteArray();

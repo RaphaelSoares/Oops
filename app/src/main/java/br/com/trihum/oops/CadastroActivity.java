@@ -1,14 +1,10 @@
 package br.com.trihum.oops;
 
-import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,12 +15,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import br.com.trihum.oops.model.UsuarioApp;
+import br.com.trihum.oops.utilities.Funcoes;
 
 public class CadastroActivity extends BaseActivity {
 
@@ -175,7 +170,7 @@ public class CadastroActivity extends BaseActivity {
     private void gravarUsuario(String userId, String nomeCompleto, String email) {
         UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, "");
 
-        mDatabase.child("usuarios_app").child(userId).setValue(usuarioApp);
+        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp);
     }
 
 

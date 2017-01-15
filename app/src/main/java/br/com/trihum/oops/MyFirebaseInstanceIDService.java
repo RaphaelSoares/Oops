@@ -38,10 +38,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d("OOPS","refreshed token = "+ refreshedToken);
 
-        /*if (refreshedToken!=null && !refreshedToken.equals(""))
-        {
-            mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/token").setValue(refreshedToken);
-        }*/
         //*************************************************************
 
         // If you want to send messages to this application instance or

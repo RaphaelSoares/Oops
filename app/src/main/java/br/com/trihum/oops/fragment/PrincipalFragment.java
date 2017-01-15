@@ -1,4 +1,4 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.fragment;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -27,9 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +49,17 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import br.com.trihum.oops.DetalheInfracaoActivity;
+import br.com.trihum.oops.FotoActivity;
+import br.com.trihum.oops.R;
+import br.com.trihum.oops.utilities.Globais;
+import br.com.trihum.oops.utilities.Utility;
+import br.com.trihum.oops.adapter.ListaInfracoesAdapter;
+import br.com.trihum.oops.model.Infracao;
+import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.utilities.DownloadImageTask;
+import br.com.trihum.oops.utilities.Funcoes;
 
 
 /**
@@ -155,7 +164,7 @@ public class PrincipalFragment extends Fragment {
 
         //*************************************************
         // Exibe ou nao os botões para edição do perfil de acordo com o tipo de login
-        if (Constantes.tipoLogin == Constantes.TIPO_LOGIN_COMUM)
+        if (Globais.tipoLogin == Constantes.TIPO_LOGIN_COMUM)
         {
             btnEditarFoto.setVisibility(View.VISIBLE);
             btnEditarNome.setVisibility(View.VISIBLE);
@@ -318,16 +327,16 @@ public class PrincipalFragment extends Fragment {
         perfilEmail = (TextView) view.findViewById(R.id.perfilEmail);
 
 
-        perfilNomeCompleto.setText(Constantes.nomeCompleto);
-        perfilEmail.setText(Constantes.email);
-        if (Constantes.fotoPerfil.startsWith("http")) {
+        perfilNomeCompleto.setText(Globais.nomeCompleto);
+        perfilEmail.setText(Globais.email);
+        if (Globais.fotoPerfil.startsWith("http")) {
             try {
-                new DownloadImageTask(perfilFoto,true).execute(Constantes.fotoPerfil);
+                new DownloadImageTask(perfilFoto,true).execute(Globais.fotoPerfil);
             } catch (Exception e) {
             }
 
-        } else if (Constantes.fotoPerfil.startsWith("data")) {
-            perfilFoto.setImageBitmap(Constantes.decodeFrom64toRound(Constantes.fotoPerfil));
+        } else if (Globais.fotoPerfil.startsWith("data")) {
+            perfilFoto.setImageBitmap(Funcoes.decodeFrom64toRound(Globais.fotoPerfil));
         }
 
         //********************************************************
@@ -429,8 +438,8 @@ public class PrincipalFragment extends Fragment {
 
         // Ver o video em para tentar resolver o problema...
         // https://www.youtube.com/watch?v=30RJYT9tctc
-        mDatabase.child("infracoes").orderByChild("uid").
-                equalTo(mAuth.getCurrentUser().getUid()).addChildEventListener(new ChildEventListener() {
+        mDatabase.child("infracoes").orderByChild("email").
+                equalTo(Globais.emailLogado).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Infracao infracao = dataSnapshot.getValue(Infracao.class);
@@ -509,7 +518,7 @@ public class PrincipalFragment extends Fragment {
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result=Utility.checkPermission(getContext());
+                boolean result= Utility.checkPermission(getContext());
 
                 if (items[item].equals("Tirar Foto")) {
                     //userChoosenTask="Take Photo";
@@ -563,7 +572,7 @@ public class PrincipalFragment extends Fragment {
             try {
                 bm = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), data.getData());
 
-                bm = Constantes.getRoundedShape(Constantes.cropToSquare(bm));
+                bm = Funcoes.getRoundedShape(Funcoes.cropToSquare(bm));
                 perfilFoto.setImageBitmap(bm);
 
                 // Salva a nova foto do perfil no Firebase
@@ -571,7 +580,7 @@ public class PrincipalFragment extends Fragment {
                 ByteArrayOutputStream bs = new ByteArrayOutputStream();
                 bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
                 String encoded_mini = Base64.encodeToString(bs.toByteArray(), Base64.DEFAULT);
-                mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/foto_perfil").setValue("data:image/jpeg;base64,"+encoded_mini);
+                mDatabase.child("usuarios_app/"+ Funcoes.convertEmailInKey(Globais.emailLogado)+"/foto_perfil").setValue("data:image/jpeg;base64,"+encoded_mini);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -596,19 +605,19 @@ public class PrincipalFragment extends Fragment {
             Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
             switch(orientation) {
                 case 90:
-                    thumbnail = Constantes.rotateImage(thumbnail, 90);
+                    thumbnail = Funcoes.rotateImage(thumbnail, 90);
                     break;
                 case 180:
-                    thumbnail = Constantes.rotateImage(thumbnail, 180);
+                    thumbnail = Funcoes.rotateImage(thumbnail, 180);
                     break;
                 case 270:
-                    thumbnail = Constantes.rotateImage(thumbnail, 270);
+                    thumbnail = Funcoes.rotateImage(thumbnail, 270);
                     break;
                 default:
                     break;
             }
 
-            thumbnail = Constantes.getRoundedShape(Constantes.cropToSquare(thumbnail));
+            thumbnail = Funcoes.getRoundedShape(Funcoes.cropToSquare(thumbnail));
             perfilFoto.setImageBitmap(thumbnail);
 
             // Salva a nova foto do perfil no Firebase
@@ -617,8 +626,8 @@ public class PrincipalFragment extends Fragment {
             thumbnail.compress(Bitmap.CompressFormat.JPEG, 50, bs);
             String encoded_mini = Base64.encodeToString(bs.toByteArray(), Base64.DEFAULT);
 
-            Log.d("OOPS","trocando a foto em "+"usuarios_app/"+mAuth.getCurrentUser().getUid()+"/foto_perfil");
-            mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/foto_perfil").setValue("data:image/jpeg;base64,"+encoded_mini);
+            Log.d("OOPS","trocando a foto em "+"usuarios_app/"+Funcoes.convertEmailInKey(Globais.emailLogado)+"/foto_perfil");
+            mDatabase.child("usuarios_app/"+Funcoes.convertEmailInKey(Globais.emailLogado)+"/foto_perfil").setValue("data:image/jpeg;base64,"+encoded_mini);
         }
     }
 
@@ -643,7 +652,7 @@ public class PrincipalFragment extends Fragment {
 
                 perfilNomeCompleto.setText(nomeCompleto);
 
-                mDatabase.child("usuarios_app/"+mAuth.getCurrentUser().getUid()+"/nome_completo").setValue(nomeCompleto);
+                mDatabase.child("usuarios_app/"+Funcoes.convertEmailInKey(Globais.emailLogado)+"/nome_completo").setValue(nomeCompleto);
             }
         });
         builder.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {

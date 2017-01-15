@@ -1,14 +1,8 @@
-package br.com.trihum.oops;
+package br.com.trihum.oops.fragment;
 
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +12,20 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import br.com.trihum.oops.PrincipalActivity;
+import br.com.trihum.oops.R;
+import br.com.trihum.oops.model.FeedbackUsuario;
+import br.com.trihum.oops.model.Questionario;
+import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.utilities.Funcoes;
+import br.com.trihum.oops.utilities.Globais;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -286,7 +286,7 @@ public class FeedbackFragment extends Fragment {
 
         feedbackUsuario.setRespostaTexto(txtArea.getText().toString());
 
-        mDatabase.child("feedback_usuarios/"+questionario_ativo).child(mAuth.getCurrentUser().getUid()).setValue(feedbackUsuario);
+        mDatabase.child("feedback_usuarios/"+questionario_ativo).child(Funcoes.convertEmailInKey(Globais.emailLogado)).setValue(feedbackUsuario);
 
         ((PrincipalActivity)getActivity()).exibeFragmentPrincipal();
     }

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E6E7E8"
+    android:background="@color/corCinzaClaro"
     tools:context="br.com.trihum.oops.RegistraInfracaoActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -223,7 +223,7 @@
                 android:layout_gravity="center"
                 android:onClick="onSalvarInfracaoClick"
                 android:layout_centerVertical="false"
-                app:backgroundTint="#009999"
+                app:backgroundTint="@color/corVerdeTitulo"
                 android:src="@drawable/ic_confirma"
                 app:srcCompat="@drawable/ic_confirma"
                 android:layout_marginTop="10dp"
