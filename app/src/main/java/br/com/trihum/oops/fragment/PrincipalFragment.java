@@ -77,6 +77,7 @@ public class PrincipalFragment extends Fragment {
     private ListView listaInfracoes;
     public ListaInfracoesAdapter adapter;
     public List<Infracao> arrayInfracoes;
+    public static List<Infracao> arrayInfracoesNaoEnviadas;
     public HashMap<String, String> mapaTipos;
     public HashMap<String, String> mapaSituacoes;
     public FrameLayout frameAlteraSenha;
@@ -91,6 +92,11 @@ public class PrincipalFragment extends Fragment {
     public EditText perfilNovaSenha;
     public EditText perfilSenhaRepete;
 
+    public TextView circulo1;
+    public TextView circulo2;
+    public TextView circulo3;
+    public TextView circulo4;
+    public TextView circulo5;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -157,6 +163,17 @@ public class PrincipalFragment extends Fragment {
         perfilSenhaAtual = (EditText)view.findViewById(R.id.perfilSenhaAtual);
         perfilNovaSenha = (EditText)view.findViewById(R.id.perfilNovaSenha);
         perfilSenhaRepete = (EditText)view.findViewById(R.id.perfilSenhaRepete);
+
+        circulo1 = (TextView) view.findViewById(R.id.circulo1);
+        circulo2 = (TextView) view.findViewById(R.id.circulo2);
+        circulo3 = (TextView) view.findViewById(R.id.circulo3);
+        circulo4 = (TextView) view.findViewById(R.id.circulo4);
+        circulo5 = (TextView) view.findViewById(R.id.circulo5);
+        circulo1.setText("0");
+        circulo2.setText("0");
+        circulo3.setText("0");
+        circulo4.setText("0");
+        circulo5.setText("0");
 
         //*************************************************
         // Assegura que os campos de editar senha começam ocultos
@@ -435,6 +452,7 @@ public class PrincipalFragment extends Fragment {
         //addValueEventListener
 
         arrayInfracoes = new ArrayList<Infracao>();
+        arrayInfracoesNaoEnviadas = new ArrayList<Infracao>();
 
         // Ver o video em para tentar resolver o problema...
         // https://www.youtube.com/watch?v=30RJYT9tctc
@@ -458,6 +476,7 @@ public class PrincipalFragment extends Fragment {
 
                 adapter.arrayInfracoes = arrayInfracoes;
                 adapter.notifyDataSetChanged();
+                atualizaRelatorios();
             }
 
             @Override
@@ -476,6 +495,7 @@ public class PrincipalFragment extends Fragment {
                         break;
                     }
                 }
+                atualizaRelatorios();
 
             }
 
@@ -495,6 +515,7 @@ public class PrincipalFragment extends Fragment {
                         break;
                     }
                 }
+                atualizaRelatorios();
             }
 
             @Override
@@ -674,5 +695,32 @@ public class PrincipalFragment extends Fragment {
         Button btn = a.getButton(DialogInterface.BUTTON_NEGATIVE);
         //btn.setBackgroundColor(Color.BLUE);
         btn.setTextColor(Color.BLACK);
+    }
+
+    public void atualizaRelatorios()
+    {
+        int iCirculo1 = 0;
+        int iCirculo2 = 0;
+        int iCirculo3 = 0;
+        int iCirculo4 = 0;
+        int iCirculo5 = 0;
+
+        Iterator<Infracao> iterator = arrayInfracoes.iterator();
+
+        while (iterator.hasNext()) {
+            Infracao infracao1 = iterator.next();
+            if (infracao1.getStatus().equals("05")) iCirculo1++;
+            if (infracao1.getStatus().equals("01")) iCirculo2++;
+            if (infracao1.getStatus().equals("03")) iCirculo3++;
+            if (infracao1.getStatus().equals("04")) iCirculo4++;
+            if (infracao1.getStatus().equals("02")) iCirculo5++;
+        }
+
+        circulo1.setText(iCirculo1+"");
+        circulo2.setText(iCirculo2+"");
+        circulo3.setText(iCirculo3+"");
+        circulo4.setText(iCirculo4+"");
+        circulo5.setText(iCirculo5+"");
+
     }
 }

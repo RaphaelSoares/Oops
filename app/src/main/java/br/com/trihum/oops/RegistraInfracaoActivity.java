@@ -29,12 +29,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import br.com.trihum.oops.fragment.PrincipalFragment;
 import br.com.trihum.oops.model.Infracao;
 import br.com.trihum.oops.model.InfracaoDetalhe;
 import br.com.trihum.oops.utilities.Constantes;
@@ -50,24 +52,26 @@ public class RegistraInfracaoActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
-    GPSTracker gps;
-    double latitude;
-    double longitude;
-    String endereco;
-    String dataRegistro;
-    String horaRegistro;
+    private GPSTracker gps;
+    private double latitude;
+    private double longitude;
+    public String endereco;
+    private String dataRegistro;
+    private String horaRegistro;
 
-    TextView registroEnderecoInfracao;
-    TextView registroDataInfracao;
-    FrameLayout frameTipoInfracao;
-    Button btnTipoInfracao;
-    FloatingActionButton fabConfirmaRegistroInfracao;
-    RadioGroup rgGrupoRegistro1;
-    EditText txtArea;
-    int tipoEscolhido;
+    private TextView registroEnderecoInfracao;
+    private TextView registroDataInfracao;
+    private FrameLayout frameTipoInfracao;
+    private Button btnTipoInfracao;
+    private FloatingActionButton fabConfirmaRegistroInfracao;
+    private RadioGroup rgGrupoRegistro1;
+    private EditText txtArea;
+    private int tipoEscolhido;
 
-    String encoded_full;
-    String encoded_mini;
+    private String encoded_full;
+    private String encoded_mini;
+
+    private GeocodeTask geocodeTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         txtArea = (EditText) findViewById(R.id.txtArea);
 
         frameTipoInfracao.setVisibility(View.GONE);
+        registroEnderecoInfracao.setText("");
 
         if(getIntent().hasExtra("byteArray")) {
             byte[] arrayBytesFoto = getIntent().getByteArrayExtra("byteArray");
@@ -104,16 +109,39 @@ public class RegistraInfracaoActivity extends BaseActivity {
             encoded_mini = Base64.encodeToString(arrayBytesFotoMini, Base64.DEFAULT);
         }
 
+        Date now = new Date();
+        dataRegistro = new SimpleDateFormat("yyyy-MM-dd").format(now);
+        horaRegistro = new SimpleDateFormat("HH:mm:ss").format(now);
+        registroDataInfracao.setText(new SimpleDateFormat("dd/MM/yyyy").format(now));
+
+
         //****************************************
         // Objetos Firebase
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        //****************************************
+        // Monitora a conexão
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Globais.conectado = true;
+                    Log.d("OOPS","connected");
+                } else {
+                    Globais.conectado = false;
+                    Log.d("OOPS","not connected");
+                }
+            }
 
-        Date now = new Date();
-        dataRegistro = new SimpleDateFormat("yyyy-MM-dd").format(now);
-        horaRegistro = new SimpleDateFormat("HH:mm:ss").format(now);
-        registroDataInfracao.setText(new SimpleDateFormat("dd/MM/yyyy").format(now));
+            @Override
+            public void onCancelled(DatabaseError error) {
+                //System.err.println("Listener was cancelled");
+            }
+        });
+
 
         latitude = 0;
         longitude = 0;
@@ -127,21 +155,24 @@ public class RegistraInfracaoActivity extends BaseActivity {
             latitude = gps.getLatitude();
             longitude = gps.getLongitude();
 
-            Geocoder geoCoder = new Geocoder(this);
+            geocodeTask = new GeocodeTask(this,latitude,longitude);
+            geocodeTask.execute("");
+
+            /*Geocoder geoCoder = new Geocoder(this);
             try {
-                // TODO possivel timeout no getFromLocation
                 // Esta linha aqui pode dar throw exception por timeout
                 // ver alternativa em:
                 // http://stackoverflow.com/questions/23638067/geocoder-getfromlocation-function-throws-timed-out-waiting-for-server-response
                 List<Address> matches = geoCoder.getFromLocation(latitude, longitude, 1);
                 Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
                 endereco = bestMatch.getAddressLine(0)+" "+bestMatch.getLocality()+" "+bestMatch.getAdminArea();
-                Log.d("OOPS","endereco = "+endereco);
                 registroEnderecoInfracao.setText(endereco);
+
+                atualizaInfoEndereco(endereco);
             }
             catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
 
             // \n is for new line
             //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
@@ -181,6 +212,13 @@ public class RegistraInfracaoActivity extends BaseActivity {
         super.onBackPressed();  // optional depending on your needs
     }
 
+    public void atualizaInfoEndereco(String endereco)
+    {
+        this.endereco = endereco;
+        registroEnderecoInfracao.setText(endereco);
+        Log.d("OOPS","endereco atualizado = "+endereco);
+    }
+
     public void onSalvarInfracaoClick (View v)
     {
         // Verificando se escolheu o tipo de infração
@@ -202,15 +240,40 @@ public class RegistraInfracaoActivity extends BaseActivity {
             else if (checkedRadioButtonId == R.id.rb8Gr1Registro) tipoEscolhido = 8;
         }
 
-        if (latitude==0 && longitude==0)
+        if (Globais.conectado)
         {
-            Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível obter as coordenadas do local da infração. Por favor, tente novamente.",
-                    Toast.LENGTH_SHORT).show();
+            if (geocodeTask.isRunning)
+            {
+                Toast.makeText(RegistraInfracaoActivity.this, "Aguarde que o endereço está sendo obtido.",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else if (latitude==0 && longitude==0)
+            {
+                Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível obter as coordenadas do local da infração. Por favor, tente novamente.",
+                        Toast.LENGTH_SHORT).show();
+                if(gps.canGetLocation()) {
+                    latitude = gps.getLatitude();
+                    longitude = gps.getLongitude();
+                }
+            }
+            else if (!geocodeTask.isRunning && (endereco==null || endereco.equals("")))
+            {
+                Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível obter o endereço. Por favor, tente novamente.",
+                        Toast.LENGTH_SHORT).show();
+                geocodeTask = new GeocodeTask(this,latitude,longitude);
+                geocodeTask.execute("");
+            }
+            else
+            {
+                showProgressDialog();
+                obtemChaveESalvaDadosInfracao(latitude,longitude);
+            }
         }
         else
         {
-            showProgressDialog();
-            obtemChaveESalvaDadosInfracao(latitude,longitude);
+            Toast.makeText(RegistraInfracaoActivity.this, "Sem conexão à Internet no momento. A infração será armazenada e posteriormente enviada.",
+                    Toast.LENGTH_LONG).show();
+            salvarDadosInfracaoOffline(latitude,longitude);
         }
 
     }
@@ -290,6 +353,41 @@ public class RegistraInfracaoActivity extends BaseActivity {
 
         //hideProgressDialog();
         finish();
+    }
+
+    public void salvarDadosInfracaoOffline(double latitude, double longitude)
+    {
+        Date now = new Date();
+
+        // Salvar dados de infracao
+        Infracao infracao = new Infracao();
+        infracao.setTipo(String.format("%02d", tipoEscolhido ));
+        infracao.setStatus("00"); // Infração não enviada
+        infracao.setData(dataRegistro);
+        infracao.setHora(horaRegistro);
+        infracao.setComentario(txtArea.getText().toString());
+        infracao.setEmail(Globais.emailLogado);
+        infracao.setId("0");
+
+        PrincipalFragment.arrayInfracoesNaoEnviadas.add(infracao);
+
+        //gravar no arrayInfracoes
+
+        //Salvar dados de detalhe_infracao
+        /*InfracaoDetalhe infracaoDetalhe = new InfracaoDetalhe();
+        infracaoDetalhe.setFoto("data:image/jpeg;base64,"+encoded_full);
+        infracaoDetalhe.setFoto_mini("data:image/jpeg;base64,"+encoded_mini);
+        infracaoDetalhe.setLatitude(latitude);
+        infracaoDetalhe.setLongitude(longitude);
+        infracaoDetalhe.setEndereco(endereco);*/
+
+        Intent intent = new Intent(RegistraInfracaoActivity.this, PrincipalActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+        //hideProgressDialog();
+        finish();
+
     }
 
     public void onTipoInfracaoClick(View v) // public void onLoginClick(View v)
