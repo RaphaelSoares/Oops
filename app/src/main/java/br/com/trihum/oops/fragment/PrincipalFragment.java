@@ -53,6 +53,7 @@ import java.util.List;
 import br.com.trihum.oops.DetalheInfracaoActivity;
 import br.com.trihum.oops.FotoActivity;
 import br.com.trihum.oops.R;
+import br.com.trihum.oops.model.InfracaoComDetalhe;
 import br.com.trihum.oops.utilities.Globais;
 import br.com.trihum.oops.utilities.Utility;
 import br.com.trihum.oops.adapter.ListaInfracoesAdapter;
@@ -75,9 +76,8 @@ public class PrincipalFragment extends Fragment {
     private TabHost tabHost;
     private FloatingActionButton fabTirarFoto;
     private ListView listaInfracoes;
-    public ListaInfracoesAdapter adapter;
-    public List<Infracao> arrayInfracoes;
-    public static List<Infracao> arrayInfracoesNaoEnviadas;
+    public static ListaInfracoesAdapter adapter;
+    public static List<Object> arrayInfracoes;
     public HashMap<String, String> mapaTipos;
     public HashMap<String, String> mapaSituacoes;
     public FrameLayout frameAlteraSenha;
@@ -312,22 +312,26 @@ public class PrincipalFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapter, View view, int posicao,
                                     long id) {
 
-                Infracao infracaoSelecionada = (Infracao) adapter.getItemAtPosition(posicao);
+                Object obj = adapter.getItemAtPosition(posicao);
+                if (obj instanceof Infracao)
+                {
+                    Infracao infracaoSelecionada = (Infracao) obj;
 
-                Log.d("OOPS","selecionei = "+infracaoSelecionada.getId());
+                    Log.d("OOPS","selecionei = "+infracaoSelecionada.getId());
 
-                Intent intent =  new Intent(getContext(), DetalheInfracaoActivity.class);
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_ID, infracaoSelecionada.getId());
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS, infracaoSelecionada.getStatus());
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO, mapaSituacoes.get(infracaoSelecionada.getStatus()));
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO, infracaoSelecionada.getTipo());
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO, mapaTipos.get(infracaoSelecionada.getTipo()));
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA, infracaoSelecionada.getData());
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA, infracaoSelecionada.getHora());
-                //intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID, infracaoSelecionada.getUid());
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL, infracaoSelecionada.getEmail());
-                intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO, infracaoSelecionada.getComentario());
-                startActivity(intent);
+                    Intent intent =  new Intent(getContext(), DetalheInfracaoActivity.class);
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_ID, infracaoSelecionada.getId());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS, infracaoSelecionada.getStatus());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO, mapaSituacoes.get(infracaoSelecionada.getStatus()));
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO, infracaoSelecionada.getTipo());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO, mapaTipos.get(infracaoSelecionada.getTipo()));
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA, infracaoSelecionada.getData());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA, infracaoSelecionada.getHora());
+                    //intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID, infracaoSelecionada.getUid());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL, infracaoSelecionada.getEmail());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO, infracaoSelecionada.getComentario());
+                    startActivity(intent);
+                }
 
             }
         });
@@ -451,8 +455,7 @@ public class PrincipalFragment extends Fragment {
     {
         //addValueEventListener
 
-        arrayInfracoes = new ArrayList<Infracao>();
-        arrayInfracoesNaoEnviadas = new ArrayList<Infracao>();
+        arrayInfracoes = new ArrayList<Object>();
 
         // Ver o video em para tentar resolver o problema...
         // https://www.youtube.com/watch?v=30RJYT9tctc
@@ -465,12 +468,35 @@ public class PrincipalFragment extends Fragment {
                 arrayInfracoes.add(infracao);
 
                 // Ordena pelos mais recentes pra cima
-                Collections.sort(arrayInfracoes, new Comparator<Infracao>(){
-                    public int compare(Infracao infracao1, Infracao infracao2) {
+                Collections.sort(arrayInfracoes, new Comparator<Object>(){
+                    public int compare(Object obj1, Object obj2) {
                         // ## Descending order
-                        String dataHora1 = infracao1.getData()+" "+infracao1.getHora();
-                        String dataHora2 = infracao2.getData()+" "+infracao2.getHora();
-                        return dataHora2.compareToIgnoreCase(dataHora1); // To compare string values
+                        if (((obj1 instanceof Infracao) && (obj2 instanceof Infracao)) ||
+                            ((obj2 instanceof Infracao) && (obj1 instanceof Infracao)))
+                        {
+                            Infracao infracao1 = (Infracao)obj1;
+                            Infracao infracao2 = (Infracao)obj2;
+                            String dataHora1 = infracao1.getData()+" "+infracao1.getHora();
+                            String dataHora2 = infracao2.getData()+" "+infracao2.getHora();
+                            return dataHora2.compareToIgnoreCase(dataHora1); // To compare string values
+                        }
+                        else if ((obj1 instanceof InfracaoComDetalhe) && (obj2 instanceof Infracao))
+                        {
+                            InfracaoComDetalhe infracao1 = (InfracaoComDetalhe) obj1;
+                            Infracao infracao2 = (Infracao)obj2;
+                            String dataHora1 = infracao1.getData()+" "+infracao1.getHora();
+                            String dataHora2 = infracao2.getData()+" "+infracao2.getHora();
+                            return dataHora2.compareToIgnoreCase(dataHora1); // To compare string values
+                        }
+                        else if ((obj1 instanceof Infracao) && (obj2 instanceof InfracaoComDetalhe))
+                        {
+                            Infracao infracao1 = (Infracao) obj1;
+                            InfracaoComDetalhe infracao2 = (InfracaoComDetalhe) obj2;
+                            String dataHora1 = infracao1.getData()+" "+infracao1.getHora();
+                            String dataHora2 = infracao2.getData()+" "+infracao2.getHora();
+                            return dataHora2.compareToIgnoreCase(dataHora1); // To compare string values
+                        }
+                        else return 0;
                     }
                 });
 
@@ -483,16 +509,21 @@ public class PrincipalFragment extends Fragment {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Infracao infracao = dataSnapshot.getValue(Infracao.class);
 
-                Iterator<Infracao> iterator = arrayInfracoes.iterator();
+                Iterator<Object> iterator = arrayInfracoes.iterator();
 
                 while (iterator.hasNext()) {
-                    Infracao infracao1 = iterator.next();
-                    if (infracao1.getId().equals(dataSnapshot.getKey()))
+                    Object obj = iterator.next();
+                    if (obj instanceof Infracao)
                     {
-                        infracao1.copia(infracao);
-                        adapter.arrayInfracoes = arrayInfracoes;
-                        adapter.notifyDataSetChanged();
-                        break;
+                        Infracao infracao1 = (Infracao)obj;
+                        if (infracao1.getId().equals(dataSnapshot.getKey()))
+                        {
+                            infracao1.copia(infracao);
+                            adapter.arrayInfracoes = arrayInfracoes;
+                            adapter.notifyDataSetChanged();
+                            break;
+                        }
+
                     }
                 }
                 atualizaRelatorios();
@@ -503,16 +534,20 @@ public class PrincipalFragment extends Fragment {
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Infracao infracao = dataSnapshot.getValue(Infracao.class);
 
-                Iterator<Infracao> iterator = arrayInfracoes.iterator();
+                Iterator<Object> iterator = arrayInfracoes.iterator();
 
                 while (iterator.hasNext()) {
-                    Infracao infracao1 = iterator.next();
-                    if (infracao1.getId().equals(dataSnapshot.getKey()))
+                    Object obj = iterator.next();
+                    if (obj instanceof Infracao)
                     {
-                        iterator.remove();
-                        adapter.arrayInfracoes = arrayInfracoes;
-                        adapter.notifyDataSetChanged();
-                        break;
+                        Infracao infracao1 = (Infracao)obj;
+                        if (infracao1.getId().equals(dataSnapshot.getKey()))
+                        {
+                            iterator.remove();
+                            adapter.arrayInfracoes = arrayInfracoes;
+                            adapter.notifyDataSetChanged();
+                            break;
+                        }
                     }
                 }
                 atualizaRelatorios();
@@ -705,15 +740,20 @@ public class PrincipalFragment extends Fragment {
         int iCirculo4 = 0;
         int iCirculo5 = 0;
 
-        Iterator<Infracao> iterator = arrayInfracoes.iterator();
+        Iterator<Object> iterator = arrayInfracoes.iterator();
 
         while (iterator.hasNext()) {
-            Infracao infracao1 = iterator.next();
-            if (infracao1.getStatus().equals("05")) iCirculo1++;
-            if (infracao1.getStatus().equals("01")) iCirculo2++;
-            if (infracao1.getStatus().equals("03")) iCirculo3++;
-            if (infracao1.getStatus().equals("04")) iCirculo4++;
-            if (infracao1.getStatus().equals("02")) iCirculo5++;
+            Object obj = iterator.next();
+            if (obj instanceof Infracao)
+            {
+                //Infracao infracao1 = iterator.next();
+                Infracao infracao1 = (Infracao)obj;
+                if (infracao1.getStatus().equals("05")) iCirculo1++;
+                if (infracao1.getStatus().equals("01")) iCirculo2++;
+                if (infracao1.getStatus().equals("03")) iCirculo3++;
+                if (infracao1.getStatus().equals("04")) iCirculo4++;
+                if (infracao1.getStatus().equals("02")) iCirculo5++;
+            }
         }
 
         circulo1.setText(iCirculo1+"");
@@ -722,5 +762,11 @@ public class PrincipalFragment extends Fragment {
         circulo4.setText(iCirculo4+"");
         circulo5.setText(iCirculo5+"");
 
+    }
+
+    public static void notificaAtualizacaoArray()
+    {
+        adapter.arrayInfracoes = arrayInfracoes;
+        adapter.notifyDataSetChanged();
     }
 }

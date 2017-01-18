@@ -19,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.List;
 
+import br.com.trihum.oops.model.InfracaoComDetalhe;
 import br.com.trihum.oops.utilities.Constantes;
 import br.com.trihum.oops.model.Infracao;
 import br.com.trihum.oops.model.InfracaoDetalhe;
@@ -32,7 +33,7 @@ import br.com.trihum.oops.utilities.Funcoes;
 public class ListaInfracoesAdapter extends BaseAdapter {
 
     LayoutInflater inflater;
-    public List<Infracao> arrayInfracoes;
+    public List<Object> arrayInfracoes;
     private DatabaseReference mDatabase;
     HashMap<String, String> mapaTipos;
     HashMap<String, String> mapaSituacoes;
@@ -70,8 +71,6 @@ public class ListaInfracoesAdapter extends BaseAdapter {
         convertView = inflater.inflate(R.layout.adapter_lista_infracoes, null);
         Context context = parent.getContext();
 
-        final Infracao infracao = arrayInfracoes.get(posicao);
-
         TextView textoStatusInfracao = (TextView)convertView.findViewById(R.id.statusInfracao);
         TextView textoTipoInfracao = (TextView)convertView.findViewById(R.id.tipoInfracao);
         TextView textoDataInfracao = (TextView)convertView.findViewById(R.id.dataInfracao);
@@ -79,54 +78,86 @@ public class ListaInfracoesAdapter extends BaseAdapter {
         final ImageView imageFotoInfracao = (ImageView) convertView.findViewById(R.id.fotoInfracao);
         final ProgressBar progressBarFoto = (ProgressBar) convertView.findViewById(R.id.progressBarFoto);
 
-        progressBarFoto.setVisibility(View.VISIBLE);
-
-        textoStatusInfracao.setText(mapaSituacoes.get(infracao.getStatus()));
-        if (infracao.getStatus().equals("01") || infracao.getStatus().equals("02"))
+        Object obj = arrayInfracoes.get(posicao);
+        if (obj instanceof Infracao)
         {
-            textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_1);
-            textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corVerdeTitulo));
-        }
-        else if (infracao.getStatus().equals("03"))
-        {
-            textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_3);
-            textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corVerdeTitulo));
-        }
-        else if (infracao.getStatus().equals("04"))
-        {
-            textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_2);
-            textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corLaranjaTitulo));
-        }
-        else if (infracao.getStatus().equals("05"))
-        {
-            textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_4);
-            textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corVerdeTitulo));
-        }
+            final Infracao infracao = (Infracao)obj;
 
-        textoTipoInfracao.setText(mapaTipos.get(infracao.getTipo()));
-        textoDataInfracao.setText(Funcoes.dataDiaMesAno(infracao.getData()));
+            progressBarFoto.setVisibility(View.VISIBLE);
 
-        mDatabase.child("detalhes_infracoes/"+infracao.getId()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                InfracaoDetalhe infracaoDetalhe = dataSnapshot.getValue(InfracaoDetalhe.class);
+            textoStatusInfracao.setText(mapaSituacoes.get(infracao.getStatus()));
+            if (infracao.getStatus().equals("01") || infracao.getStatus().equals("02"))
+            {
+                textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_1);
+                textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corVerdeTitulo));
+            }
+            else if (infracao.getStatus().equals("03"))
+            {
+                textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_3);
+                textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corVerdeTitulo));
+            }
+            else if (infracao.getStatus().equals("04"))
+            {
+                textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_2);
+                textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corLaranjaTitulo));
+            }
+            else if (infracao.getStatus().equals("05"))
+            {
+                textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_4);
+                textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corVerdeTitulo));
+            }
 
-                if (infracaoDetalhe == null) return;
+            textoTipoInfracao.setText(mapaTipos.get(infracao.getTipo()));
+            textoDataInfracao.setText(Funcoes.dataDiaMesAno(infracao.getData()));
 
-                progressBarFoto.setVisibility(View.INVISIBLE);
+            mDatabase.child("detalhes_infracoes/"+infracao.getId()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    InfracaoDetalhe infracaoDetalhe = dataSnapshot.getValue(InfracaoDetalhe.class);
 
-                textoEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
-                if (infracaoDetalhe.getFoto_mini()!=null && infracaoDetalhe.getFoto_mini().length()>0)
-                {
-                    imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64toRound(infracaoDetalhe.getFoto_mini()));
+                    if (infracaoDetalhe == null) return;
+
+                    progressBarFoto.setVisibility(View.INVISIBLE);
+
+                    textoEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
+                    if (infracaoDetalhe.getFoto_mini()!=null && infracaoDetalhe.getFoto_mini().length()>0)
+                    {
+                        imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64toRound(infracaoDetalhe.getFoto_mini()));
+                    }
                 }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+        }
+        else if (obj instanceof InfracaoComDetalhe)
+        {
+            final InfracaoComDetalhe infracao = (InfracaoComDetalhe) obj;
+
+            progressBarFoto.setVisibility(View.VISIBLE);
+
+            textoStatusInfracao.setText(mapaSituacoes.get(infracao.getStatus()));
+            if (infracao.getStatus().equals("00"))
+            {
+                textoStatusInfracao.setBackgroundResource(R.drawable.titulo_lista_situacao_2);
+                textoStatusInfracao.setTextColor(ContextCompat.getColor(context, R.color.corLaranjaTitulo));
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+            textoTipoInfracao.setText(mapaTipos.get(infracao.getTipo()));
+            textoDataInfracao.setText(Funcoes.dataDiaMesAno(infracao.getData()));
 
+            progressBarFoto.setVisibility(View.INVISIBLE);
+
+            textoEnderecoInfracao.setText(infracao.getEndereco());
+            if (infracao.getFoto_mini()!=null && infracao.getFoto_mini().length()>0)
+            {
+                imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64toRound(infracao.getFoto_mini()));
             }
-        });
+
+        }
 
         return convertView;
     }

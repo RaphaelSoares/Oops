@@ -41,6 +41,7 @@ public class Funcoes {
     }
 
     public static Bitmap cropToSquare(Bitmap bitmap){
+        if (bitmap==null) return null;
         int width  = bitmap.getWidth();
         int height = bitmap.getHeight();
         int newWidth = (height > width) ? width : height;

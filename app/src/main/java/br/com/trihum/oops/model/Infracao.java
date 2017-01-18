@@ -12,7 +12,6 @@ public class Infracao {
     private String tipo;
     private String data;
     private String hora;
-    //private String uid;
     private String comentario;
     private String email;
 

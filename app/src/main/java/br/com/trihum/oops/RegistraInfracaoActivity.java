@@ -38,6 +38,7 @@ import java.util.List;
 
 import br.com.trihum.oops.fragment.PrincipalFragment;
 import br.com.trihum.oops.model.Infracao;
+import br.com.trihum.oops.model.InfracaoComDetalhe;
 import br.com.trihum.oops.model.InfracaoDetalhe;
 import br.com.trihum.oops.utilities.Constantes;
 import br.com.trihum.oops.utilities.GPSTracker;
@@ -360,7 +361,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         Date now = new Date();
 
         // Salvar dados de infracao
-        Infracao infracao = new Infracao();
+        InfracaoComDetalhe infracao = new InfracaoComDetalhe();
         infracao.setTipo(String.format("%02d", tipoEscolhido ));
         infracao.setStatus("00"); // Infração não enviada
         infracao.setData(dataRegistro);
@@ -369,21 +370,20 @@ public class RegistraInfracaoActivity extends BaseActivity {
         infracao.setEmail(Globais.emailLogado);
         infracao.setId("0");
 
-        PrincipalFragment.arrayInfracoesNaoEnviadas.add(infracao);
+        //Salvar dados de detalhe_infracao
+        infracao.setFoto("data:image/jpeg;base64,"+encoded_full);
+        infracao.setFoto_mini("data:image/jpeg;base64,"+encoded_mini);
+        infracao.setLatitude(latitude);
+        infracao.setLongitude(longitude);
+        infracao.setEndereco(endereco);
 
         //gravar no arrayInfracoes
+        PrincipalFragment.arrayInfracoes.add(infracao);
+        PrincipalFragment.notificaAtualizacaoArray();
 
-        //Salvar dados de detalhe_infracao
-        /*InfracaoDetalhe infracaoDetalhe = new InfracaoDetalhe();
-        infracaoDetalhe.setFoto("data:image/jpeg;base64,"+encoded_full);
-        infracaoDetalhe.setFoto_mini("data:image/jpeg;base64,"+encoded_mini);
-        infracaoDetalhe.setLatitude(latitude);
-        infracaoDetalhe.setLongitude(longitude);
-        infracaoDetalhe.setEndereco(endereco);*/
-
-        Intent intent = new Intent(RegistraInfracaoActivity.this, PrincipalActivity.class);
+        /*Intent intent = new Intent(RegistraInfracaoActivity.this, PrincipalActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        startActivity(intent);*/
 
         //hideProgressDialog();
         finish();
