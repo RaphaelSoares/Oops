@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
@@ -34,11 +35,18 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.util.Iterator;
+
 import br.com.trihum.oops.fragment.FeedbackFragment;
 import br.com.trihum.oops.fragment.PrincipalFragment;
+import br.com.trihum.oops.model.Infracao;
+import br.com.trihum.oops.model.InfracaoComDetalhe;
+import br.com.trihum.oops.model.InfracaoDetalhe;
 import br.com.trihum.oops.model.UsuarioApp;
 import br.com.trihum.oops.utilities.Constantes;
 import br.com.trihum.oops.utilities.DownloadImageTask;
@@ -75,28 +83,6 @@ public class PrincipalActivity extends BaseActivity
         // Objetos Firebase
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        //****************************************
-        // Monitora a conexão
-        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectedRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
-                if (connected) {
-                    Globais.conectado = true;
-                    Log.d("OOPS","connected");
-                } else {
-                    Globais.conectado = false;
-                    Log.d("OOPS","not connected");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                //System.err.println("Listener was cancelled");
-            }
-        });
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -338,4 +324,5 @@ public class PrincipalActivity extends BaseActivity
 
         }
     }
+
 }

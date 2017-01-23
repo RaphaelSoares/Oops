@@ -39,6 +39,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
@@ -52,8 +54,10 @@ import java.util.List;
 
 import br.com.trihum.oops.DetalheInfracaoActivity;
 import br.com.trihum.oops.FotoActivity;
+import br.com.trihum.oops.GeocodeTask;
 import br.com.trihum.oops.R;
 import br.com.trihum.oops.model.InfracaoComDetalhe;
+import br.com.trihum.oops.model.InfracaoDetalhe;
 import br.com.trihum.oops.utilities.Globais;
 import br.com.trihum.oops.utilities.Utility;
 import br.com.trihum.oops.adapter.ListaInfracoesAdapter;
@@ -97,6 +101,8 @@ public class PrincipalFragment extends Fragment {
     public TextView circulo3;
     public TextView circulo4;
     public TextView circulo5;
+
+    private GeocodeTask geocodeTask;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -299,6 +305,29 @@ public class PrincipalFragment extends Fragment {
 
 
         //****************************************
+        // Monitora a conexão
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Globais.conectado = true;
+                    Log.d("OOPS","connected");
+                    verificaEnviaInfracoesOffline();
+                } else {
+                    Globais.conectado = false;
+                    Log.d("OOPS","not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                //System.err.println("Listener was cancelled");
+            }
+        });
+
+        //****************************************
         // Consulta a lista de tipos e situacoes
         consultaListaTipos();
         consultaListaSituacoes();
@@ -331,6 +360,14 @@ public class PrincipalFragment extends Fragment {
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL, infracaoSelecionada.getEmail());
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO, infracaoSelecionada.getComentario());
                     startActivity(intent);
+                }
+                else if (obj instanceof InfracaoComDetalhe)
+                {
+                    InfracaoComDetalhe infracaoSelecionada = (InfracaoComDetalhe) obj;
+
+
+
+
                 }
 
             }
@@ -766,7 +803,105 @@ public class PrincipalFragment extends Fragment {
 
     public static void notificaAtualizacaoArray()
     {
+        //Remove objetos InfracaoComDetalhe com id == "
+        Iterator<Object> iterator = arrayInfracoes.iterator();
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            if (obj instanceof InfracaoComDetalhe)
+            {
+                InfracaoComDetalhe infracao1 = (InfracaoComDetalhe)obj;
+                if (infracao1.getId().equals("0") && infracao1.getStatus().equals("01"))
+                {
+                    iterator.remove();
+                }
+            }
+        }
+
         adapter.arrayInfracoes = arrayInfracoes;
         adapter.notifyDataSetChanged();
     }
+
+
+    public void atualizaEnderecoEnviaOffline(final InfracaoComDetalhe infracaoComDetalhe)
+    {
+        //obtenho a nova chave
+        DatabaseReference countRef = mDatabase.child("controles").child("contador_infracao");
+
+        countRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+
+                String valorS = mutableData.getValue(String.class);
+                if (valorS == null) {
+                    return Transaction.success(mutableData);
+                }
+                String result = String.format("%04d", (Integer.parseInt(valorS) + 1) );
+
+                // Set value and report transaction success
+                mutableData.setValue(result);
+                return Transaction.success(mutableData);
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b,
+                                   DataSnapshot dataSnapshot) {
+                // Transaction completed
+                if (databaseError != null)
+                {
+                }
+                else
+                {
+                    String key = dataSnapshot.getValue(String.class);
+
+                    // Salvar dados de infracao
+                    Infracao infracao = new Infracao();
+                    infracao.setTipo(infracaoComDetalhe.getTipo());
+                    infracao.setStatus("01"); // Nova Infração
+                    infracao.setData(infracaoComDetalhe.getData());
+                    infracao.setHora(infracaoComDetalhe.getHora());
+                    infracao.setComentario(infracaoComDetalhe.getComentario());
+                    infracao.setEmail(Globais.emailLogado);
+
+                    mDatabase.child("infracoes").child(key).setValue(infracao);
+
+                    //Salvar dados de detalhe_infracao
+                    InfracaoDetalhe infracaoDetalhe = new InfracaoDetalhe();
+                    infracaoDetalhe.setFoto(infracaoComDetalhe.getFoto());
+                    infracaoDetalhe.setFoto_mini(infracaoComDetalhe.getFoto_mini());
+                    infracaoDetalhe.setLatitude(infracaoComDetalhe.getLatitude());
+                    infracaoDetalhe.setLongitude(infracaoComDetalhe.getLongitude());
+                    infracaoDetalhe.setEndereco(infracaoComDetalhe.getEndereco());
+
+                    mDatabase.child("detalhes_infracoes").child(key).setValue(infracaoDetalhe);
+
+                    //iterator.remove();
+                    infracaoComDetalhe.setStatus("01"); // marcar como enviada
+                    notificaAtualizacaoArray();
+                    atualizaRelatorios();
+
+                }
+
+            }
+        });
+
+    }
+    public void verificaEnviaInfracoesOffline()
+    {
+        final Iterator<Object> iterator = arrayInfracoes.iterator();
+
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            if (obj instanceof InfracaoComDetalhe)
+            {
+                final InfracaoComDetalhe infracaoComDetalhe = (InfracaoComDetalhe) obj;
+
+                geocodeTask = new GeocodeTask(this,infracaoComDetalhe);
+                geocodeTask.execute("");
+
+            } // if instanceof
+        } // while
+
+    }
+
+
 }
