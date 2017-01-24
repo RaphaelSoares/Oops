@@ -48,6 +48,20 @@
             android:layout_width="220dp"
             android:onClick="onEfetuarCadastroClick" />
 
+        <Button
+            android:text="ESQUECI A SENHA"
+            android:id="@+id/buttonEsqueci"
+            android:layout_marginTop="460dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/botao_laranja_selector"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_height="30dp"
+            android:layout_width="220dp"
+            android:onClick="onEsqueciSenhaClick" />
+
         <EditText
             android:layout_width="220dp"
             android:layout_height="30dp"

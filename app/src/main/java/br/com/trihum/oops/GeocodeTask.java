@@ -6,6 +6,7 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,6 +26,7 @@ public class GeocodeTask extends AsyncTask<String, Integer, String> {
     private PrincipalFragment fragment;
     private InfracaoComDetalhe infracaoComDetalhe;
     private String endereco;
+    private String localidade;
     public boolean isRunning;
 
     public GeocodeTask(Activity activity, double latitude, double longitude)
@@ -68,6 +70,7 @@ public class GeocodeTask extends AsyncTask<String, Integer, String> {
             List<Address> matches = geoCoder.getFromLocation(latitude, longitude, 1);
             Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
             endereco = bestMatch.getAddressLine(0)+" "+bestMatch.getLocality()+" "+bestMatch.getAdminArea();
+            localidade = bestMatch.getLocality();
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -82,12 +85,12 @@ public class GeocodeTask extends AsyncTask<String, Integer, String> {
         isRunning = false;
         if (activity!=null)
         {
-            ((RegistraInfracaoActivity)activity).atualizaInfoEndereco(result);
+            ((RegistraInfracaoActivity)activity).atualizaInfoEndereco(result,localidade);
         }
         else if (fragment!=null)
         {
             infracaoComDetalhe.setEndereco(result);
-            ((PrincipalFragment)fragment).atualizaEnderecoEnviaOffline(infracaoComDetalhe);
+            ((PrincipalFragment)fragment).atualizaEnderecoEnviaOffline(infracaoComDetalhe,localidade);
         }
     }
 }

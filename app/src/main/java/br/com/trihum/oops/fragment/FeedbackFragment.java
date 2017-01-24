@@ -275,13 +275,13 @@ public class FeedbackFragment extends Fragment {
     {
         FeedbackUsuario feedbackUsuario = new FeedbackUsuario();
 
-        if (rgGrupo1.getVisibility()==View.VISIBLE) feedbackUsuario.setResposta1(""+rgGrupo1.indexOfChild(getActivity().findViewById(rgGrupo1.getCheckedRadioButtonId())));
+        if (rgGrupo1.getVisibility()==View.VISIBLE) feedbackUsuario.setResposta1(""+(rgGrupo1.indexOfChild(getActivity().findViewById(rgGrupo1.getCheckedRadioButtonId()))+1));
         else feedbackUsuario.setResposta1(editPergunta1.getText().toString());
 
-        if (rgGrupo2.getVisibility()==View.VISIBLE) feedbackUsuario.setResposta2(""+rgGrupo2.indexOfChild(getActivity().findViewById(rgGrupo2.getCheckedRadioButtonId())));
+        if (rgGrupo2.getVisibility()==View.VISIBLE) feedbackUsuario.setResposta2(""+(rgGrupo2.indexOfChild(getActivity().findViewById(rgGrupo2.getCheckedRadioButtonId()))+1));
         else feedbackUsuario.setResposta2(editPergunta2.getText().toString());
 
-        if (rgGrupo3.getVisibility()==View.VISIBLE) feedbackUsuario.setResposta3(""+rgGrupo3.indexOfChild(getActivity().findViewById(rgGrupo3.getCheckedRadioButtonId())));
+        if (rgGrupo3.getVisibility()==View.VISIBLE) feedbackUsuario.setResposta3(""+(rgGrupo3.indexOfChild(getActivity().findViewById(rgGrupo3.getCheckedRadioButtonId()))+1));
         else feedbackUsuario.setResposta3(editPergunta3.getText().toString());
 
         feedbackUsuario.setRespostaTexto(txtArea.getText().toString());

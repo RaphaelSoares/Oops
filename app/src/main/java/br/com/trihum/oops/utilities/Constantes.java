@@ -29,5 +29,6 @@ public class Constantes {
 
     public static final String SHARED_PREFERENCES_NAME 					= "MinhasConfiguracoes";
     public static final String SHARED_PREFERENCES_KEY_EXIBE_TUTORIAL    = "exibeTutorial";
+    public static final String SHARED_PREFERENCES_KEY_INFRACOES_OFFLINE = "infracoesOffline";
 
 }

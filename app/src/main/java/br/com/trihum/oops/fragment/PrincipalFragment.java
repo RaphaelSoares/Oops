@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -42,9 +43,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -82,8 +86,10 @@ public class PrincipalFragment extends Fragment {
     private ListView listaInfracoes;
     public static ListaInfracoesAdapter adapter;
     public static List<Object> arrayInfracoes;
+    public static List<Object> arrayInfracoesOffline;
     public HashMap<String, String> mapaTipos;
     public HashMap<String, String> mapaSituacoes;
+    public static HashMap<String, String> mapaOrgaos;
     public FrameLayout frameAlteraSenha;
     public Button btnAlterarSenha;
     private FloatingActionButton fabConfirmaEnvioSenha;
@@ -103,6 +109,7 @@ public class PrincipalFragment extends Fragment {
     public TextView circulo5;
 
     private GeocodeTask geocodeTask;
+    public static SharedPreferences preferences;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
@@ -180,6 +187,11 @@ public class PrincipalFragment extends Fragment {
         circulo3.setText("0");
         circulo4.setText("0");
         circulo5.setText("0");
+
+        //*************************************************
+        // Instancia o shared Preferences
+        preferences = getActivity().getSharedPreferences(Constantes.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        //*************************************************
 
         //*************************************************
         // Assegura que os campos de editar senha começam ocultos
@@ -303,34 +315,11 @@ public class PrincipalFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-
         //****************************************
-        // Monitora a conexão
-        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
-        connectedRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                boolean connected = snapshot.getValue(Boolean.class);
-                if (connected) {
-                    Globais.conectado = true;
-                    Log.d("OOPS","connected");
-                    verificaEnviaInfracoesOffline();
-                } else {
-                    Globais.conectado = false;
-                    Log.d("OOPS","not connected");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                //System.err.println("Listener was cancelled");
-            }
-        });
-
-        //****************************************
-        // Consulta a lista de tipos e situacoes
+        // Consulta a lista de tipos, situacoes e orgaos
         consultaListaTipos();
         consultaListaSituacoes();
+        consultaListaOrgaos();
         //****************************************
 
         adapter = new ListaInfracoesAdapter(inflater, mapaTipos, mapaSituacoes);
@@ -366,8 +355,6 @@ public class PrincipalFragment extends Fragment {
                     InfracaoComDetalhe infracaoSelecionada = (InfracaoComDetalhe) obj;
 
 
-
-
                 }
 
             }
@@ -377,6 +364,36 @@ public class PrincipalFragment extends Fragment {
         // Consulta a lista de infracoes
         atualizaListaInfracoes();
         //********************************************************
+
+        //****************************************
+        // Carrega infracoes offline
+        carregaPreferencesInfracoesOffline();
+        //********************************************************
+
+        //****************************************
+        // Monitora a conexão
+        DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+        connectedRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                boolean connected = snapshot.getValue(Boolean.class);
+                if (connected) {
+                    Globais.conectado = true;
+                    Log.d("OOPS","connected");
+                    verificaEnviaInfracoesOffline();
+                } else {
+                    Globais.conectado = false;
+                    Log.d("OOPS","not connected");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                //System.err.println("Listener was cancelled");
+            }
+        });
+        //****************************************
+
 
         //********************************************************
         // Pegando componentes do navigator e atribuindo os dados do perfil
@@ -478,6 +495,29 @@ public class PrincipalFragment extends Fragment {
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
                 {
                     mapaSituacoes.put(postSnapshot.getKey(),postSnapshot.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void consultaListaOrgaos()
+    {
+        mapaOrgaos=new HashMap<String, String>();
+
+        mDatabase.child("orgaos").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
+                {
+                    mapaOrgaos.put(postSnapshot.getKey(),postSnapshot.child("locais").getValue().toString());
+                    //Log.d("OOPS","key = "+postSnapshot.getKey());
+                    //Log.d("OOPS","value = "+postSnapshot.child("locais").getValue().toString());
                 }
             }
 
@@ -819,11 +859,14 @@ public class PrincipalFragment extends Fragment {
 
         adapter.arrayInfracoes = arrayInfracoes;
         adapter.notifyDataSetChanged();
+
+        salvaPreferencesInfracoesOffline();
     }
 
 
-    public void atualizaEnderecoEnviaOffline(final InfracaoComDetalhe infracaoComDetalhe)
+    public void atualizaEnderecoEnviaOffline(final InfracaoComDetalhe infracaoComDetalhe, final String localidade)
     {
+
         //obtenho a nova chave
         DatabaseReference countRef = mDatabase.child("controles").child("contador_infracao");
 
@@ -861,6 +904,8 @@ public class PrincipalFragment extends Fragment {
                     infracao.setHora(infracaoComDetalhe.getHora());
                     infracao.setComentario(infracaoComDetalhe.getComentario());
                     infracao.setEmail(Globais.emailLogado);
+                    infracao.setOrgao(PrincipalFragment.obterOrgaoPorLocalidade(localidade));
+
 
                     mDatabase.child("infracoes").child(key).setValue(infracao);
 
@@ -903,5 +948,76 @@ public class PrincipalFragment extends Fragment {
 
     }
 
+    public void carregaPreferencesInfracoesOffline()
+    {
+        arrayInfracoesOffline = new ArrayList<Object>();
 
+        String connectionsJSONString  = preferences.getString(Constantes.SHARED_PREFERENCES_KEY_INFRACOES_OFFLINE, null);
+        if (connectionsJSONString !=null)
+        {
+            Type type = new TypeToken< List < InfracaoComDetalhe >>() {}.getType();
+            arrayInfracoesOffline = new Gson().fromJson(connectionsJSONString, type);
+
+            Iterator<Object> iterator = arrayInfracoesOffline.iterator();
+
+            while (iterator.hasNext()) {
+                Object obj = iterator.next();
+                if (obj instanceof InfracaoComDetalhe)
+                {
+                    arrayInfracoes.add(obj);
+
+                } // if instanceof
+            } // while
+
+            adapter.arrayInfracoes = arrayInfracoes;
+            adapter.notifyDataSetChanged();
+        }
+
+    }
+
+    public static void salvaPreferencesInfracoesOffline()
+    {
+        arrayInfracoesOffline = new ArrayList<Object>();
+
+        Iterator<Object> iterator = arrayInfracoes.iterator();
+
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            if (obj instanceof InfracaoComDetalhe)
+            {
+                arrayInfracoesOffline.add(obj);
+
+            } // if instanceof
+        } // while
+
+        SharedPreferences.Editor editor = preferences.edit();
+        if (arrayInfracoesOffline.size() > 0)
+        {
+            String connectionsJSONString = new Gson().toJson(arrayInfracoesOffline);
+            editor.putString(Constantes.SHARED_PREFERENCES_KEY_INFRACOES_OFFLINE, connectionsJSONString);
+        }
+        else
+        {
+            editor.remove(Constantes.SHARED_PREFERENCES_KEY_INFRACOES_OFFLINE);
+        }
+        editor.commit();
+    }
+
+    public static String obterOrgaoPorLocalidade(String localidade)
+    {
+        for (String key : mapaOrgaos.keySet()) {
+
+            String[] locais = mapaOrgaos.get(key).toLowerCase().split(",");
+
+            for (String local : locais)
+            {
+                if (local.indexOf(localidade.toLowerCase())>=0)
+                {
+                    return key;
+                }
+            }
+        }
+
+        return "00";
+    }
 }

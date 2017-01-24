@@ -174,18 +174,28 @@ public class CadastroActivity extends BaseActivity {
     }
 
 
-    /* Caso seja preciso implementar um botão de redefinir senha...
-    String emailAddress = "user@example.com";
+    public void onEsqueciSenhaClick(View v)
+    {
+        final String emailAddress = editTextCadastroEmail.getText().toString();
 
-auth.sendPasswordResetEmail(emailAddress)
-        .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()) {
-                    Log.d(TAG, "Email sent.");
+        if (emailAddress.equals(""))
+        {
+            Toast.makeText(CadastroActivity.this, "Preencha o email para redefinir a senha", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mAuth.sendPasswordResetEmail(emailAddress)
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+
+                        Toast.makeText(CadastroActivity.this, "Verifique o e-mail enviado para "+emailAddress,
+                                Toast.LENGTH_LONG).show();
+                        Log.d("OOPS", "Email enviado");
+                    }
                 }
-            }
-        });
-    * */
+            });
+    }
 
 }

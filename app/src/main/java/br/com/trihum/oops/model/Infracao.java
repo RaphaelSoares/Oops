@@ -14,6 +14,7 @@ public class Infracao {
     private String hora;
     private String comentario;
     private String email;
+    private String orgao;
 
     public Infracao()
     {
@@ -80,6 +81,10 @@ public class Infracao {
 
     public void setEmail(String email) { this.email = email; }
 
+    public String getOrgao() { return orgao; }
+
+    public void setOrgao(String orgao) { this.orgao = orgao; }
+
     public void copia(Infracao infracaoOrigem)
     {
         status = infracaoOrigem.getStatus();
@@ -89,5 +94,6 @@ public class Infracao {
         //uid = infracaoOrigem.getUid();
         comentario = infracaoOrigem.getComentario();
         email = infracaoOrigem.getEmail();
+        orgao = infracaoOrigem.getOrgao();
     }
 }

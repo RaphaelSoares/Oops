@@ -57,6 +57,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
     private double latitude;
     private double longitude;
     public String endereco;
+    public String localidade;
     private String dataRegistro;
     private String horaRegistro;
 
@@ -147,6 +148,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         latitude = 0;
         longitude = 0;
         endereco = "";
+        localidade = "";
         // Verificando o GPS e se consegue obter as coordenadas
         gps = new GPSTracker(RegistraInfracaoActivity.this);
 
@@ -213,9 +215,10 @@ public class RegistraInfracaoActivity extends BaseActivity {
         super.onBackPressed();  // optional depending on your needs
     }
 
-    public void atualizaInfoEndereco(String endereco)
+    public void atualizaInfoEndereco(String endereco, String localidade)
     {
         this.endereco = endereco;
+        this.localidade = localidade;
         registroEnderecoInfracao.setText(endereco);
         Log.d("OOPS","endereco atualizado = "+endereco);
     }
@@ -335,6 +338,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         infracao.setHora(horaRegistro);
         infracao.setComentario(txtArea.getText().toString());
         infracao.setEmail(Globais.emailLogado);
+        infracao.setOrgao(PrincipalFragment.obterOrgaoPorLocalidade(localidade));
 
         mDatabase.child("infracoes").child(key).setValue(infracao);
 

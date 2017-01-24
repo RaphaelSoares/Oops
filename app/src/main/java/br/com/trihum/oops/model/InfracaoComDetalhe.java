@@ -14,6 +14,7 @@ public class InfracaoComDetalhe {
     private String hora;
     private String comentario;
     private String email;
+    private String orgao;
 
     // Dados detalhe infracao
     private String foto;
@@ -86,6 +87,10 @@ public class InfracaoComDetalhe {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getOrgao() { return orgao; }
+
+    public void setOrgao(String orgao) { this.orgao = orgao; }
 
     public String getFoto() {
         return foto;
