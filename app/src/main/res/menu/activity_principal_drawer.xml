@@ -9,7 +9,9 @@
         <item
             android:id="@+id/nav_manter_projeto"
             android:icon="@drawable/ic_contribua"
-            android:title="Ajude a manter o projeto" />
+            android:title="Ajude a manter o projeto"
+            android:enabled="false"
+            android:visible="false" />
         <item
             android:id="@+id/nav_saiba_mais"
             android:icon="@drawable/ic_saiba_mais"

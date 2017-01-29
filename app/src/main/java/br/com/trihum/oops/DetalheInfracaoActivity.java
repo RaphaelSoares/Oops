@@ -46,6 +46,7 @@ public class DetalheInfracaoActivity extends BaseActivity {
     EditText txtAreaSituacaoAcaoEducativa;
 
     Infracao infracaoSelecionada;
+    boolean infracaoEhOffline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,19 +85,26 @@ public class DetalheInfracaoActivity extends BaseActivity {
 
         //****************************************
         Intent intent = this.getIntent();
+        infracaoEhOffline = intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_OFFLINE).equals("1");
         infracaoSelecionada = new Infracao();
         infracaoSelecionada.setId(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_ID));
         infracaoSelecionada.setStatus(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS));
         infracaoSelecionada.setTipo(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO));
         infracaoSelecionada.setData(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA));
         infracaoSelecionada.setHora(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA));
-        //infracaoSelecionada.setUid(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID));
         infracaoSelecionada.setEmail(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL));
         infracaoSelecionada.setComentario(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO));
 
-        barraRegistroDetalheInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO));
+        barraRegistroDetalheInfracao.setText(Globais.mapaTipos.get(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO)));
 
-        if (infracaoSelecionada.getStatus().equals("01"))
+        if (infracaoSelecionada.getStatus().equals("00"))
+        {
+            btnSituacaoRegistro.setText("Registro Não enviado");
+            btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            //btnSituacaoInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
+            btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+        }
+        else if (infracaoSelecionada.getStatus().equals("01"))
         {
             btnSituacaoRegistro.setText("Registro Enviado");
             btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
@@ -114,14 +122,14 @@ public class DetalheInfracaoActivity extends BaseActivity {
         {
             btnSituacaoRegistro.setText("Registro Enviado");
             btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
-            btnSituacaoInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
+            btnSituacaoInfracao.setText(Globais.mapaSituacoes.get(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS)));
             btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
         }
         else if (infracaoSelecionada.getStatus().equals("04"))
         {
             btnSituacaoRegistro.setText("Registro Enviado");
             btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
-            btnSituacaoInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
+            btnSituacaoInfracao.setText(Globais.mapaSituacoes.get(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS)));
             btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
         }
         else if (infracaoSelecionada.getStatus().equals("05"))
@@ -130,7 +138,7 @@ public class DetalheInfracaoActivity extends BaseActivity {
             btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
             btnSituacaoInfracao.setText("Infração Validada");
             btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_validacao_registro_infracao_selector));
-            btnSituacaoAcaoEducativa.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
+            btnSituacaoAcaoEducativa.setText(Globais.mapaSituacoes.get(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS)));
         }
 
         registroDataInfracao.setText(Funcoes.dataDiaMesAno(infracaoSelecionada.getData()));
@@ -140,49 +148,64 @@ public class DetalheInfracaoActivity extends BaseActivity {
         txtAreaSituacaoInfracao.setText("");
         txtAreaSituacaoAcaoEducativa.setText("");
 
-        mDatabase.child("detalhes_infracoes/"+infracaoSelecionada.getId()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                InfracaoDetalhe infracaoDetalhe = dataSnapshot.getValue(InfracaoDetalhe.class);
+        if (!infracaoEhOffline)
+        {
+            mDatabase.child("detalhes_infracoes/"+infracaoSelecionada.getId()).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    InfracaoDetalhe infracaoDetalhe = dataSnapshot.getValue(InfracaoDetalhe.class);
 
-                if (infracaoDetalhe == null) return;
+                    if (infracaoDetalhe == null) return;
 
-                progressBarFoto.setVisibility(View.INVISIBLE);
+                    progressBarFoto.setVisibility(View.INVISIBLE);
 
-                registroEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
+                    registroEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
 
-                String comentarioOrgao = (infracaoDetalhe.getComentario_orgao()!=null)?infracaoDetalhe.getComentario_orgao():"";
-                String msgOrgao = (infracaoDetalhe.getMsg_orgao()!=null)?infracaoDetalhe.getMsg_orgao():"";
-                String conteudoTexto = (msgOrgao.equals(""))?comentarioOrgao:"MENSAGEM: " + msgOrgao + "\n\n" + comentarioOrgao;
+                    String comentarioOrgao = (infracaoDetalhe.getComentario_orgao()!=null)?infracaoDetalhe.getComentario_orgao():"";
+                    String msgOrgao = (infracaoDetalhe.getMsg_orgao()!=null)?infracaoDetalhe.getMsg_orgao():"";
+                    String conteudoTexto = (msgOrgao.equals(""))?comentarioOrgao:"MENSAGEM: " + msgOrgao + "\n\n" + comentarioOrgao;
 
-                if (infracaoSelecionada.getStatus().equals("01"))
-                {
-                    txtAreaSituacaoRegistro.setText(Globais.mensagemPadraoRegistroRecebido);
+                    if (infracaoSelecionada.getStatus().equals("01"))
+                    {
+                        txtAreaSituacaoRegistro.setText(Globais.mensagemPadraoRegistroRecebido);
+                    }
+                    if (infracaoSelecionada.getStatus().equals("02"))
+                    {
+                        txtAreaSituacaoRegistro.setText(conteudoTexto);
+                    }
+                    else if (infracaoSelecionada.getStatus().equals("03") || infracaoSelecionada.getStatus().equals("04"))
+                    {
+                        txtAreaSituacaoInfracao.setText(conteudoTexto);
+                    }
+                    else
+                    {
+                        txtAreaSituacaoAcaoEducativa.setText(conteudoTexto);
+                    }
+
+                    if (infracaoDetalhe.getFoto()!=null && infracaoDetalhe.getFoto().length()>0)
+                    {
+                        imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64(infracaoDetalhe.getFoto()));
+                    }
                 }
-                if (infracaoSelecionada.getStatus().equals("02"))
-                {
-                    txtAreaSituacaoRegistro.setText(conteudoTexto);
-                }
-                else if (infracaoSelecionada.getStatus().equals("03") || infracaoSelecionada.getStatus().equals("04"))
-                {
-                    txtAreaSituacaoInfracao.setText(conteudoTexto);
-                }
-                else
-                {
-                    txtAreaSituacaoAcaoEducativa.setText(conteudoTexto);
-                }
 
-                if (infracaoDetalhe.getFoto()!=null && infracaoDetalhe.getFoto().length()>0)
-                {
-                    imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64(infracaoDetalhe.getFoto()));
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
+            });
+        }
+        else // Se é infração offline, a foto já está no objeto
+        {
+            progressBarFoto.setVisibility(View.INVISIBLE);
+            registroEnderecoInfracao.setText("");
+
+            String foto_offline = intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_FOTO_OFFLINE);
+            if (foto_offline!=null && foto_offline.length()>0)
+            {
+                imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64(foto_offline));
             }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        }
 
 
     }

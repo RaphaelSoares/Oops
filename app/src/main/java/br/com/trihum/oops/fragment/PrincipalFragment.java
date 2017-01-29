@@ -337,14 +337,12 @@ public class PrincipalFragment extends Fragment {
                     Log.d("OOPS","selecionei = "+infracaoSelecionada.getId());
 
                     Intent intent =  new Intent(getContext(), DetalheInfracaoActivity.class);
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_OFFLINE, "0");
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_ID, infracaoSelecionada.getId());
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS, infracaoSelecionada.getStatus());
-                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO, Globais.mapaSituacoes.get(infracaoSelecionada.getStatus()));
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO, infracaoSelecionada.getTipo());
-                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO, Globais.mapaTipos.get(infracaoSelecionada.getTipo()));
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA, infracaoSelecionada.getData());
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA, infracaoSelecionada.getHora());
-                    //intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID, infracaoSelecionada.getUid());
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL, infracaoSelecionada.getEmail());
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO, infracaoSelecionada.getComentario());
                     startActivity(intent);
@@ -353,7 +351,18 @@ public class PrincipalFragment extends Fragment {
                 {
                     InfracaoComDetalhe infracaoSelecionada = (InfracaoComDetalhe) obj;
 
-
+                    Log.d("OOPS","selecionei = "+infracaoSelecionada.getId());
+                    Intent intent =  new Intent(getContext(), DetalheInfracaoActivity.class);
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_OFFLINE, "1");
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_ID, infracaoSelecionada.getId());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS, infracaoSelecionada.getStatus());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO, infracaoSelecionada.getTipo());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA, infracaoSelecionada.getData());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA, infracaoSelecionada.getHora());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_EMAIL, infracaoSelecionada.getEmail());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_COMENTARIO, infracaoSelecionada.getComentario());
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_FOTO_OFFLINE, infracaoSelecionada.getFoto());
+                    startActivity(intent);
                 }
 
             }
