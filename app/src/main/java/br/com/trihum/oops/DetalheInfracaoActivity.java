@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -22,6 +23,7 @@ import br.com.trihum.oops.model.Infracao;
 import br.com.trihum.oops.model.InfracaoDetalhe;
 import br.com.trihum.oops.utilities.Constantes;
 import br.com.trihum.oops.utilities.Funcoes;
+import br.com.trihum.oops.utilities.Globais;
 
 public class DetalheInfracaoActivity extends BaseActivity {
 
@@ -98,12 +100,14 @@ public class DetalheInfracaoActivity extends BaseActivity {
         {
             btnSituacaoRegistro.setText("Registro Enviado");
             btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            //btnSituacaoInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
             btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
         }
         else if (infracaoSelecionada.getStatus().equals("02"))
         {
             btnSituacaoRegistro.setText("Registro em análise");
             btnSituacaoInfracao.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
+            //btnSituacaoInfracao.setText(intent.getStringExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO));
             btnSituacaoAcaoEducativa.setBackground(Funcoes.getDrawable(this,R.drawable.botao_naovalidacao_registro_infracao_selector));
         }
         else if (infracaoSelecionada.getStatus().equals("03"))
@@ -147,17 +151,25 @@ public class DetalheInfracaoActivity extends BaseActivity {
 
                 registroEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
 
-                if (infracaoSelecionada.getStatus().equals("01") || infracaoSelecionada.getStatus().equals("02"))
+                String comentarioOrgao = (infracaoDetalhe.getComentario_orgao()!=null)?infracaoDetalhe.getComentario_orgao():"";
+                String msgOrgao = (infracaoDetalhe.getMsg_orgao()!=null)?infracaoDetalhe.getMsg_orgao():"";
+                String conteudoTexto = (msgOrgao.equals(""))?comentarioOrgao:"MENSAGEM: " + msgOrgao + "\n\n" + comentarioOrgao;
+
+                if (infracaoSelecionada.getStatus().equals("01"))
                 {
-                    txtAreaSituacaoRegistro.setText(infracaoDetalhe.getComentario_orgao());
+                    txtAreaSituacaoRegistro.setText(Globais.mensagemPadraoRegistroRecebido);
+                }
+                if (infracaoSelecionada.getStatus().equals("02"))
+                {
+                    txtAreaSituacaoRegistro.setText(conteudoTexto);
                 }
                 else if (infracaoSelecionada.getStatus().equals("03") || infracaoSelecionada.getStatus().equals("04"))
                 {
-                    txtAreaSituacaoInfracao.setText(infracaoDetalhe.getComentario_orgao());
+                    txtAreaSituacaoInfracao.setText(conteudoTexto);
                 }
                 else
                 {
-                    txtAreaSituacaoAcaoEducativa.setText(infracaoDetalhe.getComentario_orgao());
+                    txtAreaSituacaoAcaoEducativa.setText(conteudoTexto);
                 }
 
                 if (infracaoDetalhe.getFoto()!=null && infracaoDetalhe.getFoto().length()>0)
@@ -186,7 +198,8 @@ public class DetalheInfracaoActivity extends BaseActivity {
     {
         if (frameRegistroEnviado.getVisibility() == View.VISIBLE) frameRegistroEnviado.setVisibility(View.GONE);
         else {
-            frameRegistroEnviado.setVisibility(View.VISIBLE);
+            if (!txtAreaSituacaoRegistro.getText().toString().equals(""))
+                frameRegistroEnviado.setVisibility(View.VISIBLE);
         }
     }
 
@@ -194,7 +207,8 @@ public class DetalheInfracaoActivity extends BaseActivity {
     {
         if (frameInfracaoValidada.getVisibility() == View.VISIBLE) frameInfracaoValidada.setVisibility(View.GONE);
         else {
-            frameInfracaoValidada.setVisibility(View.VISIBLE);
+            if (!txtAreaSituacaoInfracao.getText().toString().equals(""))
+                frameInfracaoValidada.setVisibility(View.VISIBLE);
         }
     }
 
@@ -202,7 +216,23 @@ public class DetalheInfracaoActivity extends BaseActivity {
     {
         if (frameAcaoEducativa.getVisibility() == View.VISIBLE) frameAcaoEducativa.setVisibility(View.GONE);
         else {
-            frameAcaoEducativa.setVisibility(View.VISIBLE);
+            if (!txtAreaSituacaoAcaoEducativa.getText().toString().equals(""))
+                frameAcaoEducativa.setVisibility(View.VISIBLE);
         }
     }
+
+    /*public void colocaTextoAjustaAltura(TextView tv, String texto)
+    {
+        tv.setText(texto);
+        int height_in_pixels = tv.getLineCount() * tv.getLineHeight(); //approx height text
+        height_in_pixels = (int) (height_in_pixels * getResources().getDisplayMetrics().density);
+
+        // Ajusta a altura do text view
+        tv.setHeight(height_in_pixels);
+
+        // Se o ajuste de altura acima não funcionar, tente assim:
+        //ViewGroup.LayoutParams params = tv.getLayoutParams();
+        //params.height = height_in_pixels;
+        //tv.setLayoutParams(params);
+    }*/
 }

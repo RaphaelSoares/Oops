@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,14 @@ public class RegistraInfracaoActivity extends BaseActivity {
     private Button btnTipoInfracao;
     private FloatingActionButton fabConfirmaRegistroInfracao;
     private RadioGroup rgGrupoRegistro1;
+    private RadioButton rb1Gr1Registro;
+    private RadioButton rb2Gr1Registro;
+    private RadioButton rb3Gr1Registro;
+    private RadioButton rb4Gr1Registro;
+    private RadioButton rb5Gr1Registro;
+    private RadioButton rb6Gr1Registro;
+    private RadioButton rb7Gr1Registro;
+    private RadioButton rb8Gr1Registro;
     private EditText txtArea;
     private int tipoEscolhido;
 
@@ -93,6 +102,14 @@ public class RegistraInfracaoActivity extends BaseActivity {
         fabConfirmaRegistroInfracao = (FloatingActionButton) findViewById(R.id.fabConfirmaRegistroInfracao);
         rgGrupoRegistro1 = (RadioGroup) findViewById(R.id.rgGrupoRegistro1);
         txtArea = (EditText) findViewById(R.id.txtArea);
+        rb1Gr1Registro = (RadioButton) findViewById(R.id.rb1Gr1Registro);
+        rb2Gr1Registro = (RadioButton) findViewById(R.id.rb2Gr1Registro);
+        rb3Gr1Registro = (RadioButton) findViewById(R.id.rb3Gr1Registro);
+        rb4Gr1Registro = (RadioButton) findViewById(R.id.rb4Gr1Registro);
+        rb5Gr1Registro = (RadioButton) findViewById(R.id.rb5Gr1Registro);
+        rb6Gr1Registro = (RadioButton) findViewById(R.id.rb6Gr1Registro);
+        rb7Gr1Registro = (RadioButton) findViewById(R.id.rb7Gr1Registro);
+        rb8Gr1Registro = (RadioButton) findViewById(R.id.rb8Gr1Registro);
 
         frameTipoInfracao.setVisibility(View.GONE);
         registroEnderecoInfracao.setText("");
@@ -223,25 +240,35 @@ public class RegistraInfracaoActivity extends BaseActivity {
         Log.d("OOPS","endereco atualizado = "+endereco);
     }
 
-    public void onSalvarInfracaoClick (View v)
+    public int obterTipoEscolhido()
     {
         // Verificando se escolheu o tipo de infração
         int checkedRadioButtonId = rgGrupoRegistro1.getCheckedRadioButtonId();
         if (checkedRadioButtonId == -1) {
-            tipoEscolhido = -1;
+            return -1;
+        }
+        else{
+            if (checkedRadioButtonId == R.id.rb1Gr1Registro) return 1;
+            else if (checkedRadioButtonId == R.id.rb2Gr1Registro) return 2;
+            else if (checkedRadioButtonId == R.id.rb3Gr1Registro) return 3;
+            else if (checkedRadioButtonId == R.id.rb4Gr1Registro) return 4;
+            else if (checkedRadioButtonId == R.id.rb5Gr1Registro) return 5;
+            else if (checkedRadioButtonId == R.id.rb6Gr1Registro) return 6;
+            else if (checkedRadioButtonId == R.id.rb7Gr1Registro) return 7;
+            else if (checkedRadioButtonId == R.id.rb8Gr1Registro) return 8;
+        }
+
+        return -1;
+    }
+
+    public void onSalvarInfracaoClick (View v)
+    {
+        tipoEscolhido = obterTipoEscolhido();
+        if (tipoEscolhido == -1)
+        {
             Toast.makeText(RegistraInfracaoActivity.this, "Escolha o tipo de infração",
                     Toast.LENGTH_SHORT).show();
             return;
-        }
-        else{
-            if (checkedRadioButtonId == R.id.rb1Gr1Registro) tipoEscolhido = 1;
-            else if (checkedRadioButtonId == R.id.rb2Gr1Registro) tipoEscolhido = 2;
-            else if (checkedRadioButtonId == R.id.rb3Gr1Registro) tipoEscolhido = 3;
-            else if (checkedRadioButtonId == R.id.rb4Gr1Registro) tipoEscolhido = 4;
-            else if (checkedRadioButtonId == R.id.rb5Gr1Registro) tipoEscolhido = 5;
-            else if (checkedRadioButtonId == R.id.rb6Gr1Registro) tipoEscolhido = 6;
-            else if (checkedRadioButtonId == R.id.rb7Gr1Registro) tipoEscolhido = 7;
-            else if (checkedRadioButtonId == R.id.rb8Gr1Registro) tipoEscolhido = 8;
         }
 
         if (Globais.conectado)
@@ -403,9 +430,24 @@ public class RegistraInfracaoActivity extends BaseActivity {
         recolheTeclado();
     }
 
-    public void onEscolhaTipoInfracaoClick(View v)
+    public void onEscolheTipoInfracaoClick(View v)
     {
         frameTipoInfracao.setVisibility(View.GONE);
+
+        int tipo = obterTipoEscolhido();
+
+        if (tipo!=-1)
+        {
+            if (tipo==1) btnTipoInfracao.setText(rb1Gr1Registro.getText());
+            if (tipo==2) btnTipoInfracao.setText(rb2Gr1Registro.getText());
+            if (tipo==3) btnTipoInfracao.setText(rb3Gr1Registro.getText());
+            if (tipo==4) btnTipoInfracao.setText(rb4Gr1Registro.getText());
+            if (tipo==5) btnTipoInfracao.setText(rb5Gr1Registro.getText());
+            if (tipo==6) btnTipoInfracao.setText(rb6Gr1Registro.getText());
+            if (tipo==7) btnTipoInfracao.setText(rb7Gr1Registro.getText());
+            if (tipo==8) btnTipoInfracao.setText(rb8Gr1Registro.getText());
+        }
+
     }
 
     public void recolheTeclado()

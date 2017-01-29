@@ -131,7 +131,8 @@
                         android:paddingRight="10dp"
                         android:layoutDirection="ltr"
                         app:buttonTint="@color/btRadioColor"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:onClick="onEscolheTipoInfracaoClick" />
                     <RadioButton
                         android:id="@+id/rb2Gr1Registro"
                         android:layout_width="wrap_content"
@@ -140,7 +141,8 @@
                         android:paddingRight="10dp"
                         android:layoutDirection="ltr"
                         app:buttonTint="@color/btRadioColor"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:onClick="onEscolheTipoInfracaoClick" />
                     <RadioButton
                         android:id="@+id/rb3Gr1Registro"
                         android:layout_width="wrap_content"
@@ -149,7 +151,8 @@
                         android:paddingRight="10dp"
                         android:layoutDirection="ltr"
                         app:buttonTint="@color/btRadioColor"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:onClick="onEscolheTipoInfracaoClick" />
                     <RadioButton
                         android:id="@+id/rb4Gr1Registro"
                         android:layout_width="wrap_content"
@@ -158,7 +161,8 @@
                         android:paddingRight="10dp"
                         app:buttonTint="@color/btRadioColor"
                         android:layoutDirection="ltr"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:onClick="onEscolheTipoInfracaoClick" />
                     <RadioButton
                         android:id="@+id/rb5Gr1Registro"
                         android:layout_width="wrap_content"
@@ -167,7 +171,8 @@
                         android:paddingRight="10dp"
                         app:buttonTint="@color/btRadioColor"
                         android:layoutDirection="ltr"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:onClick="onEscolheTipoInfracaoClick" />
                     <RadioButton
                         android:id="@+id/rb6Gr1Registro"
                         android:layout_width="wrap_content"
@@ -176,7 +181,8 @@
                         android:paddingRight="10dp"
                         app:buttonTint="@color/btRadioColor"
                         android:layoutDirection="ltr"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:onClick="onEscolheTipoInfracaoClick" />
                     <RadioButton
                         android:id="@+id/rb7Gr1Registro"
                         android:layout_width="wrap_content"
@@ -185,7 +191,8 @@
                         android:paddingRight="10dp"
                         app:buttonTint="@color/btRadioColor"
                         android:layoutDirection="ltr"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:onClick="onEscolheTipoInfracaoClick" />
                     <RadioButton
                         android:id="@+id/rb8Gr1Registro"
                         android:layout_width="wrap_content"
@@ -194,7 +201,8 @@
                         android:paddingRight="10dp"
                         app:buttonTint="@color/btRadioColor"
                         android:layoutDirection="ltr"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:onClick="onEscolheTipoInfracaoClick" />
                 </RadioGroup>
             </FrameLayout>
 
@@ -226,10 +234,10 @@
                 app:backgroundTint="@color/corVerdeTitulo"
                 android:src="@drawable/ic_confirma"
                 app:srcCompat="@drawable/ic_confirma"
-                android:layout_marginTop="10dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="10dp" />
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="5dp" />
 
         </LinearLayout>
     </ScrollView>

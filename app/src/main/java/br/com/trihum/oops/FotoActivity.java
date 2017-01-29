@@ -59,12 +59,18 @@ public class FotoActivity extends AppCompatActivity {
         // Ajustando a câmera (melhor qualidade da imagem, autofoco...
         Camera.Parameters params = mCamera.getParameters();
         List<Camera.Size> supportedSizes = params.getSupportedPictureSizes();
-        Camera.Size preferredSize = supportedSizes.get(0);
-        for(int i = 1; i < supportedSizes.size(); i++){
-            Log.d("OOPS","camera supported size = "+supportedSizes.get(i).width+" X "+supportedSizes.get(i).height);
+        Camera.Size preferredSize = supportedSizes.get(supportedSizes.size()-1);
+
+        for(int i = 0; i < supportedSizes.size(); i++){
+            //Log.d("OOPS","camera supported size = "+supportedSizes.get(i).width+" X "+supportedSizes.get(i).height);
 
             //TODO fazer um algoritmo para pegar a melhor resolução a partir de um valor pra baixo
             // Fica melhor porque pode-se pegar um aparelho que não tenha nenhuma das resoluções preferenciais listadas aqui
+            if (supportedSizes.get(i).width == 1600 && supportedSizes.get(i).height == 1200)
+            {
+                preferredSize = supportedSizes.get(i);
+                break;
+            }
             if (supportedSizes.get(i).width == 1280 && supportedSizes.get(i).height == 960)
             {
                 preferredSize = supportedSizes.get(i);

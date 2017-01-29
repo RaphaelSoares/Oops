@@ -29,6 +29,43 @@
                 android:layout_height="match_parent"
                 android:background="@color/corCinzaClaro">
 
+                <FrameLayout
+                    android:id="@+id/tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/corCinzaClaro"
+                        android:layout_marginBottom="80dp"
+                        android:id="@+id/listaInfracoes" />
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:background="@color/corCinzaClaro"
+                        android:layout_gravity="bottom">
+
+
+                        <android.support.design.widget.FloatingActionButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="true"
+                            app:fabSize="normal"
+                            android:id="@+id/fabTirarFoto"
+                            android:layout_gravity="center"
+                            app:backgroundTint="@color/corVerdeTitulo"
+                            app:elevation="14dp"
+                            android:src="@drawable/ic_foto"
+                            app:srcCompat="@drawable/ic_foto" />
+                    </FrameLayout>
+
+
+                </FrameLayout>
+
                 <LinearLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
@@ -41,8 +78,7 @@
 
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="55dp"
                             android:text="40"
                             android:textSize="30sp"
                             android:background="@drawable/rounded_textview_verde"
@@ -50,25 +86,27 @@
                             android:layout_marginTop="45dp"
                             android:layout_marginLeft="30dp"
                             android:gravity="center"
-                            android:id="@+id/circulo1" />
+                            android:id="@+id/circulo1"
+                            android:layout_width="55dp" />
 
                         <TextView
-                            android:text="Ações educativas realizadas graças à você"
+                            android:text="Total de Registros"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="55dp"
                             android:id="@+id/textView3"
                             android:layout_marginLeft="100dp"
                             android:lines="2"
-                            android:layout_marginTop="60dp"
+                            android:layout_marginTop="45dp"
                             android:textColor="@color/corVerdeTitulo"
                             android:paddingRight="10dp"
-                            android:layout_marginRight="20dp" />
+                            android:layout_marginRight="20dp"
+                            android:gravity="center_vertical" />
 
                         <ImageView
                             xmlns:android="http://schemas.android.com/apk/res/android"
                             android:src="@android:drawable/divider_horizontal_dark"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="1dp"
                             android:scaleType="fitXY"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -91,28 +129,29 @@
                             android:textSize="20sp"
                             android:background="@drawable/rounded_textview_verde"
                             android:textColor="@android:color/white"
-                            android:layout_marginTop="130dp"
+                            android:layout_marginTop="125dp"
                             android:layout_marginLeft="38dp"
                             android:gravity="center"
                             android:id="@+id/circulo2" />
 
                         <TextView
-                            android:text="Infrações enviadas"
+                            android:text="Infratores notificados graças à você"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="45dp"
                             android:id="@+id/textView4"
                             android:layout_marginLeft="100dp"
                             android:lines="2"
-                            android:layout_marginTop="145dp"
+                            android:layout_marginTop="125dp"
                             android:textColor="@color/corVerdeTitulo"
                             android:paddingRight="10dp"
-                            android:layout_marginRight="20dp" />
+                            android:layout_marginRight="20dp"
+                            android:gravity="center_vertical" />
 
                         <ImageView
                             xmlns:android="http://schemas.android.com/apk/res/android"
                             android:src="@android:drawable/divider_horizontal_dark"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="1dp"
                             android:scaleType="fitXY"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -135,28 +174,29 @@
                             android:textSize="20sp"
                             android:background="@drawable/rounded_textview_verde"
                             android:textColor="@android:color/white"
-                            android:layout_marginTop="200dp"
+                            android:layout_marginTop="195dp"
                             android:layout_marginLeft="38dp"
                             android:gravity="center"
                             android:id="@+id/circulo3" />
 
                         <TextView
-                            android:text="Infrações validadas"
+                            android:text="Registros validados"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="45dp"
                             android:id="@+id/textView5"
                             android:layout_marginLeft="100dp"
                             android:lines="2"
-                            android:layout_marginTop="215dp"
+                            android:layout_marginTop="195dp"
                             android:textColor="@color/corVerdeTitulo"
                             android:paddingRight="10dp"
-                            android:layout_marginRight="20dp" />
+                            android:layout_marginRight="20dp"
+                            android:gravity="center_vertical" />
 
                         <ImageView
                             xmlns:android="http://schemas.android.com/apk/res/android"
                             android:src="@android:drawable/divider_horizontal_dark"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="1dp"
                             android:scaleType="fitXY"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -179,28 +219,29 @@
                             android:textSize="20sp"
                             android:background="@drawable/rounded_textview_vermelho"
                             android:textColor="@android:color/white"
-                            android:layout_marginTop="270dp"
+                            android:layout_marginTop="265dp"
                             android:layout_marginLeft="38dp"
                             android:gravity="center"
                             android:id="@+id/circulo4" />
 
                         <TextView
-                            android:text="Infrações invalidadas"
+                            android:text="Registros não válidos"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="45dp"
                             android:id="@+id/textView6"
                             android:layout_marginLeft="100dp"
                             android:lines="2"
-                            android:layout_marginTop="285dp"
+                            android:layout_marginTop="265dp"
                             android:textColor="#FE2D2F"
                             android:paddingRight="10dp"
-                            android:layout_marginRight="20dp" />
+                            android:layout_marginRight="20dp"
+                            android:gravity="center_vertical" />
 
                         <ImageView
                             xmlns:android="http://schemas.android.com/apk/res/android"
                             android:src="@android:drawable/divider_horizontal_dark"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="1dp"
                             android:scaleType="fitXY"
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
@@ -222,23 +263,24 @@
                             android:text="10"
                             android:textSize="20sp"
                             android:textColor="@android:color/white"
-                            android:layout_marginTop="340dp"
+                            android:layout_marginTop="335dp"
                             android:layout_marginLeft="38dp"
                             android:gravity="center"
                             android:id="@+id/circulo5"
                             android:background="@drawable/rounded_textview_cinza" />
 
                         <TextView
-                            android:text="Aguardando validação"
+                            android:text="Registros aguardando validação"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="45dp"
                             android:id="@+id/textView7"
                             android:layout_marginLeft="100dp"
                             android:lines="2"
-                            android:layout_marginTop="355dp"
+                            android:layout_marginTop="335dp"
                             android:textColor="#6E6E70"
                             android:paddingRight="10dp"
-                            android:layout_marginRight="20dp" />
+                            android:layout_marginRight="20dp"
+                            android:gravity="center_vertical" />
 
                     </FrameLayout>>
 
@@ -404,43 +446,6 @@
                 <!-- ####### TAB3: Fragment do Alterar Senha ####### -->
 
                 <!-- ####### TAB1: Fragment da Lista de Infraçoes ####### -->
-
-                <FrameLayout
-                    android:id="@+id/tab1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ListView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/corCinzaClaro"
-                        android:layout_marginBottom="80dp"
-                        android:id="@+id/listaInfracoes" />
-
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="80dp"
-                        android:background="@color/corCinzaClaro"
-                        android:layout_gravity="bottom">
-
-
-                        <android.support.design.widget.FloatingActionButton
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:clickable="true"
-                            app:fabSize="normal"
-                            android:id="@+id/fabTirarFoto"
-                            android:layout_gravity="center"
-                            app:backgroundTint="@color/corVerdeTitulo"
-                            app:elevation="14dp"
-                            android:src="@drawable/ic_foto"
-                            app:srcCompat="@drawable/ic_foto" />
-                    </FrameLayout>
-
-
-                </FrameLayout>
 
             </FrameLayout>
 

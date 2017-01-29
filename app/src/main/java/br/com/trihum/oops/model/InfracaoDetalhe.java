@@ -16,11 +16,13 @@ public class InfracaoDetalhe {
     private String placa_ident;
     private String identifica_infracao;
     private String comentario_orgao;
+    private String msg_orgao;
 
     public InfracaoDetalhe()
     {
 
     }
+
 
     public String getFoto() {
         return foto;
@@ -92,5 +94,13 @@ public class InfracaoDetalhe {
 
     public void setComentario_orgao(String comentario_orgao) {
         this.comentario_orgao = comentario_orgao;
+    }
+
+    public String getMsg_orgao() {
+        return msg_orgao;
+    }
+
+    public void setMsg_orgao(String msg_orgao) {
+        this.msg_orgao = msg_orgao;
     }
 }

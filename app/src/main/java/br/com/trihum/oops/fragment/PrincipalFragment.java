@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,9 +88,6 @@ public class PrincipalFragment extends Fragment {
     public static ListaInfracoesAdapter adapter;
     public static List<Object> arrayInfracoes;
     public static List<Object> arrayInfracoesOffline;
-    public HashMap<String, String> mapaTipos;
-    public HashMap<String, String> mapaSituacoes;
-    public static HashMap<String, String> mapaOrgaos;
     public FrameLayout frameAlteraSenha;
     public Button btnAlterarSenha;
     private FloatingActionButton fabConfirmaEnvioSenha;
@@ -320,9 +318,10 @@ public class PrincipalFragment extends Fragment {
         consultaListaTipos();
         consultaListaSituacoes();
         consultaListaOrgaos();
+        consultaMensagemPadraoRegistroRecebido();
         //****************************************
 
-        adapter = new ListaInfracoesAdapter(inflater, mapaTipos, mapaSituacoes);
+        adapter = new ListaInfracoesAdapter(inflater, Globais.mapaTipos, Globais.mapaSituacoes);
         listaInfracoes.setAdapter(adapter);
 
         listaInfracoes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -340,9 +339,9 @@ public class PrincipalFragment extends Fragment {
                     Intent intent =  new Intent(getContext(), DetalheInfracaoActivity.class);
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_ID, infracaoSelecionada.getId());
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS, infracaoSelecionada.getStatus());
-                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO, mapaSituacoes.get(infracaoSelecionada.getStatus()));
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_STATUS_TEXTO, Globais.mapaSituacoes.get(infracaoSelecionada.getStatus()));
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO, infracaoSelecionada.getTipo());
-                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO, mapaTipos.get(infracaoSelecionada.getTipo()));
+                    intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_TIPO_TEXTO, Globais.mapaTipos.get(infracaoSelecionada.getTipo()));
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_DATA, infracaoSelecionada.getData());
                     intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_HORA, infracaoSelecionada.getHora());
                     //intent.putExtra(Constantes.INTENT_PARAM_INFRACAO_SELECIONADA_UID, infracaoSelecionada.getUid());
@@ -465,7 +464,7 @@ public class PrincipalFragment extends Fragment {
 
     public void consultaListaTipos()
     {
-        mapaTipos=new HashMap<String, String>();
+        Globais.mapaTipos=new HashMap<String, String>();
 
         mDatabase.child("tipos_infracao").addValueEventListener(new ValueEventListener() {
             @Override
@@ -473,7 +472,7 @@ public class PrincipalFragment extends Fragment {
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
                 {
-                    mapaTipos.put(postSnapshot.getKey(),postSnapshot.child("tipo").getValue().toString());
+                    Globais.mapaTipos.put(postSnapshot.getKey(),postSnapshot.child("tipo").getValue().toString());
                 }
             }
 
@@ -486,7 +485,7 @@ public class PrincipalFragment extends Fragment {
 
     public void consultaListaSituacoes()
     {
-        mapaSituacoes=new HashMap<String, String>();
+        Globais.mapaSituacoes=new HashMap<String, String>();
 
         mDatabase.child("situacoes_app").addValueEventListener(new ValueEventListener() {
             @Override
@@ -494,7 +493,32 @@ public class PrincipalFragment extends Fragment {
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
                 {
-                    mapaSituacoes.put(postSnapshot.getKey(),postSnapshot.getValue().toString());
+                    Globais.mapaSituacoes.put(postSnapshot.getKey(),postSnapshot.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void consultaMensagemPadraoRegistroRecebido()
+    {
+        Globais.mensagemPadraoRegistroRecebido="";
+
+        mDatabase.child("situacoes").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
+                {
+                    if (postSnapshot.getKey().equals("01"))
+                    {
+                        Globais.mensagemPadraoRegistroRecebido = postSnapshot.child("mensagem_padrao").getValue().toString();
+                        break;
+                    }
                 }
             }
 
@@ -507,7 +531,7 @@ public class PrincipalFragment extends Fragment {
 
     public void consultaListaOrgaos()
     {
-        mapaOrgaos=new HashMap<String, String>();
+        Globais.mapaOrgaos=new HashMap<String, String>();
 
         mDatabase.child("orgaos").addValueEventListener(new ValueEventListener() {
             @Override
@@ -515,7 +539,7 @@ public class PrincipalFragment extends Fragment {
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
                 {
-                    mapaOrgaos.put(postSnapshot.getKey(),postSnapshot.child("locais").getValue().toString());
+                    Globais.mapaOrgaos.put(postSnapshot.getKey(),postSnapshot.child("locais").getValue().toString());
                     //Log.d("OOPS","key = "+postSnapshot.getKey());
                     //Log.d("OOPS","value = "+postSnapshot.child("locais").getValue().toString());
                 }
@@ -540,6 +564,7 @@ public class PrincipalFragment extends Fragment {
                 equalTo(Globais.emailLogado).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
                 Infracao infracao = dataSnapshot.getValue(Infracao.class);
                 infracao.setId(dataSnapshot.getKey());
                 arrayInfracoes.add(infracao);
@@ -825,11 +850,14 @@ public class PrincipalFragment extends Fragment {
             {
                 //Infracao infracao1 = iterator.next();
                 Infracao infracao1 = (Infracao)obj;
-                if (infracao1.getStatus().equals("05")) iCirculo1++;
-                if (infracao1.getStatus().equals("01")) iCirculo2++;
+                /*if (infracao1.getStatus().equals("05"))*/ iCirculo1++;
+                if (infracao1.getStatus().equals("05")) iCirculo2++;
                 if (infracao1.getStatus().equals("03")) iCirculo3++;
                 if (infracao1.getStatus().equals("04")) iCirculo4++;
-                if (infracao1.getStatus().equals("02")) iCirculo5++;
+                if (infracao1.getStatus().equals("01") || infracao1.getStatus().equals("02")) iCirculo5++;
+            } else if (obj instanceof InfracaoComDetalhe) {
+                InfracaoComDetalhe infracao2 = (InfracaoComDetalhe)obj;
+                if (infracao2.getStatus().equals("00")) iCirculo5++;
             }
         }
 
@@ -1005,9 +1033,9 @@ public class PrincipalFragment extends Fragment {
 
     public static String obterOrgaoPorLocalidade(String localidade)
     {
-        for (String key : mapaOrgaos.keySet()) {
+        for (String key : Globais.mapaOrgaos.keySet()) {
 
-            String[] locais = mapaOrgaos.get(key).toLowerCase().split(",");
+            String[] locais = Globais.mapaOrgaos.get(key).toLowerCase().split(",");
 
             for (String local : locais)
             {
