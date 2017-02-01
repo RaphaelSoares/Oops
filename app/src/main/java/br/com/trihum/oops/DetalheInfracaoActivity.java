@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,6 +48,7 @@ public class DetalheInfracaoActivity extends BaseActivity {
 
     Infracao infracaoSelecionada;
     boolean infracaoEhOffline;
+    boolean imagemAmpliada;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,7 +209,7 @@ public class DetalheInfracaoActivity extends BaseActivity {
 
         }
 
-
+        imagemAmpliada = false;
     }
 
     @Override
@@ -258,4 +260,22 @@ public class DetalheInfracaoActivity extends BaseActivity {
         //params.height = height_in_pixels;
         //tv.setLayoutParams(params);
     }*/
+
+    public void onImagemClick(View v)
+    {
+        ViewGroup.LayoutParams lp = imageFotoInfracao.getLayoutParams();
+
+        if (!imagemAmpliada)
+        {
+            lp.height = lp.height * 2;
+        }
+        else
+        {
+            lp.height = lp.height / 2;
+        }
+        imagemAmpliada = !imagemAmpliada;
+
+        imageFotoInfracao.setLayoutParams(lp);
+
+    }
 }

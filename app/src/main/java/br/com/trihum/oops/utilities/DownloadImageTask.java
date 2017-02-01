@@ -46,13 +46,16 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
         super.onPostExecute(result);
         //pd.dismiss();
 
-        if (roundAndCrop)
+        if (result != null)
         {
-            bmImage.setImageBitmap(Funcoes.getRoundedShape(Funcoes.cropToSquare(result)));
-        }
-        else
-        {
-            bmImage.setImageBitmap(result);
+            if (roundAndCrop)
+            {
+                bmImage.setImageBitmap(Funcoes.getRoundedShape(Funcoes.cropToSquare(result)));
+            }
+            else
+            {
+                bmImage.setImageBitmap(result);
+            }
         }
     }
 }

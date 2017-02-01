@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -46,6 +47,12 @@ public class GeocodeTask extends AsyncTask<String, Integer, String> {
         isRunning = false;
     }
 
+    public void setCoordenadas(double latitude, double longitude)
+    {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
     @Override
     protected void onPreExecute()
     {
@@ -53,7 +60,7 @@ public class GeocodeTask extends AsyncTask<String, Integer, String> {
     }
 
     @Override
-    protected String doInBackground(String... strings) {
+    protected String doInBackground(String... locations) {
 
         Geocoder geoCoder;
         if (activity!=null)

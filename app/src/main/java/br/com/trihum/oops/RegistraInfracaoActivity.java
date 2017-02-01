@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.util.Base64;
@@ -42,6 +45,7 @@ import br.com.trihum.oops.model.Infracao;
 import br.com.trihum.oops.model.InfracaoComDetalhe;
 import br.com.trihum.oops.model.InfracaoDetalhe;
 import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.utilities.GPSMonitor;
 import br.com.trihum.oops.utilities.GPSTracker;
 import br.com.trihum.oops.utilities.Globais;
 
@@ -54,7 +58,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 
-    private GPSTracker gps;
+    private GPSMonitor gps;
     private double latitude;
     private double longitude;
     public String endereco;
@@ -62,6 +66,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
     private String dataRegistro;
     private String horaRegistro;
 
+    private TextView registroCoordenadasInfracao;
     private TextView registroEnderecoInfracao;
     private TextView registroDataInfracao;
     private FrameLayout frameTipoInfracao;
@@ -95,6 +100,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         }
 
         ImageView foto = (ImageView) findViewById(R.id.snapshot_capturado);
+        registroCoordenadasInfracao = (TextView) findViewById(R.id.registroCoordenadasInfracao);
         registroEnderecoInfracao = (TextView) findViewById(R.id.registroEnderecoInfracao);
         registroDataInfracao = (TextView) findViewById(R.id.registroDataInfracao);
         frameTipoInfracao = (FrameLayout) findViewById(R.id.frame_radio_tipo_infracao);
@@ -166,48 +172,29 @@ public class RegistraInfracaoActivity extends BaseActivity {
         longitude = 0;
         endereco = "";
         localidade = "";
-        // Verificando o GPS e se consegue obter as coordenadas
-        gps = new GPSTracker(RegistraInfracaoActivity.this);
 
-        // Check if GPS enabled
-        if(gps.canGetLocation()) {
+        gps = new GPSMonitor(this);
+        gps.getLocation();
+    }
 
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
+    public void obteveCoordenadas()
+    {
+        latitude = gps.getLatitude();
+        longitude = gps.getLongitude();
 
-            geocodeTask = new GeocodeTask(this,latitude,longitude);
-            geocodeTask.execute("");
+        geocodeTask = new GeocodeTask(this,latitude,longitude);
+        geocodeTask.execute("");
+    }
 
-            /*Geocoder geoCoder = new Geocoder(this);
-            try {
-                // Esta linha aqui pode dar throw exception por timeout
-                // ver alternativa em:
-                // http://stackoverflow.com/questions/23638067/geocoder-getfromlocation-function-throws-timed-out-waiting-for-server-response
-                List<Address> matches = geoCoder.getFromLocation(latitude, longitude, 1);
-                Address bestMatch = (matches.isEmpty() ? null : matches.get(0));
-                endereco = bestMatch.getAddressLine(0)+" "+bestMatch.getLocality()+" "+bestMatch.getAdminArea();
-                registroEnderecoInfracao.setText(endereco);
-
-                atualizaInfoEndereco(endereco);
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }*/
-
-            // \n is for new line
-            //Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
-        } else {
-            // Can't get location.
-            // GPS or network is not enabled.
-            // Ask user to enable GPS/network in settings.
-            gps.showSettingsAlert();
-        }
+    public void informaCoordenadas(Location location, String provider)
+    {
+        registroCoordenadasInfracao.setText("Lat. "+location.getLatitude()+", Long. "+location.getLongitude()+"\n(precisão : "+location.getAccuracy()+"m, "+provider+")");
+        registroEnderecoInfracao.setTextColor(ContextCompat.getColor(this, R.color.corTextoRegistroInfracao));
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-
     }
 
     @Override
@@ -215,6 +202,18 @@ public class RegistraInfracaoActivity extends BaseActivity {
     {
         super.onResume();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
+    protected void onPause() {
+        // Make sure that when the activity goes to
+        // background, the device stops getting locations
+        // to save battery life.
+        if (gps!=null)
+        {
+            gps.stopUsingGPS();
+        }
+        super.onPause();
     }
 
     @Override
@@ -237,7 +236,8 @@ public class RegistraInfracaoActivity extends BaseActivity {
         this.endereco = endereco;
         this.localidade = localidade;
         registroEnderecoInfracao.setText(endereco);
-        Log.d("OOPS","endereco atualizado = "+endereco);
+        registroEnderecoInfracao.setTextColor(ContextCompat.getColor(this, R.color.corTextoDestaqueRegistroInfracao));
+        //Log.d("OOPS","endereco atualizado = "+endereco);
     }
 
     public int obterTipoEscolhido()
@@ -273,25 +273,26 @@ public class RegistraInfracaoActivity extends BaseActivity {
 
         if (Globais.conectado)
         {
-            if (geocodeTask.isRunning)
+            if (latitude==0 && longitude==0)
             {
-                Toast.makeText(RegistraInfracaoActivity.this, "Aguarde que o endereço está sendo obtido.",
+                Toast.makeText(RegistraInfracaoActivity.this, "As coordenadas ainda não foram obtidas. Favor aguardar.",
                         Toast.LENGTH_SHORT).show();
-            }
-            else if (latitude==0 && longitude==0)
-            {
-                Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível obter as coordenadas do local da infração. Por favor, tente novamente.",
-                        Toast.LENGTH_SHORT).show();
-                if(gps.canGetLocation()) {
+                /*if(gps.canGetLocation()) {
                     latitude = gps.getLatitude();
                     longitude = gps.getLongitude();
-                }
+                }*/
+            }
+            else if (geocodeTask==null || geocodeTask.isRunning)
+            {
+                Toast.makeText(RegistraInfracaoActivity.this, "Obtendo o endereço. Favor aguardar.",
+                        Toast.LENGTH_SHORT).show();
             }
             else if (!geocodeTask.isRunning && (endereco==null || endereco.equals("")))
             {
-                Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível obter o endereço. Por favor, tente novamente.",
+                Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível obter o endereço. Tentando novamente. Favor aguardar.",
                         Toast.LENGTH_SHORT).show();
-                geocodeTask = new GeocodeTask(this,latitude,longitude);
+                //geocodeTask = new GeocodeTask(this,latitude,longitude);
+                geocodeTask.setCoordenadas(latitude,longitude);
                 geocodeTask.execute("");
             }
             else
@@ -302,9 +303,18 @@ public class RegistraInfracaoActivity extends BaseActivity {
         }
         else
         {
-            Toast.makeText(RegistraInfracaoActivity.this, "Sem conexão à Internet no momento. A infração será armazenada e posteriormente enviada.",
-                    Toast.LENGTH_LONG).show();
-            salvarDadosInfracaoOffline(latitude,longitude);
+            if (latitude==0 && longitude==0)
+            {
+                Toast.makeText(RegistraInfracaoActivity.this, "As coordenadas ainda não foram obtidas. Favor aguardar.",
+                        Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(RegistraInfracaoActivity.this, "Sem conexão à Internet no momento. A infração será armazenada e posteriormente enviada.",
+                        Toast.LENGTH_LONG).show();
+                salvarDadosInfracaoOffline(latitude,longitude);
+            }
+
         }
 
     }
