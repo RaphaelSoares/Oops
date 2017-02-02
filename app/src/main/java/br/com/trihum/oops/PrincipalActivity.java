@@ -156,6 +156,7 @@ public class PrincipalActivity extends BaseActivity
                 Globais.nomeCompleto = usuarioApp.nome_completo;
                 Globais.fotoPerfil = usuarioApp.foto_perfil;
                 Globais.email = usuarioApp.email;
+                Globais.grupo = usuarioApp.grupo;
 
                 // coloca o fragment principal se ainda nao foi feito
                 if (!criouFragment)

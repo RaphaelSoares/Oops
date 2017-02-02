@@ -857,8 +857,16 @@ public class PrincipalFragment extends Fragment {
             Object obj = iterator.next();
             if (obj instanceof Infracao)
             {
-                //Infracao infracao1 = iterator.next();
+                //******************************************
+                // Se é do grupo 0, não exibe as alterações feitas pelo órgão de trânsito
+                // Logo, eu sobreescrevo o campo de status para aparecer apenas como Infracao Enviada
                 Infracao infracao1 = (Infracao)obj;
+                if (Globais.grupo.equals("0"))
+                {
+                    infracao1.setStatus("01");
+                }
+                //******************************************
+
                 /*if (infracao1.getStatus().equals("05"))*/ iCirculo1++;
                 if (infracao1.getStatus().equals("05")) iCirculo2++;
                 if (infracao1.getStatus().equals("03")) iCirculo3++;

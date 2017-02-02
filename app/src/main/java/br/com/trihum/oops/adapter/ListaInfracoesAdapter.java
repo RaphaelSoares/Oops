@@ -25,6 +25,7 @@ import br.com.trihum.oops.model.Infracao;
 import br.com.trihum.oops.model.InfracaoDetalhe;
 import br.com.trihum.oops.R;
 import br.com.trihum.oops.utilities.Funcoes;
+import br.com.trihum.oops.utilities.Globais;
 
 /**
  * Created by raphaelmoraes on 19/12/16.
@@ -84,6 +85,15 @@ public class ListaInfracoesAdapter extends BaseAdapter {
             final Infracao infracao = (Infracao)obj;
 
             progressBarFoto.setVisibility(View.VISIBLE);
+
+            //******************************************
+            // Se é do grupo 0, não exibe as alterações feitas pelo órgão de trânsito
+            // Logo, eu sobreescrevo o campo de status para aparecer apenas como Infracao Enviada
+            if (Globais.grupo.equals("0"))
+            {
+                infracao.setStatus("01");
+            }
+            //******************************************
 
             textoStatusInfracao.setText(mapaSituacoes.get(infracao.getStatus()));
             if (infracao.getStatus().equals("01") || infracao.getStatus().equals("02"))

@@ -21,4 +21,6 @@ public class Globais {
     public static HashMap<String, String> mapaTipos;
     public static HashMap<String, String> mapaOrgaos;
     public static String mensagemPadraoRegistroRecebido;
+
+    public static String grupo;
 }
