@@ -60,7 +60,7 @@ public class PrincipalActivity extends BaseActivity
     private DatabaseReference mDatabase;
     private GoogleApiClient mGoogleApiClient;
 
-    private boolean criouFragment;
+    //private boolean criouFragment;
     Fragment principalFragment;
     private boolean exibindoFragmentPrincipal;
 
@@ -68,6 +68,8 @@ public class PrincipalActivity extends BaseActivity
     //https://developers.google.com/maps/documentation/geocoding/start
     //https://maps.googleapis.com/maps/api/geocode/json?latlng=-22.8851519,-43.0878057&key=AIzaSyBVBvxNP36i8jGrtLxGskNn9-EKHGC6kkM
     //http://stackoverflow.com/questions/15191037/how-to-reverse-geocode-in-google-maps-api-2-android
+
+    //TODO addValueEventListener -> addListenerForSingleValueEvent
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class PrincipalActivity extends BaseActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        criouFragment = false;
+        //criouFragment = false;
 
         //****************************************
         // Objetos Firebase
@@ -159,20 +161,14 @@ public class PrincipalActivity extends BaseActivity
                 Globais.grupo = usuarioApp.grupo;
 
                 // coloca o fragment principal se ainda nao foi feito
-                if (!criouFragment)
+                exibeFragmentPrincipal();
+
+                /*if (!criouFragment)
                 {
                     criouFragment = true;
 
                     exibeFragmentPrincipal();
-
-                    /*Fragment fragment = new PrincipalFragment();
-                    if (fragment != null)
-                    {
-                        FragmentManager fragmentManager = getSupportFragmentManager();
-                        fragmentManager.beginTransaction().replace(R.id.content_principal, fragment).commit();
-                        //this.setTitle("Principal");
-                    }*/
-                }
+                }*/
 
             }
 

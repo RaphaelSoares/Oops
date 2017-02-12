@@ -36,8 +36,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +51,7 @@ import br.com.trihum.oops.model.UsuarioApp;
 import br.com.trihum.oops.utilities.Constantes;
 import br.com.trihum.oops.utilities.Funcoes;
 import br.com.trihum.oops.utilities.Globais;
+import br.com.trihum.oops.utilities.Utility;
 
 public class LoginActivity extends BaseActivity implements
         GoogleApiClient.OnConnectionFailedListener{
@@ -60,7 +64,6 @@ public class LoginActivity extends BaseActivity implements
     private DatabaseReference mDatabase;
 
     private static final String TAG = "OOPS";
-    private static final int RC_SIGN_IN = 9001;
     private GoogleApiClient mGoogleApiClient;
     private GoogleSignInAccount googleSignInAccount;
     private CallbackManager callbackManager;
@@ -283,7 +286,7 @@ public class LoginActivity extends BaseActivity implements
         showProgressDialog();
 
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityForResult(signInIntent, Constantes.RC_SIGN_IN);
     }
 
     @Override
@@ -291,7 +294,7 @@ public class LoginActivity extends BaseActivity implements
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Constantes.RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
                 // Google Sign In was successful, authenticate with Firebase
@@ -301,6 +304,13 @@ public class LoginActivity extends BaseActivity implements
                 hideProgressDialog();
                 Toast.makeText(LoginActivity.this, "Não foi possível autenticar o login no Google",
                         Toast.LENGTH_LONG).show();
+            }
+        }
+        else if (requestCode == Constantes.RC_CADASTRO)
+        {
+            if(resultCode == Constantes.RC_CADASTRO_SUCESSO){
+                String email=data.getStringExtra("email");
+                Utility.exibeAviso("Cadastro efetuado com sucesso!","Para ativar sua conta, verifique o e-mail enviado para "+email,this);
             }
         }
         else {
@@ -440,12 +450,32 @@ public class LoginActivity extends BaseActivity implements
 
 
     //*************************************************************************************
-    private void gravarUsuarioRedeSocial(String userId, String nomeCompleto, String email, String foto_perfil) {
+    private void gravarUsuarioRedeSocial(String userId, final String nomeCompleto, final String email, final String foto_perfil) {
 
-        UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, foto_perfil);
+        // Verifica primeiro se o usuário já existe. Se sim, herda o grupo cadastrado
+        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
 
-        //TODO verificar se existe uma opcao de onSuccess para verificar se a gravacao de fato ocorreu
-        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp);
+                UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, foto_perfil);
+
+                if (snapshot.exists())
+                {
+                    UsuarioApp uApp = snapshot.getValue(UsuarioApp.class);
+                    usuarioApp.grupo = uApp.grupo;
+                    usuarioApp.token = uApp.token;
+                }
+
+                mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
     //****************************************************************
@@ -454,16 +484,16 @@ public class LoginActivity extends BaseActivity implements
     public void onCadastreClick(View v)
     {
         Intent i =  new Intent(LoginActivity.this, CadastroActivity.class);
-        startActivity(i);
+        startActivityForResult(i,Constantes.RC_CADASTRO);
     }
 
 
     //TODO Temporario! Aqui é só para nao ter que ficar digitando email e senha toda hora, deve ser retirado depois!
     public void onLogoClick (View v)
     {
-        editTextLoginUsuario.setText("raphasm@gmail.com");
+        /*editTextLoginUsuario.setText("raphasm@gmail.com");
         editTextLoginSenha.setText("12345678");
-        onLoginClick(v);
+        onLoginClick(v);*/
     }
 
     @Override

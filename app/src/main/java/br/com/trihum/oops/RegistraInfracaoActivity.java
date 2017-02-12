@@ -83,6 +83,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
     private RadioButton rb8Gr1Registro;
     private EditText txtArea;
     private int tipoEscolhido;
+    private boolean salvando;
 
     private String encoded_full;
     private String encoded_mini;
@@ -175,6 +176,8 @@ public class RegistraInfracaoActivity extends BaseActivity {
 
         gps = new GPSMonitor(this);
         gps.getLocation();
+
+        salvando = false;
     }
 
     public void obteveCoordenadas()
@@ -247,15 +250,15 @@ public class RegistraInfracaoActivity extends BaseActivity {
         if (checkedRadioButtonId == -1) {
             return -1;
         }
-        else{
-            if (checkedRadioButtonId == R.id.rb1Gr1Registro) return 1;
-            else if (checkedRadioButtonId == R.id.rb2Gr1Registro) return 2;
+        else{ // Esta ordenação está conforme o database (1 a 8 tipo de infração)
+            if (checkedRadioButtonId == R.id.rb1Gr1Registro) return 4;
+            else if (checkedRadioButtonId == R.id.rb2Gr1Registro) return 6;
             else if (checkedRadioButtonId == R.id.rb3Gr1Registro) return 3;
-            else if (checkedRadioButtonId == R.id.rb4Gr1Registro) return 4;
+            else if (checkedRadioButtonId == R.id.rb4Gr1Registro) return 1;
             else if (checkedRadioButtonId == R.id.rb5Gr1Registro) return 5;
-            else if (checkedRadioButtonId == R.id.rb6Gr1Registro) return 6;
-            else if (checkedRadioButtonId == R.id.rb7Gr1Registro) return 7;
-            else if (checkedRadioButtonId == R.id.rb8Gr1Registro) return 8;
+            else if (checkedRadioButtonId == R.id.rb6Gr1Registro) return 7;
+            else if (checkedRadioButtonId == R.id.rb7Gr1Registro) return 8;
+            else if (checkedRadioButtonId == R.id.rb8Gr1Registro) return 2;
         }
 
         return -1;
@@ -292,7 +295,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
                 Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível obter o endereço. Tentando novamente. Favor aguardar.",
                         Toast.LENGTH_SHORT).show();
                 //geocodeTask = new GeocodeTask(this,latitude,longitude);
-                geocodeTask.setCoordenadas(latitude,longitude);
+                geocodeTask = new GeocodeTask(this,latitude,longitude);
                 geocodeTask.execute("");
             }
             else
@@ -321,6 +324,14 @@ public class RegistraInfracaoActivity extends BaseActivity {
 
     public void obtemChaveESalvaDadosInfracao(double latitude, double longitude) {
 
+        if (salvando) {
+            Toast.makeText(RegistraInfracaoActivity.this, "Registro sendo processado. Favor aguardar.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        salvando = true;
+
         final double lat = latitude;
         final double lon = longitude;
 
@@ -336,7 +347,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
                     return Transaction.success(mutableData);
                 }
 
-                String result = String.format("%04d", (Integer.parseInt(valorS) + 1) );
+                String result = String.format("%05d", (Integer.parseInt(valorS) + 1) );
 
                 // Set value and report transaction success
                 mutableData.setValue(result);
@@ -351,6 +362,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
                 if (databaseError != null)
                 {
                     hideProgressDialog();
+                    salvando = false;
                     Toast.makeText(RegistraInfracaoActivity.this, "Não foi possível salvar os dados da infração",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -394,6 +406,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         startActivity(intent);
 
         //hideProgressDialog();
+        salvando = false;
         finish();
     }
 
@@ -448,14 +461,14 @@ public class RegistraInfracaoActivity extends BaseActivity {
 
         if (tipo!=-1)
         {
-            if (tipo==1) btnTipoInfracao.setText(rb1Gr1Registro.getText());
-            if (tipo==2) btnTipoInfracao.setText(rb2Gr1Registro.getText());
+            if (tipo==1) btnTipoInfracao.setText(rb4Gr1Registro.getText());
+            if (tipo==2) btnTipoInfracao.setText(rb8Gr1Registro.getText());
             if (tipo==3) btnTipoInfracao.setText(rb3Gr1Registro.getText());
-            if (tipo==4) btnTipoInfracao.setText(rb4Gr1Registro.getText());
+            if (tipo==4) btnTipoInfracao.setText(rb1Gr1Registro.getText());
             if (tipo==5) btnTipoInfracao.setText(rb5Gr1Registro.getText());
-            if (tipo==6) btnTipoInfracao.setText(rb6Gr1Registro.getText());
-            if (tipo==7) btnTipoInfracao.setText(rb7Gr1Registro.getText());
-            if (tipo==8) btnTipoInfracao.setText(rb8Gr1Registro.getText());
+            if (tipo==6) btnTipoInfracao.setText(rb2Gr1Registro.getText());
+            if (tipo==7) btnTipoInfracao.setText(rb6Gr1Registro.getText());
+            if (tipo==8) btnTipoInfracao.setText(rb7Gr1Registro.getText());
         }
 
     }

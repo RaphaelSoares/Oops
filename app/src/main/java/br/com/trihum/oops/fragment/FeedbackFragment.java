@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -275,6 +276,7 @@ public class FeedbackFragment extends Fragment {
     {
         FeedbackUsuario feedbackUsuario = new FeedbackUsuario();
 
+        // Campo obrigatório
         if (rgGrupo1.getVisibility()==View.VISIBLE) feedbackUsuario.setResposta1(""+(rgGrupo1.indexOfChild(getActivity().findViewById(rgGrupo1.getCheckedRadioButtonId()))+1));
         else feedbackUsuario.setResposta1(editPergunta1.getText().toString());
 
@@ -284,11 +286,25 @@ public class FeedbackFragment extends Fragment {
         if (rgGrupo3.getVisibility()==View.VISIBLE) feedbackUsuario.setResposta3(""+(rgGrupo3.indexOfChild(getActivity().findViewById(rgGrupo3.getCheckedRadioButtonId()))+1));
         else feedbackUsuario.setResposta3(editPergunta3.getText().toString());
 
+        // Campo opcional
         feedbackUsuario.setRespostaTexto(txtArea.getText().toString());
 
-        mDatabase.child("feedback_usuarios/"+questionario_ativo).child(Funcoes.convertEmailInKey(Globais.emailLogado)).setValue(feedbackUsuario);
+        if ((!feedbackUsuario.getResposta1().isEmpty() && !feedbackUsuario.getResposta1().equals("0"))
+                && (!feedbackUsuario.getResposta2().isEmpty() && !feedbackUsuario.getResposta2().equals("0"))
+                && (!feedbackUsuario.getResposta3().isEmpty() && !feedbackUsuario.getResposta3().equals("0"))){
 
-        ((PrincipalActivity)getActivity()).exibeFragmentPrincipal();
+            //Log.d("OOPS","feedbackUsuario.getResposta1() = "+feedbackUsuario.getResposta1());
+            //Log.d("OOPS","feedbackUsuario.getResposta2() = "+feedbackUsuario.getResposta2());
+            //Log.d("OOPS","feedbackUsuario.getResposta3() = "+feedbackUsuario.getResposta3());
+
+            mDatabase.child("feedback_usuarios/"+questionario_ativo).child(Funcoes.convertEmailInKey(Globais.emailLogado)).setValue(feedbackUsuario);
+            ((PrincipalActivity)getActivity()).exibeFragmentPrincipal();
+        } else {
+
+            Toast.makeText(getContext(), "Por favor, preencha os campos do formulário.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
     }
 
 

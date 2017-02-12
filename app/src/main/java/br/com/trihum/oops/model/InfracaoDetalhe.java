@@ -17,6 +17,11 @@ public class InfracaoDetalhe {
     private String identifica_infracao;
     private String comentario_orgao;
     private String msg_orgao;
+    private String msg_orgao_01;
+    private String msg_orgao_02;
+    private String msg_orgao_03;
+    private String msg_orgao_04;
+    private String msg_orgao_05;
 
     public InfracaoDetalhe()
     {
@@ -103,4 +108,24 @@ public class InfracaoDetalhe {
     public void setMsg_orgao(String msg_orgao) {
         this.msg_orgao = msg_orgao;
     }
+
+    public String getMsg_orgao_01() {return msg_orgao_01;}
+
+    public void setMsg_orgao_01(String msg_orgao_01) {this.msg_orgao_01 = msg_orgao_01;}
+
+    public String getMsg_orgao_02() {return msg_orgao_02;}
+
+    public void setMsg_orgao_02(String msg_orgao_02) {this.msg_orgao_02 = msg_orgao_02;}
+
+    public String getMsg_orgao_03() {return msg_orgao_03;}
+
+    public void setMsg_orgao_03(String msg_orgao_03) {this.msg_orgao_03 = msg_orgao_03;}
+
+    public String getMsg_orgao_04() {return msg_orgao_04;}
+
+    public void setMsg_orgao_04(String msg_orgao_04) {this.msg_orgao_04 = msg_orgao_04;}
+
+    public String getMsg_orgao_05() {return msg_orgao_05;}
+
+    public void setMsg_orgao_05(String msg_orgao_05) {this.msg_orgao_05 = msg_orgao_05;}
 }

@@ -10,6 +10,7 @@ public class UsuarioApp {
     public String email;
     public String foto_perfil;
     public String grupo;
+    public String token;
 
     public UsuarioApp()
     {
@@ -21,5 +22,6 @@ public class UsuarioApp {
         this.email = email;
         this.foto_perfil = foto_perfil;
         this.grupo = "1";
+        this.token = "";
     }
 }

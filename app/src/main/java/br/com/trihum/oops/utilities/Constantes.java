@@ -30,4 +30,8 @@ public class Constantes {
     public static final String SHARED_PREFERENCES_KEY_EXIBE_TUTORIAL    = "exibeTutorial";
     public static final String SHARED_PREFERENCES_KEY_INFRACOES_OFFLINE = "infracoesOffline";
 
+    public static final int RC_SIGN_IN = 9001;
+    public static final int RC_CADASTRO = 1000;
+    public static final int RC_CADASTRO_SUCESSO = 1;
+    public static final int RC_CADASTRO_FALHA = 0;
 }

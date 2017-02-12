@@ -99,6 +99,7 @@ public class PrincipalFragment extends Fragment {
     public EditText perfilSenhaAtual;
     public EditText perfilNovaSenha;
     public EditText perfilSenhaRepete;
+    public ProgressBar pbAguardaInfracoes;
 
     public TextView circulo1;
     public TextView circulo2;
@@ -174,6 +175,7 @@ public class PrincipalFragment extends Fragment {
         perfilSenhaAtual = (EditText)view.findViewById(R.id.perfilSenhaAtual);
         perfilNovaSenha = (EditText)view.findViewById(R.id.perfilNovaSenha);
         perfilSenhaRepete = (EditText)view.findViewById(R.id.perfilSenhaRepete);
+        pbAguardaInfracoes = (ProgressBar)view.findViewById(R.id.pbAguardaInfracoes);
 
         circulo1 = (TextView) view.findViewById(R.id.circulo1);
         circulo2 = (TextView) view.findViewById(R.id.circulo2);
@@ -402,7 +404,6 @@ public class PrincipalFragment extends Fragment {
         });
         //****************************************
 
-
         //********************************************************
         // Pegando componentes do navigator e atribuindo os dados do perfil
         perfilFoto = (ImageView) view.findViewById(R.id.perfilFoto);
@@ -421,7 +422,6 @@ public class PrincipalFragment extends Fragment {
         } else if (Globais.fotoPerfil.startsWith("data")) {
             perfilFoto.setImageBitmap(Funcoes.decodeFrom64toRound(Globais.fotoPerfil));
         }
-
         //********************************************************
 
         return view;
@@ -563,6 +563,9 @@ public class PrincipalFragment extends Fragment {
 
     public void atualizaListaInfracoes()
     {
+        // Exibe um spinner para aguardar...
+        pbAguardaInfracoes.setVisibility(View.VISIBLE);
+
         //addValueEventListener
 
         arrayInfracoes = new ArrayList<Object>();
@@ -573,6 +576,9 @@ public class PrincipalFragment extends Fragment {
                 equalTo(Globais.emailLogado).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                // Testa se o spinner está aparecendo e esconde
+                if (pbAguardaInfracoes.getVisibility()==View.VISIBLE) pbAguardaInfracoes.setVisibility(View.INVISIBLE);
 
                 Infracao infracao = dataSnapshot.getValue(Infracao.class);
                 infracao.setId(dataSnapshot.getKey());
@@ -857,19 +863,11 @@ public class PrincipalFragment extends Fragment {
             Object obj = iterator.next();
             if (obj instanceof Infracao)
             {
-                //******************************************
-                // Se é do grupo 0, não exibe as alterações feitas pelo órgão de trânsito
-                // Logo, eu sobreescrevo o campo de status para aparecer apenas como Infracao Enviada
                 Infracao infracao1 = (Infracao)obj;
-                if (Globais.grupo.equals("0"))
-                {
-                    infracao1.setStatus("01");
-                }
-                //******************************************
 
-                /*if (infracao1.getStatus().equals("05"))*/ iCirculo1++;
-                if (infracao1.getStatus().equals("05")) iCirculo2++;
-                if (infracao1.getStatus().equals("03")) iCirculo3++;
+                iCirculo1++;
+                if (Globais.grupo.equals("1") && infracao1.getStatus().equals("05")) iCirculo2++;
+                if ((Globais.grupo.equals("0") && infracao1.getStatus().equals("05")) || infracao1.getStatus().equals("03")) iCirculo3++;
                 if (infracao1.getStatus().equals("04")) iCirculo4++;
                 if (infracao1.getStatus().equals("01") || infracao1.getStatus().equals("02")) iCirculo5++;
             } else if (obj instanceof InfracaoComDetalhe) {

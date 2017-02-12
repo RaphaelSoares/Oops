@@ -2,6 +2,7 @@ package br.com.trihum.oops.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +21,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.List;
 
+import br.com.trihum.oops.RegistraInfracaoActivity;
 import br.com.trihum.oops.model.InfracaoComDetalhe;
 import br.com.trihum.oops.utilities.Constantes;
 import br.com.trihum.oops.model.Infracao;
@@ -87,11 +90,11 @@ public class ListaInfracoesAdapter extends BaseAdapter {
             progressBarFoto.setVisibility(View.VISIBLE);
 
             //******************************************
-            // Se é do grupo 0, não exibe as alterações feitas pelo órgão de trânsito
-            // Logo, eu sobreescrevo o campo de status para aparecer apenas como Infracao Enviada
-            if (Globais.grupo.equals("0"))
+            // Se é do grupo 0 e o status de Ação Educativa Realizada
+            // eu sobreescrevo o campo de status para aparecer apenas como Infracao Validada
+            if (Globais.grupo.equals("0") && infracao.getStatus().equals("05"))
             {
-                infracao.setStatus("01");
+                infracao.setStatus("03");
             }
             //******************************************
 
@@ -132,7 +135,13 @@ public class ListaInfracoesAdapter extends BaseAdapter {
                     textoEnderecoInfracao.setText(infracaoDetalhe.getEndereco());
                     if (infracaoDetalhe.getFoto_mini()!=null && infracaoDetalhe.getFoto_mini().length()>0)
                     {
-                        imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64toRound(infracaoDetalhe.getFoto_mini()));
+                        try {
+                            imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64toRound(infracaoDetalhe.getFoto_mini()));
+                        }
+                        catch (Exception e)
+                        {
+                            Log.d("OOPS","Erro ao carregar a foto");
+                        }
                     }
                 }
 

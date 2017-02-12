@@ -165,22 +165,35 @@ public class DetalheInfracaoActivity extends BaseActivity {
 
                     String comentarioOrgao = (infracaoDetalhe.getComentario_orgao()!=null)?infracaoDetalhe.getComentario_orgao():"";
                     String msgOrgao = (infracaoDetalhe.getMsg_orgao()!=null)?infracaoDetalhe.getMsg_orgao():"";
-                    String conteudoTexto = (msgOrgao.equals(""))?comentarioOrgao:"MENSAGEM: " + msgOrgao + "\n\n" + comentarioOrgao;
+                    String msgOrgao01 = (infracaoDetalhe.getMsg_orgao_01()!=null)?infracaoDetalhe.getMsg_orgao_01():"";
+                    String msgOrgao02 = (infracaoDetalhe.getMsg_orgao_02()!=null)?infracaoDetalhe.getMsg_orgao_02():"";
+                    String msgOrgao03 = (infracaoDetalhe.getMsg_orgao_03()!=null)?infracaoDetalhe.getMsg_orgao_03():"";
+                    String msgOrgao04 = (infracaoDetalhe.getMsg_orgao_04()!=null)?infracaoDetalhe.getMsg_orgao_04():"";
+                    String msgOrgao05 = (infracaoDetalhe.getMsg_orgao_05()!=null)?infracaoDetalhe.getMsg_orgao_05():"";
 
                     if (infracaoSelecionada.getStatus().equals("01"))
                     {
-                        txtAreaSituacaoRegistro.setText(Globais.mensagemPadraoRegistroRecebido);
+                        String conteudoTexto = (msgOrgao01.equals(""))?Globais.mensagemPadraoRegistroRecebido:"MENSAGEM: " + msgOrgao01 + "\n\n" + Globais.mensagemPadraoRegistroRecebido;
+                        txtAreaSituacaoRegistro.setText(conteudoTexto);
                     }
                     if (infracaoSelecionada.getStatus().equals("02"))
                     {
+                        String conteudoTexto = (msgOrgao02.equals(""))?comentarioOrgao:"MENSAGEM: " + msgOrgao02 + "\n\n" + comentarioOrgao;
                         txtAreaSituacaoRegistro.setText(conteudoTexto);
                     }
-                    else if (infracaoSelecionada.getStatus().equals("03") || infracaoSelecionada.getStatus().equals("04"))
+                    else if (infracaoSelecionada.getStatus().equals("03"))
                     {
+                        String conteudoTexto = (msgOrgao03.equals(""))?comentarioOrgao:"MENSAGEM: " + msgOrgao03 + "\n\n" + comentarioOrgao;
+                        txtAreaSituacaoInfracao.setText(conteudoTexto);
+                    }
+                    else if (infracaoSelecionada.getStatus().equals("04"))
+                    {
+                        String conteudoTexto = (msgOrgao04.equals(""))?comentarioOrgao:"MENSAGEM: " + msgOrgao04 + "\n\n" + comentarioOrgao;
                         txtAreaSituacaoInfracao.setText(conteudoTexto);
                     }
                     else
                     {
+                        String conteudoTexto = (msgOrgao05.equals(""))?comentarioOrgao:"MENSAGEM: " + msgOrgao05 + "\n\n" + comentarioOrgao;
                         txtAreaSituacaoAcaoEducativa.setText(conteudoTexto);
                     }
 

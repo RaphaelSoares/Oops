@@ -1,5 +1,6 @@
 package br.com.trihum.oops;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
@@ -15,11 +16,16 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import br.com.trihum.oops.model.UsuarioApp;
+import br.com.trihum.oops.utilities.Constantes;
 import br.com.trihum.oops.utilities.Funcoes;
+import br.com.trihum.oops.utilities.Utility;
 
 public class CadastroActivity extends BaseActivity {
 
@@ -161,16 +167,42 @@ public class CadastroActivity extends BaseActivity {
             }
         });
 
-        Toast.makeText(CadastroActivity.this, "Verifique o e-mail enviado para "+user.getEmail(),
-                Toast.LENGTH_LONG).show();
+        /*Toast.makeText(CadastroActivity.this, "Verifique o e-mail enviado para "+user.getEmail(),
+                Toast.LENGTH_LONG).show();*/
+
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("email",user.getEmail());
+        setResult(Constantes.RC_CADASTRO_SUCESSO,returnIntent);
         finish();
     }
 
 
-    private void gravarUsuario(String userId, String nomeCompleto, String email) {
-        UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, "");
+    private void gravarUsuario(String userId, final String nomeCompleto, final String email) {
 
-        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp);
+        // Verifica primeiro se o usuário já existe. Se sim, herda o grupo cadastrado
+        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                UsuarioApp usuarioApp = new UsuarioApp(nomeCompleto, email, "");
+
+                if (snapshot.exists())
+                {
+                    UsuarioApp uApp = snapshot.getValue(UsuarioApp.class);
+                    usuarioApp.grupo = uApp.grupo;
+                    usuarioApp.token = uApp.token;
+                }
+
+                mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 
 
@@ -190,8 +222,9 @@ public class CadastroActivity extends BaseActivity {
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
 
-                        Toast.makeText(CadastroActivity.this, "Verifique o e-mail enviado para "+emailAddress,
-                                Toast.LENGTH_LONG).show();
+                        Utility.exibeAviso("Operação realizada com sucesso!","Para redefinir a senha, verifique o e-mail enviado para "+emailAddress,CadastroActivity.this);
+                        /*Toast.makeText(CadastroActivity.this, "Verifique o e-mail enviado para "+emailAddress,
+                                Toast.LENGTH_LONG).show();*/
                         Log.d("OOPS", "Email enviado");
                     }
                 }
