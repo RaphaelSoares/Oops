@@ -1,6 +1,8 @@
 package br.com.trihum.oops.utilities;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -139,4 +141,18 @@ public class Funcoes {
         return input.replaceAll("\\.", "\\:").replaceAll("\\#", "\\:").replaceAll("\\$", "\\:");
     }
 
+    public static final String getVersion(Context context)
+    {
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            //String version = pInfo.versionName+" build "+pInfo.versionCode;
+            String version = pInfo.versionName;
+            return version;
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
 }

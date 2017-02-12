@@ -21,6 +21,20 @@
         android:fitsSystemWindows="true"
         app:itemTextColor="#000000"
         app:headerLayout="@layout/nav_header_principal"
-        app:menu="@menu/activity_principal_drawer" />
+        app:menu="@menu/activity_principal_drawer" >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="versão"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textVersao"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="10dp" />
+        </FrameLayout>
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

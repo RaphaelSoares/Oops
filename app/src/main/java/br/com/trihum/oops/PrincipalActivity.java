@@ -130,9 +130,14 @@ public class PrincipalActivity extends BaseActivity
         final ImageView fotoPerfil = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_foto_perfil);
         final TextView txtNomeCompleto = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_nome_completo);
         final TextView txtEmail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
+        final TextView txtVersao = (TextView) findViewById(R.id.textVersao);
+
+        // Coloca a versao e build number no final do menu
+        txtVersao.setText(Funcoes.getVersion(this));
 
         // Foto do perfil
-        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(Globais.emailLogado)).addValueEventListener(new ValueEventListener() {
+        //mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(Globais.emailLogado)).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(Globais.emailLogado)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 

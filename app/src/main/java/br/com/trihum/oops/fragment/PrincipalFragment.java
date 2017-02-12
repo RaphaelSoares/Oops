@@ -475,7 +475,9 @@ public class PrincipalFragment extends Fragment {
     {
         Globais.mapaTipos=new HashMap<String, String>();
 
-        mDatabase.child("tipos_infracao").addValueEventListener(new ValueEventListener() {
+
+        //mDatabase.child("tipos_infracao").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("tipos_infracao").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -496,7 +498,9 @@ public class PrincipalFragment extends Fragment {
     {
         Globais.mapaSituacoes=new HashMap<String, String>();
 
-        mDatabase.child("situacoes_app").addValueEventListener(new ValueEventListener() {
+
+        //mDatabase.child("situacoes_app").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("situacoes_app").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -517,7 +521,9 @@ public class PrincipalFragment extends Fragment {
     {
         Globais.mensagemPadraoRegistroRecebido="";
 
-        mDatabase.child("situacoes").addValueEventListener(new ValueEventListener() {
+
+        //mDatabase.child("situacoes").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("situacoes").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -542,7 +548,9 @@ public class PrincipalFragment extends Fragment {
     {
         Globais.mapaOrgaos=new HashMap<String, String>();
 
-        mDatabase.child("orgaos").addValueEventListener(new ValueEventListener() {
+
+        //mDatabase.child("orgaos").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("orgaos").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

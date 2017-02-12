@@ -488,7 +488,6 @@ public class LoginActivity extends BaseActivity implements
     }
 
 
-    //TODO Temporario! Aqui é só para nao ter que ficar digitando email e senha toda hora, deve ser retirado depois!
     public void onLogoClick (View v)
     {
         /*editTextLoginUsuario.setText("raphasm@gmail.com");

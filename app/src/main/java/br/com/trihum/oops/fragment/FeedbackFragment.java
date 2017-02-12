@@ -145,7 +145,9 @@ public class FeedbackFragment extends Fragment {
     public void obterQuestionarioAtivo()
     {
         questionario_ativo = "";
-        mDatabase.child("controles/questionario_ativo").addValueEventListener(new ValueEventListener() {
+
+        //mDatabase.child("controles/questionario_ativo").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("controles/questionario_ativo").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -167,7 +169,8 @@ public class FeedbackFragment extends Fragment {
 
     public void montaQuestionario()
     {
-        mDatabase.child("questionarios/"+questionario_ativo).addValueEventListener(new ValueEventListener() {
+        //mDatabase.child("questionarios/"+questionario_ativo).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("questionarios/"+questionario_ativo).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Questionario questionario = dataSnapshot.getValue(Questionario.class);
