@@ -143,41 +143,18 @@ public class CadastroActivity extends BaseActivity {
                                 Toast.makeText(CadastroActivity.this, "Não foi possível criar o usuário", Toast.LENGTH_LONG).show();
                             }
 
+                            hideProgressDialog();
                         }
 
-                        hideProgressDialog();
                     }
                 });
 
     }
 
-    private void onAuthSuccess(FirebaseUser user) {
+    private void onAuthSuccess(final FirebaseUser user) {
 
-        // Write new user
-        gravarUsuario(user.getUid(), nomeCompleto, user.getEmail());
-
-        user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    Log.i("Success", "Yes");
-                }
-                else{
-                    Log.i("Success", "No");}
-            }
-        });
-
-        /*Toast.makeText(CadastroActivity.this, "Verifique o e-mail enviado para "+user.getEmail(),
-                Toast.LENGTH_LONG).show();*/
-
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("email",user.getEmail());
-        setResult(Constantes.RC_CADASTRO_SUCESSO,returnIntent);
-        finish();
-    }
-
-
-    private void gravarUsuario(String userId, final String nomeCompleto, final String email) {
+        // Grava o usuário em usuarios_app, no sucesso, envia email de verificação, no sucesso finaliza.
+        email = user.getEmail();
 
         // Verifica primeiro se o usuário já existe. Se sim, herda o grupo cadastrado
         mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -194,17 +171,54 @@ public class CadastroActivity extends BaseActivity {
                     usuarioApp.token = uApp.token;
                 }
 
-                mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp);
+                // Gravo o usuario em usuarios_app
+                mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        if (databaseError == null) {
+
+                            //*********************************************************
+                            // Envio o email de verificação para o novo usuario
+                            user.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        hideProgressDialog();
+
+                                        Intent returnIntent = new Intent();
+                                        returnIntent.putExtra("email", user.getEmail());
+                                        setResult(Constantes.RC_CADASTRO_SUCESSO, returnIntent);
+                                        finish();
+
+                                    } else {
+                                        hideProgressDialog();
+
+                                        Toast.makeText(CadastroActivity.this, "Não foi possível enviar o email de verificação para o usuário", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                            //*********************************************************
+
+
+
+                        } else {
+                            hideProgressDialog();
+
+                            Toast.makeText(CadastroActivity.this, "Não foi possível criar o usuário", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                hideProgressDialog();
+                Toast.makeText(CadastroActivity.this, "Não foi possível criar o usuário. A operação foi cancelada.", Toast.LENGTH_LONG).show();
             }
         });
 
     }
-
 
     public void onEsqueciSenhaClick(View v)
     {

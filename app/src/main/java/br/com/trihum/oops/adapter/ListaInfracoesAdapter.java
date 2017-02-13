@@ -76,8 +76,6 @@ public class ListaInfracoesAdapter extends BaseAdapter {
     @Override
     public View getView(int posicao, View convertView, ViewGroup parent) {
 
-        Log.d("OOPS","getView do listaInfracoesAdapter posicao = "+posicao);
-
         convertView = inflater.inflate(R.layout.adapter_lista_infracoes, null);
         Context context = parent.getContext();
 

@@ -26,15 +26,16 @@
 
             <TextView
                 android:layout_height="wrap_content"
-                android:layout_width="200dp"
-                android:text="Conheça as ações educativas e continue tornando o trânsito da sua cidade melhor!"
+                android:text="Agora é só começar a usar e esperar as mudanças de comportamento dos motoristas em seu caminho.\nVenha fazer parte dessa mudança!"
                 android:id="@+id/textoTutorial4"
                 android:ems="10"
                 android:textColor="#FFFFFF"
                 android:gravity="center"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:layout_gravity="top|center"
-                android:layout_marginTop="170dp" />
+                android:layout_marginTop="170dp"
+                android:layout_width="240dp"
+                android:lineSpacingExtra="4sp" />
         </FrameLayout>
     </LinearLayout>
 

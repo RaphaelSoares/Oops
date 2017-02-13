@@ -7,7 +7,7 @@ android {
         applicationId "br.com.trihum.oops"
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 11
+        versionCode 12
         versionName '1.01'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

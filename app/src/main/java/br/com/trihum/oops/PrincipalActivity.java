@@ -132,12 +132,12 @@ public class PrincipalActivity extends BaseActivity
         final TextView txtEmail = (TextView)navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
         final TextView txtVersao = (TextView) findViewById(R.id.textVersao);
 
-        // Coloca a versao e build number no final do menu
-        txtVersao.setText(Funcoes.getVersion(this));
+        // Coloca a versao no final do menu
+        txtVersao.setText("v. "+Funcoes.getVersion(this));
 
         // Foto do perfil
-        //mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(Globais.emailLogado)).addValueEventListener(new ValueEventListener() {
-        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(Globais.emailLogado)).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(Globais.emailLogado)).addValueEventListener(new ValueEventListener() {
+        //mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(Globais.emailLogado)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
 
@@ -164,6 +164,8 @@ public class PrincipalActivity extends BaseActivity
                 Globais.fotoPerfil = usuarioApp.foto_perfil;
                 Globais.email = usuarioApp.email;
                 Globais.grupo = usuarioApp.grupo;
+                if (Globais.grupo == null) Globais.grupo = "1";
+
 
                 // coloca o fragment principal se ainda nao foi feito
                 exibeFragmentPrincipal();

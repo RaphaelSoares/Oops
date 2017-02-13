@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompatSideChannelService;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.util.Log;
@@ -83,6 +84,8 @@ public class LoginActivity extends BaseActivity implements
             actionBar.hide();
         }
 
+        Globais.emailLogado = "";
+
         //****************************************
         // obtendo os componentes da tela
         editTextLoginUsuario = (EditText)findViewById(R.id.editTextLoginUsuario);
@@ -148,8 +151,15 @@ public class LoginActivity extends BaseActivity implements
             {
                 Globais.emailLogado = user.getEmail();
 
-                Intent i =  new Intent(LoginActivity.this, PrincipalActivity.class);
-                startActivity(i);
+                if (Globais.emailLogado != null && !Globais.emailLogado.equals(""))
+                {
+                    Intent i =  new Intent(LoginActivity.this, PrincipalActivity.class);
+                    startActivity(i);
+                }
+                else {
+                    Toast.makeText(LoginActivity.this, "Não foi possível recuperar o email de autenticação.", Toast.LENGTH_LONG).show();
+                    return;
+                }
             }
             else
             {
@@ -170,8 +180,15 @@ public class LoginActivity extends BaseActivity implements
                         (googleSignInAccount.getPhotoUrl()!=null)?googleSignInAccount.getPhotoUrl().toString():"");
             }
 
-            Intent i =  new Intent(LoginActivity.this, PrincipalActivity.class);
-            startActivity(i);
+            if (Globais.emailLogado != null && !Globais.emailLogado.equals(""))
+            {
+                Intent i =  new Intent(LoginActivity.this, PrincipalActivity.class);
+                startActivity(i);
+            }
+            else {
+                Toast.makeText(LoginActivity.this, "Não foi possível recuperar o email de autenticação usado pelo Google.", Toast.LENGTH_LONG).show();
+                return;
+            }
 
         }
         else if (Globais.provedorLogin == Constantes.PROVEDOR_LOGIN_FACEBOOK)
@@ -205,8 +222,15 @@ public class LoginActivity extends BaseActivity implements
                 }
             };
 
-            Intent i =  new Intent(LoginActivity.this, PrincipalActivity.class);
-            startActivity(i);
+            if (Globais.emailLogado != null && !Globais.emailLogado.equals(""))
+            {
+                Intent i =  new Intent(LoginActivity.this, PrincipalActivity.class);
+                startActivity(i);
+            }
+            else {
+                Toast.makeText(LoginActivity.this, "Não foi possível recuperar o email de autenticação usado pelo Facebook.", Toast.LENGTH_LONG).show();
+                return;
+            }
         }
 
     }
@@ -462,8 +486,8 @@ public class LoginActivity extends BaseActivity implements
                 if (snapshot.exists())
                 {
                     UsuarioApp uApp = snapshot.getValue(UsuarioApp.class);
-                    usuarioApp.grupo = uApp.grupo;
-                    usuarioApp.token = uApp.token;
+                    if (uApp.grupo!=null) usuarioApp.grupo = uApp.grupo;
+                    if (uApp.token!=null) usuarioApp.token = uApp.token;
                 }
 
                 mDatabase.child("usuarios_app").child(Funcoes.convertEmailInKey(email)).setValue(usuarioApp);

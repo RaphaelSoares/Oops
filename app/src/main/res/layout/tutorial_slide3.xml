@@ -26,15 +26,16 @@
 
             <TextView
                 android:layout_height="wrap_content"
-                android:layout_width="200dp"
-                android:text="Acompanhe o status dos seus registros de infrações, obtenha métricas de trânsito."
+                android:text="Não perca nada!\nVocê poderá acompanhar de forma simples a evolução de cada registro que enviou."
                 android:id="@+id/textoTutorial3"
                 android:ems="10"
                 android:textColor="#FFFFFF"
                 android:gravity="center"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:layout_gravity="top|center"
-                android:layout_marginTop="170dp" />
+                android:layout_marginTop="170dp"
+                android:layout_width="240dp"
+                android:lineSpacingExtra="4sp" />
         </FrameLayout>
     </LinearLayout>
 

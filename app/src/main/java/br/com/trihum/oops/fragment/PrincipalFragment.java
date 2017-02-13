@@ -571,22 +571,34 @@ public class PrincipalFragment extends Fragment {
 
     public void atualizaListaInfracoes()
     {
-        // Exibe um spinner para aguardar...
-        pbAguardaInfracoes.setVisibility(View.VISIBLE);
-
-        //addValueEventListener
-
         arrayInfracoes = new ArrayList<Object>();
+
+        // Primeiro, verifica se existem registros, pra saber se deve ligar o spinner...
+        mDatabase.child("infracoes").orderByChild("email").equalTo(Globais.emailLogado).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                long numChildren = dataSnapshot.getChildrenCount();
+
+                if (numChildren > 0 && arrayInfracoes.size()==0)
+                {
+                    // Exibe um spinner para aguardar...
+                    pbAguardaInfracoes.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+
 
         // Ver o video em para tentar resolver o problema...
         // https://www.youtube.com/watch?v=30RJYT9tctc
-        mDatabase.child("infracoes").orderByChild("email").
-                equalTo(Globais.emailLogado).addChildEventListener(new ChildEventListener() {
+        mDatabase.child("infracoes").orderByChild("email").equalTo(Globais.emailLogado).addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 // Testa se o spinner está aparecendo e esconde
-                if (pbAguardaInfracoes.getVisibility()==View.VISIBLE) pbAguardaInfracoes.setVisibility(View.INVISIBLE);
+               pbAguardaInfracoes.setVisibility(View.INVISIBLE);
 
                 Infracao infracao = dataSnapshot.getValue(Infracao.class);
                 infracao.setId(dataSnapshot.getKey());
