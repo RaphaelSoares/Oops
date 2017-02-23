@@ -33,6 +33,10 @@ public class FotoActivity extends AppCompatActivity {
     FloatingActionButton fabConfirmarFoto;
     FrameLayout frameMolduraBotao;
 
+    Camera.Parameters params = null;
+    List<Camera.Size> supportedSizes = null;
+    Camera.Size preferredSize = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,9 +61,14 @@ public class FotoActivity extends AppCompatActivity {
         preview.addView(mPreview);
 
         // Ajustando a câmera (melhor qualidade da imagem, autofoco...
-        Camera.Parameters params = mCamera.getParameters();
-        List<Camera.Size> supportedSizes = params.getSupportedPictureSizes();
-        Camera.Size preferredSize = supportedSizes.get(supportedSizes.size()-1);
+        /*Camera.Parameters parameters = mCamera.getParameters();
+        supportedSizes = params.getSupportedPictureSizes();
+        preferredSize = supportedSizes.get(supportedSizes.size()-1);*/
+
+        params = mCamera.getParameters(); // Cris
+        supportedSizes = params.getSupportedPictureSizes();
+        preferredSize = supportedSizes.get(supportedSizes.size()-1);
+        //Log.d("OOPS","preferredSize = " + preferredSize);
 
         for(int i = 0; i < supportedSizes.size(); i++){
             //Log.d("OOPS","camera supported size = "+supportedSizes.get(i).width+" X "+supportedSizes.get(i).height);
@@ -97,6 +106,9 @@ public class FotoActivity extends AppCompatActivity {
                 break;
             }
         }
+
+        //Log.d("OOPS","preferredSize.width = " + preferredSize.width);
+        //Log.d("OOPS","preferredSize.height = " + preferredSize.height);
         params.setPictureSize(preferredSize.width, preferredSize.height);
         mCamera.setParameters(params);
 
@@ -175,10 +187,11 @@ public class FotoActivity extends AppCompatActivity {
         frameMolduraBotao.setVisibility(View.INVISIBLE);
         fabConfirmarFoto.setVisibility(View.VISIBLE);
         mCamera.takePicture(null, null, new PhotoHandler(this,getApplicationContext()));
-
     }
 
     public void onConfirmarFotoClick (View v){
+
+        if (!fotoTirada) return;
 
         mCamera.stopPreview();
         mCamera.release();

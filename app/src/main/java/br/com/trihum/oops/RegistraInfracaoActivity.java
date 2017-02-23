@@ -45,6 +45,7 @@ import br.com.trihum.oops.model.Infracao;
 import br.com.trihum.oops.model.InfracaoComDetalhe;
 import br.com.trihum.oops.model.InfracaoDetalhe;
 import br.com.trihum.oops.utilities.Constantes;
+import br.com.trihum.oops.utilities.Funcoes;
 import br.com.trihum.oops.utilities.GPSMonitor;
 import br.com.trihum.oops.utilities.GPSTracker;
 import br.com.trihum.oops.utilities.Globais;
@@ -124,7 +125,11 @@ public class RegistraInfracaoActivity extends BaseActivity {
         if(getIntent().hasExtra("byteArray")) {
             byte[] arrayBytesFoto = getIntent().getByteArrayExtra("byteArray");
 
-            Bitmap bitmap = BitmapFactory.decodeByteArray(arrayBytesFoto, 0, arrayBytesFoto.length);
+            // Ajuste para tentar corrigir problema de OutOfMemoryError
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inPurgeable = true; // inPurgeable is used to free up memory while required
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(arrayBytesFoto, 0, arrayBytesFoto.length,options);
             foto.setImageBitmap(bitmap);
 
             encoded_full = Base64.encodeToString(arrayBytesFoto, Base64.DEFAULT);
@@ -388,6 +393,7 @@ public class RegistraInfracaoActivity extends BaseActivity {
         infracao.setComentario(txtArea.getText().toString());
         infracao.setEmail(Globais.emailLogado);
         infracao.setOrgao(PrincipalFragment.obterOrgaoPorLocalidade(localidade));
+        infracao.setVapp(Funcoes.getVersion(this));
 
         mDatabase.child("infracoes").child(key).setValue(infracao);
 
@@ -422,6 +428,8 @@ public class RegistraInfracaoActivity extends BaseActivity {
         infracao.setHora(horaRegistro);
         infracao.setComentario(txtArea.getText().toString());
         infracao.setEmail(Globais.emailLogado);
+        infracao.setVapp(Funcoes.getVersion(this));
+        //o setOrgao não é usado aqui pq não se sabe a localidade
         infracao.setId("0");
 
         //Salvar dados de detalhe_infracao

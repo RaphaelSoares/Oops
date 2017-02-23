@@ -133,8 +133,8 @@ public class ListaInfracoesAdapter extends BaseAdapter {
             {
                 progressBarFoto.setVisibility(View.VISIBLE);
 
-                //mDatabase.child("detalhes_infracoes/"+infracao.getId()).addValueEventListener(new ValueEventListener() {
-                mDatabase.child("detalhes_infracoes/"+infracao.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                mDatabase.child("detalhes_infracoes/"+infracao.getId()).addValueEventListener(new ValueEventListener() {
+                //mDatabase.child("detalhes_infracoes/"+infracao.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         InfracaoDetalhe infracaoDetalhe = dataSnapshot.getValue(InfracaoDetalhe.class);
@@ -201,7 +201,14 @@ public class ListaInfracoesAdapter extends BaseAdapter {
             textoEnderecoInfracao.setText(infracao.getEndereco());
             if (infracao.getFoto_mini()!=null && infracao.getFoto_mini().length()>0)
             {
-                imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64toRound(infracao.getFoto_mini()));
+                try {
+                    imageFotoInfracao.setImageBitmap(Funcoes.decodeFrom64toRound(infracao.getFoto_mini()));
+                }
+                catch (Exception e)
+                {
+                    Log.d("OOPS","Erro ao carregar a foto do offline");
+                }
+
             }
 
         }

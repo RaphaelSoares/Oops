@@ -15,6 +15,7 @@ public class InfracaoComDetalhe {
     private String comentario;
     private String email;
     private String orgao;
+    private String vapp;
 
     // Dados detalhe infracao
     private String foto;
@@ -92,6 +93,10 @@ public class InfracaoComDetalhe {
     public String getOrgao() { return orgao; }
 
     public void setOrgao(String orgao) { this.orgao = orgao; }
+
+    public String getVapp() { return vapp; }
+
+    public void setVapp(String vapp) { this.vapp = vapp; }
 
     public String getFoto() {
         return foto;

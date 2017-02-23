@@ -35,7 +35,11 @@ public class PhotoHandler implements PictureCallback {
         if (data != null) {
             int screenWidth = fotoActivity.getResources().getDisplayMetrics().widthPixels;
             int screenHeight = fotoActivity.getResources().getDisplayMetrics().heightPixels;
-            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0);
+            // Ajuste para tentar corrigir problema de OutOfMemoryError
+            BitmapFactory.Options options=new BitmapFactory.Options();
+            options.inPurgeable = true; // inPurgeable is used to free up memory while required
+
+            Bitmap bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0,options);
 
             if (fotoActivity.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
 
@@ -53,7 +57,19 @@ public class PhotoHandler implements PictureCallback {
                 Matrix mtx = new Matrix();
                 mtx.postRotate(90);
                 // Rotating Bitmap
-                bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mtx, true);
+
+                try
+                {
+                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mtx, true);
+                }
+                catch (OutOfMemoryError OOM)
+                {
+                    // dá recycle e tenta de novo...
+                    bm.recycle();
+                    bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0,options);
+                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mtx, true);
+                }
+
 
             }else{// LANDSCAPE MODE
                 //No need to reverse width and height
@@ -67,7 +83,18 @@ public class PhotoHandler implements PictureCallback {
                     //int h = scaled.getHeight();
                     Matrix mtx = new Matrix();
                     mtx.postRotate(180);
-                    bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mtx, true);
+                    try
+                    {
+                        bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mtx, true);
+                    }
+                    catch (OutOfMemoryError OOM)
+                    {
+                        // dá recycle e tenta de novo...
+                        bm.recycle();
+                        bm = BitmapFactory.decodeByteArray(data, 0, (data != null) ? data.length : 0,options);
+                        bm = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), mtx, true);
+                    }
+
                 }
                 /*else
                 {
@@ -87,6 +114,8 @@ public class PhotoHandler implements PictureCallback {
             bm.compress(Bitmap.CompressFormat.JPEG, 50, bs);
             fotoActivity.arrayBytesFotoMini = bs.toByteArray();
             //Log.d("OOPS","arrayBytesFotoMini = "+fotoActivity.arrayBytesFotoMini.length);
+
+            bm.recycle();
 
             fotoActivity.fotoTirada = true;
             fotoActivity.mCamera.stopPreview();

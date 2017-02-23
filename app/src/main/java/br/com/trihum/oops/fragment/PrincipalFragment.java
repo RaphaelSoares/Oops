@@ -476,8 +476,8 @@ public class PrincipalFragment extends Fragment {
         Globais.mapaTipos=new HashMap<String, String>();
 
 
-        //mDatabase.child("tipos_infracao").addValueEventListener(new ValueEventListener() {
-        mDatabase.child("tipos_infracao").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("tipos_infracao").addValueEventListener(new ValueEventListener() {
+        //mDatabase.child("tipos_infracao").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -499,8 +499,8 @@ public class PrincipalFragment extends Fragment {
         Globais.mapaSituacoes=new HashMap<String, String>();
 
 
-        //mDatabase.child("situacoes_app").addValueEventListener(new ValueEventListener() {
-        mDatabase.child("situacoes_app").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("situacoes_app").addValueEventListener(new ValueEventListener() {
+        //mDatabase.child("situacoes_app").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -522,8 +522,8 @@ public class PrincipalFragment extends Fragment {
         Globais.mensagemPadraoRegistroRecebido="";
 
 
-        //mDatabase.child("situacoes").addValueEventListener(new ValueEventListener() {
-        mDatabase.child("situacoes").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("situacoes").addValueEventListener(new ValueEventListener() {
+        //mDatabase.child("situacoes").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -549,16 +549,17 @@ public class PrincipalFragment extends Fragment {
         Globais.mapaOrgaos=new HashMap<String, String>();
 
 
-        //mDatabase.child("orgaos").addValueEventListener(new ValueEventListener() {
-        mDatabase.child("orgaos").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("orgaos").addValueEventListener(new ValueEventListener() {
+        //mDatabase.child("orgaos").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 for (DataSnapshot postSnapshot : dataSnapshot.getChildren())
                 {
                     Globais.mapaOrgaos.put(postSnapshot.getKey(),postSnapshot.child("locais").getValue().toString());
-                    //Log.d("OOPS","key = "+postSnapshot.getKey());
-                    //Log.d("OOPS","value = "+postSnapshot.child("locais").getValue().toString());
+                    // TODO CRIS
+                    Log.d("OOPS","key = "+postSnapshot.getKey());
+                    Log.d("OOPS","value = "+postSnapshot.child("locais").getValue().toString());
                 }
             }
 
@@ -941,7 +942,7 @@ public class PrincipalFragment extends Fragment {
                 if (valorS == null) {
                     return Transaction.success(mutableData);
                 }
-                String result = String.format("%04d", (Integer.parseInt(valorS) + 1) );
+                String result = String.format("%05d", (Integer.parseInt(valorS) + 1) );
 
                 // Set value and report transaction success
                 mutableData.setValue(result);
@@ -968,7 +969,7 @@ public class PrincipalFragment extends Fragment {
                     infracao.setComentario(infracaoComDetalhe.getComentario());
                     infracao.setEmail(Globais.emailLogado);
                     infracao.setOrgao(PrincipalFragment.obterOrgaoPorLocalidade(localidade));
-
+                    infracao.setVapp(infracaoComDetalhe.getVapp());
 
                     mDatabase.child("infracoes").child(key).setValue(infracao);
 
@@ -1076,6 +1077,8 @@ public class PrincipalFragment extends Fragment {
             {
                 if (local.indexOf(localidade.toLowerCase())>=0)
                 {
+                    //TODO CRIS
+                    Log.d("OOPS","obterOrgaoPorLocalidade = ");
                     return key;
                 }
             }

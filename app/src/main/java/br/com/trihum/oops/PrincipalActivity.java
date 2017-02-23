@@ -13,6 +13,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -278,10 +279,18 @@ public class PrincipalActivity extends BaseActivity
 
     public void exibeFragmentPrincipal()
     {
+        if (exibindoFragmentPrincipal) return;
+
         if (principalFragment == null) principalFragment = new PrincipalFragment();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_principal, principalFragment).commit();
+        //fragmentManager.beginTransaction().replace(R.id.content_principal, principalFragment).commit();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+        fragmentTransaction.replace(R.id.content_principal, principalFragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
 
         exibindoFragmentPrincipal = true;
     }

@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
+import android.util.Log;
 
 /**
  * Created by raphaelmoraes on 14/01/17.
@@ -26,7 +27,12 @@ public class Funcoes {
         final String pureBase64Encoded = encodedString.substring(encodedString.indexOf(",")  + 1);
 
         byte[] decodedString = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
-        Bitmap bImage = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        // Ajuste para tentar corrigir problema de OutOfMemoryError
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inPurgeable = true; // inPurgeable is used to free up memory while required
+
+        Bitmap bImage = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length,options);
 
         return bImage;
     }
@@ -37,7 +43,12 @@ public class Funcoes {
         final String pureBase64Encoded = encodedString.substring(encodedString.indexOf(",")  + 1);
 
         byte[] decodedString = Base64.decode(pureBase64Encoded, Base64.DEFAULT);
-        Bitmap bImage = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+        // Ajuste para tentar corrigir problema de OutOfMemoryError
+        BitmapFactory.Options options=new BitmapFactory.Options();
+        options.inPurgeable = true; // inPurgeable is used to free up memory while required
+
+        Bitmap bImage = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length,options);
 
         return getRoundedShape(cropToSquare(bImage));
     }
@@ -138,7 +149,15 @@ public class Funcoes {
 
     public static final String convertEmailInKey(String input)
     {
-        return input.replaceAll("\\.", "\\:").replaceAll("\\#", "\\:").replaceAll("\\$", "\\:");
+        String novoEmailKey = "";
+        try{
+            novoEmailKey = input.replaceAll("\\.", "\\:").replaceAll("\\#", "\\:").replaceAll("\\$", "\\:");
+
+        }catch (Exception e){
+            Log.d("OOPS","Não foi possível realizar o replaceAll no e-mail: " + input);
+        }
+        //return input.replaceAll("\\.", "\\:").replaceAll("\\#", "\\:").replaceAll("\\$", "\\:");
+        return  novoEmailKey;
     }
 
     public static final String getVersion(Context context)

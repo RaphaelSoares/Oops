@@ -15,6 +15,7 @@ public class Infracao {
     private String comentario;
     private String email;
     private String orgao;
+    private String vapp;
 
     public Infracao()
     {
@@ -85,6 +86,10 @@ public class Infracao {
 
     public void setOrgao(String orgao) { this.orgao = orgao; }
 
+    public String getVapp() { return vapp; }
+
+    public void setVapp(String vapp) { this.vapp = vapp; }
+
     public void copia(Infracao infracaoOrigem)
     {
         status = infracaoOrigem.getStatus();
@@ -95,5 +100,6 @@ public class Infracao {
         comentario = infracaoOrigem.getComentario();
         email = infracaoOrigem.getEmail();
         orgao = infracaoOrigem.getOrgao();
+        vapp = infracaoOrigem.getVapp();
     }
 }
